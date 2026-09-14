@@ -1,0 +1,58 @@
+# Full local stack: Postgres + API + UI behind nginx.
+#
+#   docker compose up --build
+#   -> UI   http://localhost:8080
+#   -> API  http://localhost:8000/docs
+#
+# The API container needs a trained model in backend/artifacts/. Train it once on
+# the host first:
+#   cd backend && python scripts/generate_synthetic.py && python -m app.ml.train
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: myopia
+      POSTGRES_PASSWORD: myopia
+      POSTGRES_DB: myopia_twin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myopia -d myopia_twin"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # psycopg is in requirements-optional.txt -- uncomment the Postgres line in
+      # backend/Dockerfile's pip install, or keep SQLite by removing DATABASE_URL.
+      DATABASE_URL: postgresql+psycopg://myopia:myopia@db:5432/myopia_twin
+      ENVIRONMENT: docker
+      EVIDENCE_OFFLINE: "false"
+      LLM_PROVIDER: "none"
+      # Set a real value before exposing this anywhere.
+      API_KEY: ""
+      CORS_ORIGINS: "http://localhost:8080"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/artifacts:/app/artifacts
+
+  ui:
+    build:
+      context: ./frontend
+      args:
+        # Empty -> the UI calls /api on its own origin and nginx proxies to `api`.
+        VITE_API_BASE_URL: ""
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:

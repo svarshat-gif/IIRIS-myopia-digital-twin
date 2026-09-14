@@ -1,0 +1,35 @@
+# --- Core API ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+email-validator==2.2.0
+python-multipart==0.0.20
+pydantic-settings==2.7.0
+python-dotenv==1.0.1
+
+# --- Auth ---
+PyJWT==2.10.1
+
+# --- Persistence ---
+SQLAlchemy==2.0.36
+
+# --- ML / data ---
+numpy==2.2.1
+pandas==2.2.3
+scikit-learn==1.6.0
+joblib==1.4.2
+
+# --- Evidence retrieval (Europe PMC / PubMed) ---
+httpx==0.28.1
+
+# --- Explainability & model comparison ---
+shap==0.52.0
+xgboost==3.4.1
+lightgbm==4.7.0
+
+# --- Agentic orchestration ---
+langgraph==0.6.11
+langchain-core==0.3.85
+
+# --- Tests ---
+pytest==8.3.4
