@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -30,6 +31,10 @@ def fetch(raw: Path = RAW, offline: bool = False, sources: list[str] | None = No
             continue
         folder = raw / name
         folder.mkdir(parents=True, exist_ok=True)
+        bundled = Path(__file__).resolve().parents[1] / "data/open" / name
+        for filename_to_copy in (filename, "metadata.json", "files.json"):
+            if not (folder / filename_to_copy).exists() and (bundled / filename_to_copy).exists():
+                shutil.copyfile(bundled / filename_to_copy, folder / filename_to_copy)
         metadata_path = folder / "metadata.json"
         metadata_url = ("https://zenodo.org/api/records/18166476" if name == "dims" else
                         "https://datadryad.org/api/v2/datasets/doi%3A" + doi.replace("/", "%2F"))
@@ -75,6 +80,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw", type=Path, default=RAW)
     parser.add_argument("--offline", action="store_true")
-    parser.add_argument("--sources", nargs="+", choices=list(SOURCES))
+    parser.add_argument("--sources", nargs="+", choices=list(SOURCES), default=["dims"])
     args = parser.parse_args()
     print(json.dumps(fetch(args.raw, args.offline, args.sources), indent=2))

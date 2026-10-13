@@ -1,28 +1,20 @@
-FROM python:3.12-slim
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
-
+FROM python:3.12-slim AS base
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 OMP_NUM_THREADS=1
 WORKDIR /app
-
-# Dependencies first, so code changes do not invalidate the wheel cache.
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && useradd --uid 10001 --create-home iiris
 COPY app ./app
 COPY scripts ./scripts
+COPY migrations ./migrations
+COPY alembic.ini ./
 COPY data ./data
-
-# A model bundle is expected at /app/artifacts. Either bake it in by copying an
-# artifacts/ directory here, mount a volume, or run the training step below.
-RUN mkdir -p /app/artifacts
-COPY artifacts/ /app/artifacts/
-
+FROM base AS model
+RUN python scripts/fetch_datasets.py --sources dims --offline && python scripts/build_training_table.py && python -m app.ml.train
+FROM base AS runtime
+COPY --from=model /app/artifacts/progression_model.joblib /app/artifacts/progression_model.metrics.json ./artifacts/
+COPY --from=model /app/data/training_visits.csv /app/data/training_visits.provenance.json ./data/
+RUN chown -R iiris:iiris /app
+USER 10001
 EXPOSE 8000
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD python -c "import urllib.request,sys; \
-      sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=4).status==200 else 1)"
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 CMD python -c "import urllib.request,os; urllib.request.urlopen('http://127.0.0.1:'+os.getenv('PORT','8000')+'/readyz', timeout=4)"
+CMD ["python", "scripts/start.py"]

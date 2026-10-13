@@ -36,3 +36,8 @@ coverage.xml
 .DS_Store
 .idea/
 .vscode/
+
+backend/data/*.provenance.json
+frontend/test-results/
+frontend/playwright-report/
+docs/guide-extracted.txt

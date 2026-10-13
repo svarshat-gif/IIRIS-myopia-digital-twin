@@ -1,0 +1,79 @@
+name: Iiris quality gates
+on: [push, pull_request]
+env:
+  OMP_NUM_THREADS: '1'
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r backend/requirements-dev.txt
+      - run: make model
+      - run: python -m ruff check backend
+      - run: cd backend && pytest tests -q --cov=app.twin --cov=app.simulator --cov=app.ml --cov=app.core --cov-fail-under=80 --cov-report=xml
+      - run: cd backend && DATABASE_URL=sqlite:///./artifacts/migration_ci.db python -m alembic upgrade head && DATABASE_URL=sqlite:///./artifacts/migration_ci.db python -m alembic check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-real-model
+          path: |
+            backend/artifacts/progression_model.joblib
+            backend/artifacts/progression_model.metrics.json
+            backend/data/training_visits.csv
+            backend/data/training_visits.provenance.json
+  leakage-guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r backend/requirements-dev.txt
+      - run: cd backend && pytest tests/test_data_integrity.py tests/test_hardening.py::test_production_refuses_unsafe_defaults tests/test_hardening.py::test_hosted_ai_configuration_rejected -q
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22', cache: npm, cache-dependency-path: frontend/package-lock.json}
+      - run: cd frontend && npm ci && npm test && npm run build && npm audit --omit=dev --audit-level=high
+  containers:
+    env:
+      JWT_SECRET: ci-only-not-a-deployment-secret-32plus
+    needs: backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {name: verified-real-model, path: backend}
+      - run: docker compose build
+      - run: JWT_SECRET=ci-only-not-a-deployment-secret-32plus docker compose up -d --wait
+      - run: curl --fail http://localhost:8000/healthz && curl --fail http://localhost:8000/readyz && curl --fail http://localhost:8080/
+      - if: always()
+        run: docker compose logs && docker compose down -v
+  browser-smoke:
+    needs: backend
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///./artifacts/smoke_test.db
+      EVIDENCE_OFFLINE: 'true'
+      RATE_LIMIT_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/download-artifact@v4
+        with: {name: verified-real-model, path: backend}
+      - run: pip install -r backend/requirements-dev.txt
+      - run: cd frontend && npm ci && npx playwright install --with-deps chromium
+      - run: |
+          cd backend
+          python scripts/seed_demo.py --patients 2
+          python tests/setup_smoke.py
+          python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --no-access-log > /tmp/iiris-api.log 2>&1 &
+      - run: cd frontend && npm run dev -- --host 127.0.0.1 > /tmp/iiris-ui.log 2>&1 &
+      - run: |
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:5173/ && break; sleep 1; done
+          cd frontend && npm run test:e2e

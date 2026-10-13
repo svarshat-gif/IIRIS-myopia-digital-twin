@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+from sqlalchemy import select
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -43,6 +44,7 @@ def main() -> None:
                     "training_visits.csv")
     ap.add_argument("--patients", type=int, default=40,
                     help="How many patients to load (0 = all).")
+    ap.add_argument("--through-month", type=float, default=None, help="Keep later real visits for the update demo")
     ap.add_argument("--reset", action="store_true",
                     help="Drop and recreate all tables first.")
     ap.add_argument("--consent-status", default="open_research")
@@ -60,6 +62,8 @@ def main() -> None:
               "predictions. Run `python -m app.ml.train` first for the full demo.")
 
     df = load_visits(args.data)
+    if args.through_month is not None:
+        df = df[df.followup_month <= args.through_month]
     keys = list(dict.fromkeys(df["patient_key"]))
     if args.patients:
         keys = keys[: args.patients]
@@ -69,6 +73,9 @@ def main() -> None:
     created = versions = 0
     try:
         for key in keys:
+            if db.scalar(select(Patient).where(Patient.external_key == str(key))):
+                print(f"  {key}: already present; unchanged")
+                continue
             rows = df[df["patient_key"] == key].sort_values("visit_date").to_dict("records")
             if not rows:
                 continue
@@ -76,7 +83,7 @@ def main() -> None:
 
             patient = Patient(
                 external_key=str(key),
-                age_at_start=_v(first, "age") or 0.0,
+                age_at_start=_v(first, "age"),
                 sex=(first.get("sex") if isinstance(first.get("sex"), str) else None),
                 parental_myopia=(int(first["parental_myopia"])
                                  if pd.notna(first.get("parental_myopia")) else None),

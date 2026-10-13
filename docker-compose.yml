@@ -1,58 +1,37 @@
-# Full local stack: Postgres + API + UI behind nginx.
-#
-#   docker compose up --build
-#   -> UI   http://localhost:8080
-#   -> API  http://localhost:8000/docs
-#
-# The API container needs a trained model in backend/artifacts/. Train it once on
-# the host first:
-#   cd backend && python scripts/generate_synthetic.py && python -m app.ml.train
-
 services:
   db:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: myopia
-      POSTGRES_PASSWORD: myopia
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-development-only}
       POSTGRES_DB: myopia_twin
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    volumes: [pgdata:/var/lib/postgresql/data]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U myopia -d myopia_twin"]
+      test: [CMD-SHELL, pg_isready -U myopia -d myopia_twin]
       interval: 5s
       timeout: 3s
-      retries: 10
-
+      retries: 20
   api:
     build: ./backend
     depends_on:
-      db:
-        condition: service_healthy
+      db: {condition: service_healthy}
     environment:
-      # psycopg is in requirements-optional.txt -- uncomment the Postgres line in
-      # backend/Dockerfile's pip install, or keep SQLite by removing DATABASE_URL.
-      DATABASE_URL: postgresql+psycopg://myopia:myopia@db:5432/myopia_twin
-      ENVIRONMENT: docker
-      EVIDENCE_OFFLINE: "false"
-      LLM_PROVIDER: "none"
-      # Set a real value before exposing this anywhere.
-      API_KEY: ""
-      CORS_ORIGINS: "http://localhost:8080"
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend/artifacts:/app/artifacts
-
+      DATABASE_URL: postgresql+psycopg://myopia:${POSTGRES_PASSWORD:-local-development-only}@db:5432/myopia_twin
+      ENVIRONMENT: development
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the root .env}
+      AUTH_GATE: jwt
+      CORS_ORIGINS: http://localhost:8080
+      LLM_PROVIDER: none
+      EVIDENCE_OFFLINE: ${EVIDENCE_OFFLINE:-false}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-}
+    ports: [127.0.0.1:8000:8000]
+    volumes: [uploads:/app/artifacts/uploads]
   ui:
-    build:
-      context: ./frontend
-      args:
-        # Empty -> the UI calls /api on its own origin and nginx proxies to `api`.
-        VITE_API_BASE_URL: ""
+    build: ./frontend
     depends_on:
-      - api
-    ports:
-      - "8080:80"
-
+      api: {condition: service_healthy}
+    ports: [127.0.0.1:8080:8080]
 volumes:
   pgdata:
+  uploads:

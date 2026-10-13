@@ -3,9 +3,13 @@ import argparse
 import getpass
 import os
 from sqlalchemy import select
-from app.core.auth import hash_password, password_problems
-from app.db.database import SessionLocal, init_db
-from app.db.models import User
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from app.core.auth import hash_password, password_problems  # noqa: E402
+from app.db.database import SessionLocal, init_db  # noqa: E402
+from app.db.models import User  # noqa: E402
 
 
 def main():
