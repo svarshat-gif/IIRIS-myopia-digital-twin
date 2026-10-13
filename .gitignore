@@ -24,7 +24,12 @@ backend/artifacts/*.json
 
 # Data. Synthetic data is regenerable; real data must NEVER be committed.
 backend/data/*.csv
-!backend/data/synthetic_cohort.csv
+backend/data/raw/
+.tools/
+.coverage*
+coverage.xml
+.ruff_cache/
+!backend/artifacts/progression_model.metrics.json
 !backend/data/corpus/
 
 # OS / editor

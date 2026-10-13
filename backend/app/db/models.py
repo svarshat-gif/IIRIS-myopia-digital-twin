@@ -106,7 +106,8 @@ class Observation(Base):
     patient_id: Mapped[str] = mapped_column(
         ForeignKey("patients.patient_id", ondelete="CASCADE"), index=True
     )
-    visit_date: Mapped[date] = mapped_column(Date, index=True)
+    visit_date: Mapped[date | None] = mapped_column(Date, index=True)
+    followup_month: Mapped[float | None] = mapped_column(Float)
     age: Mapped[float | None] = mapped_column(Float)
 
     # Clinical / biomarker layer
@@ -134,6 +135,7 @@ class Observation(Base):
 
     __table_args__ = (
         UniqueConstraint("patient_id", "visit_date", name="uq_patient_visit"),
+        UniqueConstraint("patient_id", "followup_month", name="uq_patient_followup"),
         Index("ix_obs_patient_date", "patient_id", "visit_date"),
     )
 

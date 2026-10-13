@@ -133,7 +133,7 @@ class VisitRecord:
     """Framework-agnostic view of one visit, so training (DataFrame rows) and the
     API (ORM rows) can share the same feature code."""
 
-    visit_date: date
+    visit_date: date | float
     age: float | None = None
     spherical_equivalent: float | None = None
     axial_length: float | None = None
@@ -152,6 +152,10 @@ class VisitRecord:
     def from_any(cls, obj: Any) -> "VisitRecord":
         get = (lambda k: obj.get(k)) if isinstance(obj, dict) else (lambda k: getattr(obj, k, None))
         vd = get("visit_date")
+        if vd is None or (isinstance(vd, float) and math.isnan(vd)):
+            vd = _f(get("followup_month"))
+            if vd is None:
+                raise ValueError("A calendar date or measured follow-up month is required")
         if isinstance(vd, str):
             vd = date.fromisoformat(vd)
         return cls(
@@ -186,6 +190,8 @@ NAN = float("nan")
 
 
 def _months_between(a: date, b: date) -> float:
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return float(b - a)
     return (b - a).days / 30.4375
 
 
@@ -239,7 +245,7 @@ def build_feature_row(
     prev = visits[-2] if len(visits) > 1 else None
     months = [_months_between(baseline.visit_date, v.visit_date) for v in visits]
 
-    treatment = (current.treatment or "none").lower()
+    treatment = current.treatment.lower() if isinstance(current.treatment, str) else None
     row: dict[str, float] = {
         # --- clinical ---
         "age": current.age if current.age is not None else NAN,
@@ -273,9 +279,9 @@ def build_feature_row(
         and baseline.spherical_equivalent is not None else NAN,
         "al_since_baseline": (current.axial_length - baseline.axial_length)
         if current.axial_length is not None and baseline.axial_length is not None else NAN,
-        "treatment_active": 0.0 if treatment in {"none", "single_vision", ""} else 1.0,
-        "treatment_atropine": 1.0 if "atropine" in treatment else 0.0,
-        "treatment_optical": 1.0 if treatment in OPTICAL_TREATMENTS else 0.0,
+        "treatment_active": NAN if treatment is None else (0.0 if treatment in {"none", "single_vision", ""} else 1.0),
+        "treatment_atropine": NAN if treatment is None else float("atropine" in treatment),
+        "treatment_optical": NAN if treatment is None else float(treatment in OPTICAL_TREATMENTS),
         # --- behaviour ---
         "screen_time_hours": current.screen_time_hours
         if current.screen_time_hours is not None else NAN,
@@ -309,7 +315,7 @@ def build_feature_row(
 def _ergonomic_load(v: VisitRecord) -> float:
     """Composite exposure index: closer working distance, longer unbroken sessions
     and poorer posture all increase load. Descriptive only -- not a clinical score."""
-    if v.viewing_distance_cm is None and v.continuous_session_min is None:
+    if any(x is None for x in (v.viewing_distance_cm, v.continuous_session_min, v.posture_score)):
         return NAN
     dist = v.viewing_distance_cm if v.viewing_distance_cm else 33.0
     session = v.continuous_session_min if v.continuous_session_min is not None else 30.0

@@ -45,13 +45,14 @@ def get_observations(db: Session, patient_id: str,
     stmt = select(Observation).where(Observation.patient_id == patient_id)
     if as_of is not None:
         stmt = stmt.where(Observation.visit_date <= as_of)
-    return list(db.scalars(stmt.order_by(Observation.visit_date)))
+    return list(db.scalars(stmt.order_by(Observation.visit_date, Observation.followup_month)))
 
 
 def _observation_dict(obs: Observation) -> dict[str, Any]:
     return {
         "observation_id": obs.observation_id,
-        "visit_date": obs.visit_date.isoformat(),
+        "visit_date": obs.visit_date.isoformat() if obs.visit_date else None,
+        "followup_month": obs.followup_month,
         "age": _clean(obs.age),
         "spherical_equivalent": _clean(obs.spherical_equivalent),
         "axial_length": _clean(obs.axial_length),
@@ -106,6 +107,7 @@ def build_state(db: Session, patient: Patient,
         },
         "current": {
             "visit_date": current["visit_date"],
+            "followup_month": current.get("followup_month"),
             "age": current["age"],
             "spherical_equivalent": current["spherical_equivalent"],
             "axial_length": current["axial_length"],

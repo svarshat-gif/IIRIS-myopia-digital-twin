@@ -32,6 +32,7 @@ def _fresh_db():
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
+    engine.dispose()
     if TEST_DB.exists():
         TEST_DB.unlink()
 

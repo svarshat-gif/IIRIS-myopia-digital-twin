@@ -1,6 +1,6 @@
 """Train the progression models and write the deployable bundle.
 
-    python -m app.ml.train --data data/synthetic_cohort.csv
+    python -m app.ml.train --data data/training_visits.csv
 
 Design decisions that matter for the report:
 
@@ -50,7 +50,7 @@ from sklearn.metrics import (
     roc_auc_score,
     root_mean_squared_error,
 )
-from sklearn.model_selection import GroupShuffleSplit
+from sklearn.model_selection import GroupShuffleSplit, GroupKFold, cross_val_predict
 from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
@@ -67,14 +67,44 @@ from app.ml.features import ALL_FEATURES, FEATURE_SETS
 INTERVAL_COVERAGE = 0.90
 LOWER_Q, UPPER_Q = 0.05, 0.95
 
+
+def verify_training_source(path: Path) -> dict:
+    if "synthetic" in path.name.lower():
+        raise ValueError("Synthetic data cannot produce a deployable model")
+    metadata = path.with_suffix(".provenance.json")
+    if not metadata.exists():
+        raise ValueError("Missing verified provenance. Run scripts/build_training_table.py first")
+    provenance = json.loads(metadata.read_text(encoding="utf-8"))
+    if provenance.get("data_is_synthetic") is not False or not provenance.get("sources"):
+        raise ValueError("Only verified real open data may produce a deployable model")
+    if hashlib.sha256(path.read_bytes()).hexdigest() != provenance["table_sha256"]:
+        raise ValueError("Training table checksum does not match verified provenance")
+    return provenance
+
+
+def bootstrap_metrics(y, prediction, groups, repeats=500) -> dict:
+    """Resample independent patients, retaining all their repeated visits."""
+    groups = np.asarray(groups)
+    keys = np.unique(groups)
+    rng = np.random.default_rng(42)
+    values = {k: [] for k in ("mae", "rmse", "r2")}
+    for _ in range(repeats):
+        take = np.concatenate([np.flatnonzero(groups == k) for k in rng.choice(keys, len(keys), replace=True)])
+        scores = regression_metrics(y[take], prediction[take])
+        for k in values:
+            if np.isfinite(scores[k]):
+                values[k].append(scores[k])
+    return {k: [round(float(v), 4) for v in np.quantile(samples, [.025, .975])]
+            for k, samples in values.items() if samples}
+
 HGB_PARAMS = dict(
-    max_iter=300,
+    max_iter=100,
     learning_rate=0.06,
     max_depth=None,
-    max_leaf_nodes=31,
-    min_samples_leaf=20,
-    l2_regularization=1.0,
-    early_stopping=True,
+    max_leaf_nodes=7,
+    min_samples_leaf=3,
+    l2_regularization=10.0,
+    early_stopping=False,
     validation_fraction=0.15,
     random_state=42,
 )
@@ -85,18 +115,20 @@ def split_by_patient(table: pd.DataFrame, seed: int = 42
     groups = table["patient_key"].to_numpy()
     idx = np.arange(len(table))
 
-    outer = GroupShuffleSplit(n_splits=1, test_size=0.20, random_state=seed)
+    small = table.patient_key.nunique() <= 40
+    outer = GroupShuffleSplit(n_splits=1, test_size=0.10 if small else 0.20, random_state=seed)
     trainval_i, test_i = next(outer.split(idx, groups=groups))
 
-    inner = GroupShuffleSplit(n_splits=1, test_size=0.20, random_state=seed + 1)
+    # At least ten independent calibration patients for a finite 90% band.
+    inner = GroupShuffleSplit(n_splits=1, test_size=10 if small else 0.20, random_state=seed + 1)
     tr_rel, val_rel = next(inner.split(trainval_i, groups=groups[trainval_i]))
 
     train = table.iloc[trainval_i[tr_rel]].reset_index(drop=True)
     val = table.iloc[trainval_i[val_rel]].reset_index(drop=True)
     test = table.iloc[test_i].reset_index(drop=True)
 
-    overlap = set(train.patient_key) & set(test.patient_key)
-    assert not overlap, "patient leakage between train and test"
+    sets = [set(f.patient_key) for f in (train, val, test)]
+    assert all(not sets[i] & sets[j] for i in range(3) for j in range(i)), "patient leakage"
     return train, val, test
 
 
@@ -118,7 +150,7 @@ def regression_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, floa
 
 
 def conformal_delta(lower: np.ndarray, upper: np.ndarray, y: np.ndarray,
-                    coverage: float = INTERVAL_COVERAGE) -> float:
+                    coverage: float = INTERVAL_COVERAGE, groups=None) -> float:
     """Split-conformal correction for a quantile interval (CQR).
 
     The nonconformity score is how far the true value fell OUTSIDE the predicted
@@ -126,12 +158,14 @@ def conformal_delta(lower: np.ndarray, upper: np.ndarray, y: np.ndarray,
     (1-alpha) quantile of these scores gives finite-sample coverage on exchangeable
     data. Computed on validation patients the models never saw.
     """
-    if len(y) < 20:
-        return 0.0
     lo = np.minimum(lower, upper)
     hi = np.maximum(lower, upper)
     scores = np.maximum(lo - y, y - hi)
+    if groups is not None:
+        scores = pd.Series(scores).groupby(np.asarray(groups)).max().to_numpy()
     n = len(scores)
+    if n < 9:
+        raise ValueError("At least nine independent calibration patients required for 90% intervals")
     level = min(1.0, np.ceil((n + 1) * coverage) / n)
     return float(max(0.0, np.quantile(scores, level, method="higher")))
 
@@ -146,7 +180,7 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
             target = f"y_{measure}_{horizon}m"
             Xtr, ytr = _xy(train, features, target)
             Xte, yte = _xy(test, features, target)
-            if len(ytr) < 50 or len(yte) < 10:
+            if len(ytr) < 12 or len(yte) < 2:
                 print(f"  ! skipping {target}: not enough labelled rows "
                       f"(train={len(ytr)}, test={len(yte)})")
                 continue
@@ -159,7 +193,9 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
 
             # Calibrate the band on validation patients (never seen in training).
             Xva, yva = _xy(val, features, target)
-            delta = conformal_delta(lower.predict(Xva), upper.predict(Xva), yva) if len(yva) else 0.0
+            calibration = val.dropna(subset=[target])
+            delta = conformal_delta(lower.predict(Xva), upper.predict(Xva), yva,
+                                    groups=calibration.patient_key)
 
             models[f"{measure}_{horizon}m"] = {
                 "median": median, "lower": lower, "upper": upper,
@@ -169,6 +205,14 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
             lo = np.minimum(lower.predict(Xte), upper.predict(Xte))
             hi = np.maximum(lower.predict(Xte), upper.predict(Xte))
             entry = regression_metrics(yte, pred)
+            entry["bootstrap_95ci"] = bootstrap_metrics(yte, pred, test.dropna(subset=[target]).patient_key)
+            entry["calibration_patients"] = int(calibration.patient_key.nunique())
+            # Out-of-fold development scores do not inspect calibration/test patients.
+            development = train.dropna(subset=[target])
+            folds = GroupKFold(n_splits=min(4, development.patient_key.nunique()))
+            oof = cross_val_predict(HistGradientBoostingRegressor(**HGB_PARAMS), Xtr, ytr,
+                                   cv=folds, groups=development.patient_key)
+            entry["development_grouped_cv"] = regression_metrics(ytr, oof)
             entry["interval_coverage_raw"] = round(
                 float(np.mean((yte >= lo) & (yte <= hi))), 4)
             lo_c, hi_c = lo - delta, hi + delta
@@ -180,11 +224,11 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
 
             # Reference baselines on the identical split.
             entry["baselines"] = {}
-            ridge = make_pipeline(SimpleImputer(strategy="median"), StandardScaler(),
-                                  Ridge(alpha=1.0)).fit(Xtr, ytr)
+            ridge = make_pipeline(SimpleImputer(strategy="median", keep_empty_features=True), StandardScaler(),
+                                  Ridge(alpha=10.0)).fit(Xtr, ytr)
             entry["baselines"]["ridge"] = regression_metrics(yte, ridge.predict(Xte))
             rf = make_pipeline(
-                SimpleImputer(strategy="median"),
+                SimpleImputer(strategy="median", keep_empty_features=True),
                 RandomForestRegressor(n_estimators=200, min_samples_leaf=3,
                                       random_state=42, n_jobs=-1),
             ).fit(Xtr, ytr)
@@ -219,6 +263,8 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
             naive = sub_te[measure].to_numpy(dtype=float)
             mask = ~np.isnan(naive)
             entry["baselines"]["carry_forward"] = regression_metrics(yte[mask], naive[mask])
+            entry["baselines"]["carry_forward"]["bootstrap_95ci"] = bootstrap_metrics(
+                yte[mask], naive[mask], sub_te.patient_key.to_numpy()[mask])
 
             metrics[target] = entry
             others = " ".join(f"{k}={v['mae']}" for k, v in entry["baselines"].items())
@@ -234,7 +280,7 @@ def train_risk_classifier(train: pd.DataFrame, test: pd.DataFrame, features: lis
     target = "y_fast_progression"
     Xtr, ytr = _xy(train, features, target)
     Xte, yte = _xy(test, features, target)
-    if len(np.unique(ytr)) < 2 or len(yte) < 10:
+    if len(np.unique(ytr)) < 2 or len(np.unique(yte)) < 2 or len(yte) < 10:
         print("  ! skipping risk classifier: degenerate labels")
         return None, {}
 
@@ -266,6 +312,10 @@ def run_ablation(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, Any]:
     """
     results: dict[str, Any] = {}
     for set_name, features in FEATURE_SETS.items():
+        extra = [f for f in features if f not in FEATURE_SETS["clinical"]]
+        if extra and not train.reindex(columns=extra).notna().any().any():
+            results[set_name] = {"status": "not_evaluable", "reason": "No measured behaviour/ergonomics in these sources"}
+            continue
         entry: dict[str, Any] = {"n_features": len(features)}
         for measure in ("se", "al"):
             for horizon in HORIZONS:
@@ -311,12 +361,13 @@ def global_importance(model, X: np.ndarray, y: np.ndarray, features: list[str],
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--data", type=Path,
-                    default=Path(__file__).resolve().parents[2] / "data" / "synthetic_cohort.csv")
+                    default=Path(__file__).resolve().parents[2] / "data" / "training_visits.csv")
     ap.add_argument("--out", type=Path, default=settings.model_path)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--skip-ablation", action="store_true")
     args = ap.parse_args()
 
+    provenance = verify_training_source(args.data)
     print(f"Loading visits from {args.data}")
     visits = load_visits(args.data)
     table = build_supervised_table(visits)
@@ -331,6 +382,8 @@ def main() -> None:
 
     print("\nTraining regression models (median + 5th/95th quantile):")
     models, metrics = train_regressors(train, val, test, features)
+    if not models:
+        raise ValueError("No evaluable real-data targets; refusing to write a deployable bundle")
 
     print("\nTraining progression-risk classifier:")
     risk_model, risk_metrics = train_risk_classifier(train, test, features)
@@ -360,13 +413,17 @@ def main() -> None:
                for i, f in enumerate(features)}
 
     fingerprint = hashlib.sha256(
-        f"{args.data}{len(table)}{args.seed}".encode()).hexdigest()[:8]
+        args.data.read_bytes() + str(args.seed).encode()).hexdigest()[:8]
     trained_at = datetime.now(timezone.utc)
     bundle = {
         "model_version": f"mdt-{trained_at:%Y%m%d}-{fingerprint}",
         "trained_at": trained_at.isoformat(),
-        "data_source": str(args.data),
-        "data_is_synthetic": "synthetic" in str(args.data).lower(),
+        "data_source": "; ".join(provenance["source_names"]),
+        "data_is_synthetic": provenance["data_is_synthetic"],
+        "provenance": provenance,
+        "supported_scenario_inputs": [],
+        "training_ranges": {f: [float(train[f].min()), float(train[f].max())]
+                            for f in features if train[f].notna().any()},
         "feature_names": features,
         "feature_sets": FEATURE_SETS,
         "horizons": list(HORIZONS),
@@ -395,7 +452,9 @@ def main() -> None:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(bundle, args.out)
     report = args.out.with_suffix(".metrics.json")
-    report.write_text(json.dumps(bundle["metrics"], indent=2, default=str))
+    report.write_text(json.dumps({**bundle["metrics"], "provenance": provenance,
+                                 "trained_at": bundle["trained_at"], "model_version": bundle["model_version"]},
+                                indent=2, default=str, allow_nan=False), encoding="utf-8")
 
     print(f"\nSaved model bundle -> {args.out}")
     print(f"Saved metrics       -> {report}")

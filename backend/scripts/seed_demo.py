@@ -21,6 +21,7 @@ from app.db.database import Base, SessionLocal, engine, init_db  # noqa: E402
 from app.db.models import Observation, Patient  # noqa: E402
 from app.ml import registry  # noqa: E402
 from app.ml.dataset import load_visits  # noqa: E402
+from app.ml.train import verify_training_source  # noqa: E402
 from app.twin import service as twin_service  # noqa: E402
 
 NULLABLE = [
@@ -39,14 +40,15 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--data", type=Path,
                     default=Path(__file__).resolve().parents[1] / "data" /
-                    "synthetic_cohort.csv")
+                    "training_visits.csv")
     ap.add_argument("--patients", type=int, default=40,
                     help="How many patients to load (0 = all).")
     ap.add_argument("--reset", action="store_true",
                     help="Drop and recreate all tables first.")
-    ap.add_argument("--consent-status", default="synthetic")
-    ap.add_argument("--data-source", default="synthetic")
+    ap.add_argument("--consent-status", default="open_research")
+    ap.add_argument("--data-source", default="Zenodo DIMS 18166476")
     args = ap.parse_args()
+    verify_training_source(args.data)
 
     if args.reset:
         print("Dropping all tables ...")
@@ -89,6 +91,7 @@ def main() -> None:
                 db.add(Observation(
                     patient_id=patient.patient_id,
                     visit_date=row["visit_date"],
+                    followup_month=_v(row, "followup_month"),
                     spherical_equivalent=float(row["spherical_equivalent"]),
                     axial_length=float(row["axial_length"]),
                     treatment=(row.get("treatment")

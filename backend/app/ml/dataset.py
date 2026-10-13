@@ -41,13 +41,32 @@ def load_visits(csv_path: str | Path) -> pd.DataFrame:
     for col in OPTIONAL_COLUMNS:
         if col not in df.columns:
             df[col] = np.nan
-    df["visit_date"] = pd.to_datetime(df["visit_date"]).dt.date
+    dates = pd.to_datetime(df["visit_date"], errors="raise")
+    if (dates.dropna() > pd.Timestamp(date.today())).any():
+        raise ValueError("visit_date cannot be in the future")
+    df["visit_date"] = pd.Series([d.date() if pd.notna(d) else None for d in dates], dtype=object)
+    if "followup_month" not in df:
+        df["followup_month"] = np.nan
+    if (df.visit_date.isna() & df.followup_month.isna()).any():
+        raise ValueError("Every visit needs a real date or source-recorded followup_month")
+    if df.patient_key.isna().any():
+        raise ValueError("Missing patient_key")
+    for col, low, high in [("spherical_equivalent", -30, 15), ("axial_length", 15, 35),
+                           ("age", 0, 120), ("visual_acuity", -.3, 2), ("posture_score", 0, 1),
+                           ("followup_month", 0, 600)]:
+        df[col] = pd.to_numeric(df[col], errors="raise")
+        if (~df[col].dropna().between(low, high)).any():
+            raise ValueError(f"{col} outside [{low}, {high}]")
+    if df.duplicated(["patient_key", "visit_date", "followup_month"]).any():
+        raise ValueError("Duplicate patient visit")
     df = df.dropna(subset=["spherical_equivalent", "axial_length"])
-    df = df.sort_values(["patient_key", "visit_date"]).reset_index(drop=True)
+    df = df.sort_values(["patient_key", "visit_date", "followup_month"]).reset_index(drop=True)
     return df
 
 
 def _months(a: date, b: date) -> float:
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return float(b - a)
     return (b - a).days / 30.4375
 
 
@@ -86,7 +105,8 @@ def build_supervised_table(df: pd.DataFrame) -> pd.DataFrame:
             }
 
             future = visits[i + 1:]
-            offsets = [_months(current["visit_date"], v["visit_date"]) for v in future]
+            offsets = [_months(current["visit_date"] or current["followup_month"],
+                               v["visit_date"] or v["followup_month"]) for v in future]
             for h in HORIZONS:
                 j = _nearest_future(offsets, float(h))
                 if j is None:

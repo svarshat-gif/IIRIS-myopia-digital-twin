@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 Horizon = Literal["6m", "12m"]
 ExplainTarget = Literal["se_6m", "se_12m", "al_6m", "al_12m"]
@@ -63,7 +63,8 @@ class ObservationIn(BaseModel):
         "continuous_session_min": 60,
     }})
 
-    visit_date: date
+    visit_date: date | None = None
+    followup_month: float | None = Field(None, ge=0, le=600, description="Source-recorded months since baseline, when dates are unavailable")
     age: float | None = Field(None, ge=0, le=30)
     # Clinical
     spherical_equivalent: float = Field(..., ge=-30, le=15, description="Dioptres.")
@@ -86,9 +87,15 @@ class ObservationIn(BaseModel):
     @classmethod
     def not_absurdly_future(cls, v: date) -> date:
         from datetime import timedelta
-        if v > date.today() + timedelta(days=1):
+        if v is not None and v > date.today():
             raise ValueError("visit_date cannot be in the future.")
         return v
+
+    @model_validator(mode="after")
+    def has_time(self):
+        if self.visit_date is None and self.followup_month is None:
+            raise ValueError("Provide visit_date or source-recorded followup_month")
+        return self
 
 
 class ObservationOut(ObservationIn):
