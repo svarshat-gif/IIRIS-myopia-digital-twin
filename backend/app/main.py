@@ -16,10 +16,12 @@ from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.core.config import settings
 from app.core.security import require_api_key
+from app.core.access import cohort_access
+from app.core.middleware import ControlsMiddleware, JsonFormatter
 from app.db.database import init_db
 from app.ml import registry
 from app.routers import (
-    agent, attachments, auth, evidence, me, meta, patients, simulate, simulator, twin,
+    agent, attachments, auth, evidence, me, meta, patients, simulate, simulator, twin, admin, fhir,
 )
 
 logging.basicConfig(
@@ -27,6 +29,8 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)-7s %(name)s | %(message)s",
 )
 log = logging.getLogger("iiris")
+for handler in logging.getLogger().handlers:
+    handler.setFormatter(JsonFormatter())
 
 API_PREFIX = "/api/v1"
 
@@ -79,12 +83,16 @@ async def lifespan(app: FastAPI):
     log.info("Database ready (%s)", settings.database_url.split("://")[0])
     if registry.is_ready():
         bundle = registry.load_bundle()
+        if settings.environment == "production" and bundle.get("data_is_synthetic") is not False:
+            raise RuntimeError("Production requires a verified real-data model")
         log.info("Model loaded: %s (synthetic=%s)",
                  bundle["model_version"], bundle["data_is_synthetic"])
         if bundle["data_is_synthetic"]:
             log.warning("Model is trained on SYNTHETIC data -- outputs have no "
                         "clinical meaning.")
     else:
+        if settings.environment == "production":
+            raise RuntimeError("Model artifact missing. Run make model before building the release image")
         log.warning("No model bundle found. Prediction, simulation and explanation "
                     "endpoints will return 503 until you run: python -m app.ml.train")
     if settings.api_key:
@@ -112,6 +120,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(ControlsMiddleware)
 
 _guard = [Depends(require_api_key)]
 app.include_router(meta.router, prefix=API_PREFIX, dependencies=_guard)
@@ -119,11 +128,30 @@ app.include_router(auth.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(me.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(attachments.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(simulator.router, prefix=API_PREFIX, dependencies=_guard)
-app.include_router(patients.router, prefix=API_PREFIX, dependencies=_guard)
-app.include_router(twin.router, prefix=API_PREFIX, dependencies=_guard)
-app.include_router(simulate.router, prefix=API_PREFIX, dependencies=_guard)
+_cohort_guard = [*_guard, Depends(cohort_access)]
+app.include_router(patients.router, prefix=API_PREFIX, dependencies=_cohort_guard)
+app.include_router(twin.router, prefix=API_PREFIX, dependencies=_cohort_guard)
+app.include_router(simulate.router, prefix=API_PREFIX, dependencies=_cohort_guard)
 app.include_router(agent.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(evidence.router, prefix=API_PREFIX, dependencies=_guard)
+app.include_router(admin.router, prefix=API_PREFIX, dependencies=_guard)
+app.include_router(fhir.router, prefix=API_PREFIX, dependencies=_guard)
+app.include_router(fhir.router, dependencies=_guard)
+
+
+@app.get("/readyz", tags=["meta"])
+def readyz():
+    from sqlalchemy import text
+    from app.db.database import engine
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        if not registry.is_ready():
+            raise RuntimeError("Model unavailable")
+        registry.load_bundle()
+    except Exception:
+        return JSONResponse({"status": "not_ready"}, status_code=503)
+    return {"status": "ready", "model_version": registry.model_version()}
 
 
 @app.get("/", include_in_schema=False)

@@ -8,8 +8,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.access import cohort_access, assigned_ids
 from app.db.database import get_db
-from app.db.models import Observation, Patient
+from app.db.models import Observation, Patient, User, ClinicianAssignment
 from app.schemas.models import (
     BulkImportIn,
     ObservationAccepted,
@@ -26,7 +27,7 @@ router = APIRouter(prefix="/patients", tags=["patients"])
 
 @router.post("", response_model=PatientOut, status_code=status.HTTP_201_CREATED,
              summary="Create a de-identified patient record")
-def create_patient(payload: PatientCreate, db: Session = Depends(get_db)) -> Patient:
+def create_patient(payload: PatientCreate, db: Session = Depends(get_db), user: User = Depends(cohort_access)) -> Patient:
     if payload.external_key:
         existing = db.scalars(
             select(Patient).where(Patient.external_key == payload.external_key)).first()
@@ -36,6 +37,9 @@ def create_patient(payload: PatientCreate, db: Session = Depends(get_db)) -> Pat
                                 f"(patient_id {existing.patient_id}).")
     patient = Patient(**payload.model_dump())
     db.add(patient)
+    db.flush()
+    if user.role == "clinician":
+        db.add(ClinicianAssignment(clinician_id=user.user_id, patient_id=patient.patient_id))
     db.commit()
     db.refresh(patient)
     return patient
@@ -43,13 +47,15 @@ def create_patient(payload: PatientCreate, db: Session = Depends(get_db)) -> Pat
 
 @router.get("", response_model=list[PatientSummary], summary="List patients")
 def list_patients(db: Session = Depends(get_db),
+                  user: User = Depends(cohort_access),
                   limit: int = Query(100, ge=1, le=1000),
                   offset: int = Query(0, ge=0)) -> list[dict[str, Any]]:
     # Personal records (those owned by an account) are deliberately excluded here.
     # They are reachable only through /me, by their owner.
-    patients = db.scalars(
-        select(Patient).where(Patient.owner_user_id.is_(None))
-        .offset(offset).limit(limit)).all()
+    stmt = select(Patient)
+    if user.role == "clinician":
+        stmt = stmt.where(Patient.patient_id.in_(assigned_ids(db, user)))
+    patients = db.scalars(stmt.order_by(Patient.created_at, Patient.patient_id).offset(offset).limit(limit)).all()
     out: list[dict[str, Any]] = []
     for p in patients:
         obs = twin_service.get_observations(db, p.patient_id)
@@ -113,7 +119,8 @@ def add_observation(patient_id: str, payload: ObservationIn,
 
     clash = db.scalars(
         select(Observation).where(Observation.patient_id == patient_id,
-                                  Observation.visit_date == payload.visit_date)).first()
+                                  Observation.visit_date == payload.visit_date,
+                                  Observation.followup_month == payload.followup_month)).first()
     if clash:
         raise HTTPException(
             status.HTTP_409_CONFLICT,

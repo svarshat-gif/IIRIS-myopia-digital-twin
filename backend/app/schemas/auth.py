@@ -14,7 +14,7 @@ class SignupIn(BaseModel):
     }})
 
     email: EmailStr
-    password: str = Field(..., min_length=8, max_length=128)
+    password: str = Field(..., min_length=12, max_length=128)
     full_name: str = Field(..., min_length=1, max_length=120)
     # Optional profile details, used to start the person's eye record.
     age: float | None = Field(None, ge=0, le=120)
@@ -41,6 +41,7 @@ class UserOut(BaseModel):
     user_id: str
     email: str
     full_name: str
+    role: Literal["patient", "clinician", "admin"] = "patient"
     created_at: datetime | None = None
     last_login_at: datetime | None = None
     patient_id: str | None = None
@@ -59,7 +60,7 @@ class ProfileUpdate(BaseModel):
 
 class PasswordChange(BaseModel):
     current_password: str
-    new_password: str = Field(..., min_length=8, max_length=128)
+    new_password: str = Field(..., min_length=12, max_length=128)
 
 
 class AppointmentIn(BaseModel):

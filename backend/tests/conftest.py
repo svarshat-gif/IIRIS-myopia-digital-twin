@@ -15,6 +15,7 @@ TEST_DB = ROOT / "artifacts" / "test_myopia_twin.db"
 os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DB}"
 os.environ["EVIDENCE_OFFLINE"] = "true"   # tests must never depend on the network
 os.environ["LLM_PROVIDER"] = "none"
+os.environ["RATE_LIMIT_ENABLED"] = "false"
 
 from fastapi.testclient import TestClient  # noqa: E402
 
@@ -38,13 +39,44 @@ def _fresh_db():
 
 
 @pytest.fixture(scope="session")
-def client():
+def http_client():
     with TestClient(app) as c:
         yield c
 
 
 @pytest.fixture(scope="session")
-def patient(client):
+def client(http_client):
+    return http_client
+
+
+@pytest.fixture(scope="session")
+def admin_headers():
+    from app.db.database import SessionLocal
+    from app.db.models import User
+    from app.core.auth import create_access_token, hash_password
+    with SessionLocal() as db:
+        user = User(email="admin-tests@example.org", full_name="Test Admin", role="admin",
+                    password_hash=hash_password("test-password-2026"))
+        db.add(user)
+        db.commit()
+        token, _ = create_access_token(user.user_id, user.email)
+    return {"Authorization": f"Bearer {token}"}
+
+
+class AuthorizedClient:
+    def __init__(self, client, headers):
+        self.client, self.headers = client, headers
+
+    def __getattr__(self, name):
+        def call(*args, **kwargs):
+            kwargs["headers"] = {**self.headers, **kwargs.get("headers", {})}
+            return getattr(self.client, name)(*args, **kwargs)
+        return call
+
+
+@pytest.fixture(scope="session")
+def patient(http_client, admin_headers):
+    client = AuthorizedClient(http_client, admin_headers)
     """A patient with three visits, so trends and versions exist."""
     r = client.post(f"{API}/patients", json={
         "external_key": "TEST0001", "age_at_start": 9.0, "sex": "female",

@@ -9,6 +9,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.access import admin
 from app.db.database import get_db
 from app.db.models import Observation, Patient, TwinVersion
 from app.explain import explainer
@@ -32,6 +33,7 @@ def health() -> dict[str, Any]:
         "model_loaded": loaded,
         "model_version": registry.model_version(),
         "data_is_synthetic": synthetic,
+        "data_source": registry.load_bundle().get("data_source") if loaded else None,
         "llm_provider": settings.llm_provider,
         "evidence_offline": settings.evidence_offline,
         "database": settings.database_url.split("://")[0],
@@ -49,6 +51,8 @@ def model_card() -> dict[str, Any]:
         "trained_at": bundle["trained_at"],
         "data_source": bundle["data_source"],
         "data_is_synthetic": bundle["data_is_synthetic"],
+        "provenance": bundle.get("provenance", {}),
+        "supported_scenario_inputs": bundle.get("supported_scenario_inputs", []),
         "algorithm": "HistGradientBoosting (median) + quantile models, "
                      "conformally calibrated intervals",
         "horizons_months": bundle["horizons"],
@@ -86,7 +90,7 @@ def modifiable_inputs() -> dict[str, Any]:
 
 
 @router.get("/meta/stats", summary="What is loaded in this deployment")
-def stats(db: Session = Depends(get_db)) -> dict[str, Any]:
+def stats(db: Session = Depends(get_db), user=Depends(admin)) -> dict[str, Any]:
     return {
         "patients": db.scalar(select(func.count()).select_from(Patient)) or 0,
         "observations": db.scalar(select(func.count()).select_from(Observation)) or 0,

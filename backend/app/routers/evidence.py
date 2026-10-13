@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.access import admin
 from app.db.database import get_db
 from app.db.models import Evidence
 from app.evidence import retriever
@@ -25,7 +26,7 @@ def search(q: str = Query(..., min_length=3, max_length=300),
 
 @router.get("/cached", summary="Citations already retrieved and stored")
 def cached(limit: int = Query(50, ge=1, le=500),
-           db: Session = Depends(get_db)) -> dict[str, Any]:
+           db: Session = Depends(get_db), user=Depends(admin)) -> dict[str, Any]:
     rows = db.scalars(
         select(Evidence).order_by(Evidence.retrieved_at.desc()).limit(limit)).all()
     return {"evidence": [

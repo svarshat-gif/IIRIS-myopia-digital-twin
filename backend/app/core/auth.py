@@ -62,8 +62,8 @@ def verify_password(password: str, stored: str) -> bool:
 def password_problems(password: str) -> list[str]:
     """Readable rules. Kept deliberately modest so the demo is usable."""
     issues = []
-    if len(password) < 8:
-        issues.append("at least 8 characters")
+    if len(password) < 12:
+        issues.append("at least 12 characters")
     if password.isdigit():
         issues.append("not only numbers")
     if password.lower() in {"password", "12345678", "iris1234", "qwertyui"}:
@@ -124,6 +124,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     user = db.get(User, payload.get("sub"))
     if user is None or not user.is_active:
         raise CREDENTIALS_ERROR
+    request.state.actor_id = user.user_id
     return user
 
 

@@ -34,6 +34,26 @@ def utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
+class ClinicianAssignment(Base):
+    __tablename__ = "clinician_assignments"
+    clinician_id: Mapped[str] = mapped_column(ForeignKey("users.user_id", ondelete="CASCADE"), primary_key=True)
+    patient_id: Mapped[str] = mapped_column(ForeignKey("patients.patient_id", ondelete="CASCADE"), primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class AccessAudit(Base):
+    __tablename__ = "access_audit"
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, default=_uuid)
+    actor_id: Mapped[str | None] = mapped_column(String(64), index=True)
+    patient_id: Mapped[str | None] = mapped_column(String(64), index=True)
+    action: Mapped[str] = mapped_column(String(16))
+    resource: Mapped[str] = mapped_column(String(255))
+    status_code: Mapped[int] = mapped_column(Integer)
+    ip_hash: Mapped[str] = mapped_column(String(64))
+    request_id: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
 class User(Base):
     """An account. One person signing in to see their own eye records.
 
@@ -51,6 +71,9 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255))
     full_name: Mapped[str] = mapped_column(String(120))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    role: Mapped[str] = mapped_column(String(16), default="patient", index=True)
+    failed_logins: Mapped[int] = mapped_column(Integer, default=0)
+    locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 

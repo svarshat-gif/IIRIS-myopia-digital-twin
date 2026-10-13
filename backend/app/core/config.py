@@ -8,6 +8,9 @@ from __future__ import annotations
 import os
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlparse
+from typing import Literal
+from pydantic import model_validator
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -46,7 +49,16 @@ class Settings(BaseSettings):
     # key is generated at startup, so every restart signs users out -- a safe
     # default with an obvious symptom.
     jwt_secret: str = ""
-    jwt_expire_minutes: int = 60 * 24 * 14   # two weeks
+    jwt_expire_minutes: int = 30
+    auth_gate: Literal["jwt", "api_key"] = "jwt"
+    rate_limit_enabled: bool = True
+    max_request_bytes: int = 11 * 1024 * 1024
+    storage_backend: Literal["local", "s3"] = "local"
+    s3_endpoint_url: str = ""
+    s3_bucket: str = ""
+    s3_access_key_id: str = ""
+    s3_secret_access_key: str = ""
+    s3_region: str = "auto"
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173"
 
     # --- Evidence retrieval -------------------------------------------------
@@ -60,10 +72,9 @@ class Settings(BaseSettings):
     # --- Agent LLM ----------------------------------------------------------
     # The agent is fully functional with NO LLM (deterministic tool router).
     # An LLM only rephrases tool output into prose; it never invents values.
-    llm_provider: str = "none"        # none | ollama | openai_compatible
+    llm_provider: Literal["none", "ollama"] = "none"
     llm_base_url: str = "http://localhost:11434"
     llm_model: str = "llama3.2:3b"
-    llm_api_key: str = ""
     llm_timeout_seconds: float = 60.0
 
     # --- Clinical safety ----------------------------------------------------
@@ -71,6 +82,32 @@ class Settings(BaseSettings):
         "Model estimate for clinical decision support only. Not a diagnosis, "
         "not a treatment recommendation, and not evidence of a causal effect."
     )
+
+    @model_validator(mode="after")
+    def validate_runtime(self):
+        if self.llm_provider == "ollama":
+            url = urlparse(self.llm_base_url)
+            if url.hostname not in {"localhost", "127.0.0.1", "::1"} or url.scheme not in {"http", "https"}:
+                raise ValueError("Ollama must use a loopback endpoint")
+        if not 1 <= self.jwt_expire_minutes <= 60:
+            raise ValueError("JWT_EXPIRE_MINUTES must be between 1 and 60")
+        if self.environment == "production":
+            failures = []
+            if len(self.jwt_secret) < 32:
+                failures.append("JWT_SECRET must have at least 32 characters")
+            if self.auth_gate == "api_key" and len(self.api_key) < 32:
+                failures.append("API_KEY gate requires at least 32 characters")
+            if not self.database_url.startswith(("postgresql+psycopg://", "postgresql://")):
+                failures.append("DATABASE_URL must use Postgres")
+            if not self.cors_origin_list or any(urlparse(o).scheme != "https" or '*' in o or
+                not urlparse(o).hostname or urlparse(o).path not in {"", "/"} for o in self.cors_origin_list):
+                failures.append("CORS_ORIGINS must be explicit HTTPS origins")
+            if self.storage_backend != "s3" or not all((self.s3_endpoint_url, self.s3_bucket,
+                                                          self.s3_access_key_id, self.s3_secret_access_key)):
+                failures.append("Production uploads require configured S3-compatible storage")
+            if failures:
+                raise ValueError("; ".join(failures))
+        return self
 
     @property
     def cors_origin_list(self) -> list[str]:

@@ -166,6 +166,7 @@ class BulkImportIn(BaseModel):
 
 
 class HealthOut(BaseModel):
+    data_source: str | None = None
     status: str
     api_version: str
     environment: str

@@ -1,7 +1,7 @@
 """Sign up, sign in, profile."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -47,6 +47,7 @@ def user_payload(db: Session, user: User) -> dict[str, Any]:
         "user_id": user.user_id,
         "email": user.email,
         "full_name": user.full_name,
+        "role": user.role,
         "created_at": user.created_at,
         "last_login_at": user.last_login_at,
         "patient_id": patient.patient_id if patient else None,
@@ -100,14 +101,24 @@ def signup(payload: SignupIn, db: Session = Depends(get_db)) -> dict[str, Any]:
 def login(payload: LoginIn, db: Session = Depends(get_db)) -> dict[str, Any]:
     user = db.scalars(
         select(User).where(User.email == payload.email.lower().strip())).first()
+    now = datetime.now(timezone.utc)
+    if user and user.locked_until and user.locked_until.replace(tzinfo=timezone.utc) > now:
+        raise HTTPException(429, "Sign-in temporarily unavailable; try again later", headers={"Retry-After": "900"})
     # Same message either way: never reveal whether an email is registered.
     if user is None or not verify_password(payload.password, user.password_hash):
+        if user:
+            user.failed_logins += 1
+            if user.failed_logins >= 5:
+                user.locked_until = now + timedelta(minutes=15)
+            db.commit()
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
                             "That email and password do not match.")
     if not user.is_active:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "This account is disabled.")
 
     user.last_login_at = datetime.now(timezone.utc)
+    user.failed_logins = 0
+    user.locked_until = None
     db.commit()
     token, expires_in = create_access_token(user.user_id, user.email)
     return {"access_token": token, "expires_in": expires_in,

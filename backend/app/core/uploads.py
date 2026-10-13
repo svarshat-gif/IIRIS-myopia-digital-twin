@@ -17,6 +17,7 @@ import uuid
 from pathlib import Path
 
 from app.core.config import settings
+from app.core import storage
 
 MAX_BYTES = 10 * 1024 * 1024  # 10 MB
 
@@ -57,16 +58,12 @@ def save(user_id: str, data: bytes, extension: str) -> tuple[str, Path]:
     """Write the file under a generated name. The original filename is stored as
     metadata only -- it never touches the filesystem path."""
     attachment_id = uuid.uuid4().hex
-    path = user_dir(user_id) / f"{attachment_id}{extension}"
-    path.write_bytes(data)
+    path = storage.put(f"{user_id}/{attachment_id}{extension}", data)
     return attachment_id, path
 
 
 def delete(path_str: str) -> None:
-    try:
-        Path(path_str).unlink(missing_ok=True)
-    except OSError:
-        pass  # a missing file must not block deleting the database row
+    storage.remove(path_str)
 
 
 def human_size(n: int) -> str:

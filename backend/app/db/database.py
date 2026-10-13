@@ -9,7 +9,8 @@ from app.core.config import settings
 
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
 
-engine = create_engine(settings.database_url, connect_args=connect_args, future=True)
+db_url = settings.database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+engine = create_engine(db_url, connect_args=connect_args, future=True, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False, future=True)
 
 
@@ -28,4 +29,10 @@ def get_db() -> Iterator[Session]:
 def init_db() -> None:
     from app.db import models  # noqa: F401  (register mappers)
 
-    Base.metadata.create_all(bind=engine)
+    if settings.environment != "production":
+        Base.metadata.create_all(bind=engine)
+    else:
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            if conn.execute(text("select version_num from alembic_version")).scalar() != "0001":
+                raise RuntimeError("Database migration required: alembic upgrade head")

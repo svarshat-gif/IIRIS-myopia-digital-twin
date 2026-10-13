@@ -1,22 +1,6 @@
-# Install with:  pip install -r requirements-optional.txt
-# Everything here is OPTIONAL. The app detects each one at runtime and falls
-# back to a working built-in implementation when it is missing.
-
-# Local (exact) SHAP values instead of the built-in ablation attribution.
+# Optional local libraries only. The deterministic runtime needs none of these.
 shap==0.46.0
-
-# Extra gradient-boosting baselines for the model comparison table.
 xgboost==2.1.3
 lightgbm==4.5.0
-
-# Graph-based agent runtime. The agent already runs as a deterministic graph
-# without it; this swaps in LangGraph's executor.
 langgraph==0.2.60
 langchain-core==0.3.28
-
-# PostgreSQL driver (set DATABASE_URL=postgresql+psycopg://...)
-psycopg[binary]==3.2.3
-
-# Vector store for the RAG corpus (semantic instead of keyword retrieval).
-faiss-cpu==1.9.0.post1
-sentence-transformers==3.3.1

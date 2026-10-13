@@ -10,8 +10,10 @@ from sqlalchemy.orm import Session
 from app.agents import graph, llm
 from app.agents.tools import tool_schemas
 from app.core.config import settings
+from app.core.auth import get_current_user
+from app.core.access import check_patient, admin
 from app.db.database import get_db
-from app.db.models import AgentRun
+from app.db.models import AgentRun, User
 from app.schemas.models import AgentQueryIn
 
 router = APIRouter(tags=["agent"])
@@ -45,12 +47,17 @@ def agent_status() -> dict[str, Any]:
 
 @router.post("/patients/{patient_id}/query", summary="Ask the agent about one patient")
 def query_patient(patient_id: str, payload: AgentQueryIn,
+                  user: User = Depends(get_current_user),
                   db: Session = Depends(get_db)) -> dict[str, Any]:
+    check_patient(db, user, patient_id)
     return _run(db, payload.question, patient_id)
 
 
 @router.post("/agent/query", summary="Ask the agent (patient optional)")
-def query(payload: AgentQueryIn, db: Session = Depends(get_db)) -> dict[str, Any]:
+def query(payload: AgentQueryIn, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> dict[str, Any]:
+    if not payload.patient_id:
+        raise HTTPException(422, "Choose a patient; cohort-wide agent access is disabled")
+    check_patient(db, user, payload.patient_id, own_allowed=True)
     return _run(db, payload.question, payload.patient_id)
 
 
@@ -77,10 +84,14 @@ def _run(db: Session, question: str, patient_id: str | None) -> dict[str, Any]:
 
 @router.get("/agent/runs", summary="Audit trail of previous agent answers")
 def list_runs(db: Session = Depends(get_db),
+              user: User = Depends(get_current_user),
               patient_id: str | None = None,
               limit: int = Query(25, ge=1, le=200)) -> dict[str, Any]:
     stmt = select(AgentRun).order_by(AgentRun.created_at.desc()).limit(limit)
+    if not patient_id and user.role != "admin":
+        raise HTTPException(403, "Select an authorized patient")
     if patient_id:
+        check_patient(db, user, patient_id, own_allowed=True)
         stmt = stmt.where(AgentRun.patient_id == patient_id)
     rows = db.scalars(stmt).all()
     return {"runs": [

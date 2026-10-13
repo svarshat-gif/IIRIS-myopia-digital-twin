@@ -3,18 +3,21 @@ from __future__ import annotations
 
 from datetime import date
 from pathlib import Path
+import re
+from urllib.parse import quote
 from typing import Any
 
 from fastapi import (
     APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status,
 )
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.auth import get_current_user
 from app.core.uploads import ALLOWED_LABEL, MAX_BYTES, human_size, save, sniff
 from app.core import uploads
+from app.core import storage
 from app.db.database import get_db
 from app.db.models import Attachment, Observation, User
 from app.routers.auth import own_patient
@@ -64,7 +67,7 @@ async def upload(
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY,
                             f"kind must be one of {sorted(KINDS)}.")
 
-    data = await file.read()
+    data = await file.read(MAX_BYTES + 1)
     if not data:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY,
                             "That file is empty.")
@@ -105,7 +108,7 @@ async def upload(
         user_id=user.user_id,
         patient_id=patient.patient_id if patient else None,
         observation_id=observation_id or None,
-        filename=(file.filename or f"upload{extension}")[:255],
+        filename=re.sub(r"[\x00-\x1f\x7f]", "", (file.filename or f"upload{extension}").replace("\\", "/").split("/")[-1])[:255] or f"upload{extension}",
         content_type=content_type,
         kind=kind,
         size_bytes=len(data),
@@ -125,7 +128,15 @@ def get_file(attachment_id: str, user: User = Depends(get_current_user),
     row = db.get(Attachment, attachment_id)
     if row is None or row.user_id != user.user_id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "File not found.")
-    path = Path(row.stored_path)
+    if row.stored_path.startswith("s3://"):
+        def chunks():
+            with storage.read(row.stored_path) as stream:
+                while chunk := stream.read(65536):
+                    yield chunk
+        return StreamingResponse(chunks(), media_type=row.content_type, headers={
+            "Content-Disposition": "attachment; filename*=UTF-8''" + quote(row.filename),
+            "Content-Security-Policy": "default-src 'none'; sandbox"})
+    path = storage.local_path(row.stored_path)
     if not path.exists():
         raise HTTPException(status.HTTP_410_GONE,
                             "That file is no longer on the server.")
@@ -161,6 +172,11 @@ def update_attachment(attachment_id: str, note: str | None = Form(None),
                                 f"kind must be one of {sorted(KINDS)}.")
         row.kind = kind
     if observation_id is not None:
+        if observation_id:
+            patient = own_patient(db, user)
+            obs = db.get(Observation, observation_id)
+            if not obs or not patient or obs.patient_id != patient.patient_id:
+                raise HTTPException(404, "That eye test result was not found")
         row.observation_id = observation_id or None
     db.commit()
     db.refresh(row)
