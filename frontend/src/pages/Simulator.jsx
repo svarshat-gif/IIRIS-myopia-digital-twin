@@ -2,9 +2,9 @@
  * The simulator.
  *
  * Two modes:
- *   "mine"  — projects the signed-in user's own record forward, with an optional
+ *   "mine"  â€” projects the signed-in user's own record forward, with an optional
  *             sustained habit change.
- *   "quick" — projects from values typed in by hand, for people with no record
+ *   "quick" â€” projects from values typed in by hand, for people with no record
  *             (and for the public /try page).
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -22,7 +22,7 @@ const PRESETS = [
     blurb: 'The single change with the most consistent support in the literature.' },
   { label: 'Less screen, further away',
     changes: { screen_time_hours: 2, viewing_distance_cm: 40 },
-    blurb: 'Cut screen time and hold it at arm’s length.' },
+    blurb: 'Cut screen time and hold it at armâ€™s length.' },
   { label: 'Break every 20 minutes',
     changes: { continuous_session_min: 20, posture_score: 0.9 },
     blurb: 'Shorter unbroken sessions and a better set-up.' },
@@ -34,7 +34,7 @@ const PRESETS = [
 
 const CONFIDENCE_COPY = {
   modelled: 'Directly modelled from your data.',
-  projected: 'Built on the year before it — treat as a direction, not a number.',
+  projected: 'Built on the year before it â€” treat as a direction, not a number.',
   indicative: 'Far out. Shows the shape of the trend only.',
 }
 
@@ -55,9 +55,7 @@ export default function Simulator({ publicMode = false }) {
         <p className="script text-2xl text-ink-muted">what could happen next</p>
         <h1 className="text-3xl font-semibold">Simulator</h1>
         <p className="lede mt-2 max-w-2xl text-[15px]">
-          Iiris rolls your eyes forward a year at a time and shows the range it expects.
-          Change a habit and it runs the whole thing again, so you can see the two
-          futures side by side.
+          Iiris produces exploratory model estimates with uncertainty. This training cohort has no measured habits or ergonomics, so it cannot estimate the effect of changing them.
         </p>
       </div>
 
@@ -95,7 +93,7 @@ function MyProjection() {
 
   useEffect(() => {
     Promise.all([api.modifiableInputs(), api.twin()])
-      .then(([i, t]) => { setInputs(i.inputs.filter((x) => !x.choices)); setTwin(t) })
+      .then(([i, t]) => { setInputs(i.inputs.filter((x) => !x.choices && x.available)); setTwin(t) })
       .catch(setError)
   }, [])
 
@@ -137,13 +135,13 @@ function MyProjection() {
         }
       >
         <p className="mb-4 text-[13px] text-ink-muted">
-          Pick a change to try. Each one assumes you keep it up for the whole period.
+          Exposure what-ifs are unavailable for this model: the training cohort has no measured behaviour or ergonomics. Baseline projections remain exploratory.
         </p>
         <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
           {PRESETS.map((p) => {
             const active = JSON.stringify(changes) === JSON.stringify(p.changes)
             return (
-              <button key={p.label} disabled={busy}
+              <button key={p.label} disabled={busy || !inputs?.length}
                       onClick={() => { setChanges(p.changes); run(undefined, p.changes) }}
                       className={`rounded-xl border p-3.5 text-left transition-all
                                   duration-200 ${active
@@ -178,7 +176,7 @@ function MyProjection() {
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <button className="btn-primary btn-sm" disabled={busy} onClick={() => run()}>
-              {busy ? 'Working…' : 'Run this scenario'}
+              {busy ? 'Workingâ€¦' : 'Run this scenario'}
             </button>
             <button className="btn btn-ghost btn-sm"
                     onClick={() => { setChanges({}); run(undefined, {}) }}>
@@ -206,7 +204,7 @@ function MyProjection() {
 /* ================================================================= by hand */
 
 const QUICK_BLANK = {
-  age: 10, spherical_equivalent: -1.5, axial_length: null, parental_myopia: null,
+  age: null, spherical_equivalent: null, axial_length: null, parental_myopia: null,
   sex: '', screen_time_hours: null, near_work_min: null, outdoor_min: null,
   sleep_hours: null, viewing_distance_cm: null, continuous_session_min: null,
   posture_score: null,
@@ -215,7 +213,7 @@ const QUICK_BLANK = {
 function QuickProjection({ publicMode }) {
   const [form, setForm] = useState(QUICK_BLANK)
   const [years, setYears] = useState(5)
-  const [compare, setCompare] = useState(true)
+  const [compare, setCompare] = useState(false)
   const [result, setResult] = useState(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
@@ -259,7 +257,7 @@ function QuickProjection({ publicMode }) {
   return (
     <div className="space-y-4">
       <Card title="Tell Iiris what you know"
-            subtitle="Only age and prescription are needed. Everything else sharpens the estimate.">
+            subtitle="Enter measured values only. Missing values remain unknown; this small research model has no demonstrated clinical utility.">
         <form onSubmit={run} className="space-y-6">
           <section>
             <p className="eyebrow mb-3">The essentials</p>
@@ -270,10 +268,10 @@ function QuickProjection({ publicMode }) {
                            step="0.25" required
                            value={form.spherical_equivalent}
                            onChange={set('spherical_equivalent')}
-                           hint="Negative for short-sighted, e.g. −1.50" />
+                           hint="Negative for short-sighted, e.g. âˆ’1.50" />
               <NumberField name="axial_length" label="Eye length" unit="mm" step="0.01"
                            value={form.axial_length} onChange={set('axial_length')}
-                           hint="Optional — from a biometry scan. Usually 20–30 mm." />
+                           hint="Optional â€” from a biometry scan. Usually 20â€“30 mm." />
               <Field label="Short-sighted parents"
                      hint="One of the strongest predictors there is.">
                 <select className="input" value={form.parental_myopia ?? ''}
@@ -320,7 +318,7 @@ function QuickProjection({ publicMode }) {
               </select>
             </Field>
             <label className="mt-5 flex cursor-pointer items-center gap-2.5 text-[13px]">
-              <input type="checkbox" checked={compare}
+              <input type="checkbox" disabled checked={compare}
                      onChange={(e) => setCompare(e.target.checked)}
                      className="h-4 w-4 rounded border-line-strong accent-ink" />
               Also show a healthier-habits comparison
@@ -336,7 +334,7 @@ function QuickProjection({ publicMode }) {
           )}
 
           <button className="btn-primary btn-lg" disabled={busy || !ready || invalid}>
-            {busy ? 'Working…' : 'Show me the projection'}
+            {busy ? 'Workingâ€¦' : 'Show me the projection'}
           </button>
         </form>
       </Card>
@@ -354,7 +352,7 @@ function QuickProjection({ publicMode }) {
             <Card title="Keep this, and watch it change">
               <p className="lede text-sm">
                 With an account, Iiris keeps every result you add and shows the trend
-                between them — which is far more informative than a single estimate.
+                between them â€” which is far more informative than a single estimate.
               </p>
               <Link to="/signup" className="btn-primary btn-sm mt-4">
                 Create a free account
@@ -456,10 +454,11 @@ function ProjectionResult({ history, baseline, scenario, measure, onMeasure,
           {baseline.projection_disclaimer}
         </div>
         <Disclaimer text={baseline.disclaimer} />
+        <ul className="mt-3 list-disc pl-5 text-xs text-ink-muted">{baseline.warnings?.map(w => <li key={w}>{w}</li>)}</ul>
       </Card>
 
       <Card title="Year by year"
-            subtitle="Confidence drops the further out you look — that is shown, not hidden.">
+            subtitle="Confidence drops the further out you look â€” that is shown, not hidden.">
         <div className="overflow-x-auto">
           <table className="table">
             <thead>

@@ -22,24 +22,25 @@ export default function AppLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [synthetic, setSynthetic] = useState(false)
+  const [provenance, setProvenance] = useState(null)
+  const nav = ['clinician', 'admin'].includes(user?.role) ? [
+    { to: '/app/cohort', label: 'Patient cohort', icon: IconRecords },
+    { to: '/app/model', label: 'Model card', icon: IconInsight },
+    { to: '/app/profile', label: 'Profile', icon: IconUser },
+  ] : NAV
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    api.health().then((h) => setSynthetic(!!h.data_is_synthetic)).catch(() => {})
+    api.health().then(setProvenance).catch(() => {})
   }, [])
   useEffect(() => { setMenuOpen(false) }, [location.pathname])
 
   return (
     <div className="relative min-h-screen">
-      {/* Demo-data notice. Disappears on its own once a real model is loaded. */}
-      {synthetic && (
-        <div className="bg-ink px-4 py-2 text-center text-[12px] text-sand-200">
-          Demo mode — the model behind these numbers is trained on{' '}
-          <strong className="font-semibold text-sand-50">synthetic data</strong>, so
-          treat everything here as an illustration, not eye-health advice.
-        </div>
-      )}
+      <div className="bg-ink px-4 py-2 text-center text-[12px] text-sand-200">
+        {provenance?.data_source ? `Trained on: ${provenance.data_source}. Exploratory research estimates.` : 'Model provenance unavailable.'}
+        {' '}<NavLink to="/app/model" className="font-semibold text-sand-50 underline underline-offset-2">Read the model card</NavLink>
+      </div>
 
       <div className="mx-auto flex max-w-[1400px] gap-6 px-4 py-5 lg:px-6">
         {/* ---------------- sidebar (desktop) ---------------- */}
@@ -50,7 +51,7 @@ export default function AppLayout() {
           </NavLink>
 
           <nav className="flex flex-col gap-1">
-            {NAV.map(({ to, end, label, icon: Icon }) => (
+            {nav.map(({ to, end, label, icon: Icon }) => (
               <NavLink key={to} to={to} end={end}
                        className={({ isActive }) =>
                          `nav-link ${isActive ? 'nav-link-active' : ''}`}>
@@ -81,12 +82,12 @@ export default function AppLayout() {
         </aside>
 
         {/* ---------------- main ---------------- */}
-        <div className="min-w-0 flex-1 pb-24 lg:pb-6">
+        <main className="min-w-0 flex-1 pb-24 lg:pb-6">
           {/* mobile header */}
           <header className="mb-5 flex items-center justify-between lg:hidden">
             <NavLink to="/app" className="text-ink"><Logo size="sm" /></NavLink>
             <button onClick={() => setMenuOpen((o) => !o)}
-                    aria-label="Account menu"
+                    aria-label="Account menu" aria-expanded={menuOpen}
                     className="flex h-9 w-9 items-center justify-center rounded-full
                                bg-ink text-[12px] font-semibold text-sand-50">
               {initials(user?.full_name)}
@@ -105,14 +106,14 @@ export default function AppLayout() {
           <div key={location.pathname} className="page-enter">
             <Outlet />
           </div>
-        </div>
+        </main>
       </div>
 
       {/* ---------------- bottom bar (mobile) ---------------- */}
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-sand-100/95
                       backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-lg justify-between px-2 py-1.5">
-          {NAV.map(({ to, end, label, icon: Icon }) => (
+          {nav.map(({ to, end, label, icon: Icon }) => (
             <NavLink key={to} to={to} end={end}
                      className={({ isActive }) =>
                        `flex flex-1 flex-col items-center gap-1 rounded-lg px-1 py-2

@@ -9,6 +9,7 @@ import { checkForm, hasErrors } from '../lib/validate'
 import Attachments from '../components/Attachments'
 
 const TREATMENTS = [
+  ['', 'Not recorded'],
   ['none', 'None'], ['single_vision', 'Ordinary glasses'],
   ['atropine', 'Atropine drops'], ['ortho_k', 'Ortho-K lenses'],
   ['dims', 'Myopia-control glasses'],
@@ -17,7 +18,7 @@ const today = () => new Date().toISOString().slice(0, 10)
 
 const BLANK = {
   visit_date: today(), spherical_equivalent: null, axial_length: null,
-  visual_acuity: null, treatment: 'none', age: null,
+  visual_acuity: null, treatment: '', age: null,
   screen_time_hours: null, near_work_min: null, outdoor_min: null, sleep_hours: null,
   viewing_distance_cm: null, posture_score: null, continuous_session_min: null,
 }
@@ -27,6 +28,7 @@ export default function Records() {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [lastSave, setLastSave] = useState(null)
   const [adding, setAdding] = useState(params.get('add') === '1')
   const toast = useToast()
 
@@ -66,13 +68,14 @@ export default function Records() {
         )}
       </div>
 
-      {adding && <AddForm onClose={closeForm} onSaved={(r) => {
-        closeForm(); load()
+      {adding && <AddForm relative={data?.records?.[0]?.followup_month != null} onClose={closeForm} onSaved={(r) => {
+        setLastSave(r); closeForm(); load()
         toast(r.previous_version
-          ? `Saved — your record is now version ${r.twin_version}`
-          : 'Saved — your record has started')
+          ? `Saved â€” your record is now version ${r.twin_version}`
+          : 'Saved â€” your record has started')
       }} />}
 
+      {lastSave && <Card title={`Twin updated to v${lastSave.twin_version}`}><p role="status" className="text-sm">Prediction recalculated. Monitor: {lastSave.twin.monitor?.materially_changed ? lastSave.twin.monitor.flags.join('; ') : 'No material change flagged'}.</p><Disclaimer text={lastSave.disclaimer} /></Card>}
       <ErrorNote error={error} onRetry={load} />
 
       <Attachments />
@@ -84,7 +87,7 @@ export default function Records() {
                         action={<button className="btn-primary"
                                         onClick={() => setAdding(true)}>
                           Add my first result</button>}>
-              Once you add a result from an eye test, it will appear here — newest
+              Once you add a result from an eye test, it will appear here â€” newest
               first, with the change since the visit before it.
             </EmptyState>
           </Card>
@@ -124,7 +127,7 @@ function RecordCard({ record: r, latest, onDelete }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-lg font-semibold">{fmt.date(r.visit_date)}</h2>
+            <h2 className="text-lg font-semibold">{r.visit_date ? fmt.date(r.visit_date) : `Month ${r.followup_month} since baseline`}</h2>
             {latest && <StatusChip label="Most recent" tone="outline" />}
             <StatusChip label={r.category?.label} tone={toneForCategory(r.category?.label)} />
           </div>
@@ -152,7 +155,7 @@ function RecordCard({ record: r, latest, onDelete }) {
             <div className={`mt-1 text-[12px] ${
               tone === 'alert' ? 'text-status-alert'
                 : tone === 'watch' ? 'text-status-watch' : 'text-status-calm'}`}>
-              {fmt.signed(change.spherical_equivalent)} D — {
+              {fmt.signed(change.spherical_equivalent)} D â€” {
                 seDirection(change.spherical_equivalent)}
             </div>
           )}
@@ -177,7 +180,7 @@ function RecordCard({ record: r, latest, onDelete }) {
         <div className="card-quiet px-4 py-3">
           <span className="eyebrow">Treatment</span>
           <div className="mt-1 text-[15px] font-medium">
-            {TREATMENTS.find(([v]) => v === r.treatment)?.[1] || r.treatment || '—'}
+            {TREATMENTS.find(([v]) => v === r.treatment)?.[1] || r.treatment || 'â€”'}
           </div>
           {r.visual_acuity !== null && r.visual_acuity !== undefined && (
             <div className="mt-1 text-[12px] text-ink-muted">
@@ -208,7 +211,7 @@ function RecordCard({ record: r, latest, onDelete }) {
           ) : (
             <p className="text-[13px] text-ink-muted">
               Nothing was recorded about screen time, reading or time outdoors at this
-              visit. That is fine — Iiris leaves it blank rather than guessing.
+              visit. That is fine â€” Iiris leaves it blank rather than guessing.
             </p>
           )}
         </Collapsible>
@@ -219,8 +222,8 @@ function RecordCard({ record: r, latest, onDelete }) {
 
 /* ------------------------------------------------------------- add a result */
 
-function AddForm({ onClose, onSaved }) {
-  const [form, setForm] = useState(BLANK)
+function AddForm({ onClose, onSaved, relative = false }) {
+  const [form, setForm] = useState(relative ? { ...BLANK, visit_date: '', followup_month: null } : BLANK)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const set = (k) => (v) => setForm((f) => ({ ...f, [k]: v }))
@@ -229,7 +232,7 @@ function AddForm({ onClose, onSaved }) {
   const fieldErrors = checkForm(numericForm,
                                 ['spherical_equivalent', 'axial_length'])
   const invalid = hasErrors(fieldErrors)
-  const canSave = !!form.visit_date && !invalid
+  const canSave = (relative ? form.followup_month !== null : !!form.visit_date) && !invalid
 
   async function submit(e) {
     e.preventDefault()
@@ -253,11 +256,11 @@ function AddForm({ onClose, onSaved }) {
         <section>
           <p className="eyebrow mb-3">From your prescription</p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Field label="Date of test" required>
+            {relative ? <NumberField name="followup_month" label="Recorded follow-up month" required min={0} max={600} step="any" value={form.followup_month} onChange={set('followup_month')} hint="Use the source-recorded month; calendar dates are unknown." /> : <Field label="Date of test" required>
               <input className="input" type="date" max={today()} required
                      value={form.visit_date}
                      onChange={(e) => set('visit_date')(e.target.value)} />
-            </Field>
+            </Field>}
             <NumberField name="spherical_equivalent" label="Prescription" unit="D"
                          required step="0.25"
                          value={form.spherical_equivalent}
@@ -268,7 +271,7 @@ function AddForm({ onClose, onSaved }) {
                          step="0.01"
                          value={form.axial_length} onChange={set('axial_length')}
                          placeholder="24.30"
-                         hint="From a biometry scan. Usually 20–30 mm." />
+                         hint="From a biometry scan. Usually 20â€“30 mm." />
             <NumberField name="age" label="Your age" unit="yrs" step="0.5"
                          value={form.age} onChange={set('age')} placeholder="12" />
             <NumberField name="visual_acuity" label="Vision" unit="logMAR" step="0.01"
@@ -308,7 +311,7 @@ function AddForm({ onClose, onSaved }) {
         <section>
           <p className="eyebrow mb-1">Your screen setup</p>
           <p className="mb-3 text-[12.5px] text-ink-muted">
-            Rough estimates are fine — these are not clinical measurements.
+            Rough estimates are fine â€” these are not clinical measurements.
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <NumberField name="viewing_distance_cm" label="Screen or book distance"
@@ -319,7 +322,7 @@ function AddForm({ onClose, onSaved }) {
                          unit="min" step="5"
                          value={form.continuous_session_min}
                          onChange={set('continuous_session_min')} placeholder="45" />
-            <NumberField name="posture_score" label="Posture" unit="0–1" step="0.05"
+            <NumberField name="posture_score" label="Posture" unit="0â€“1" step="0.05"
                          value={form.posture_score} onChange={set('posture_score')}
                          placeholder="0.7" hint="1 means upright and well supported." />
           </div>
@@ -329,7 +332,7 @@ function AddForm({ onClose, onSaved }) {
 
         <div className="flex flex-wrap items-center gap-3">
           <button className="btn-primary" disabled={busy || !canSave}>
-            {busy ? 'Saving…' : 'Save result'}
+            {busy ? 'Savingâ€¦' : 'Save result'}
           </button>
           <button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button>
           {!canSave && !invalid && (

@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {ErrorNote, Field} from '../components/ui'
 
-const DEMO = { email: 'demo@iiris.health', password: 'irisdemo2026' }
+
 
 function Shell({ title, kicker, children, footer }) {
   return (
@@ -20,7 +20,7 @@ function Shell({ title, kicker, children, footer }) {
         </div>
       </div>
 
-      {/* Quiet supporting panel — no imagery, just the promise restated. */}
+      {/* Quiet supporting panel â€” no imagery, just the promise restated. */}
       <div className="grain relative hidden overflow-hidden bg-ink lg:block">
         <div className="relative z-10 flex h-full flex-col justify-center px-14
                         text-sand-100">
@@ -31,7 +31,7 @@ function Shell({ title, kicker, children, footer }) {
           <ul className="mt-10 space-y-4 text-[15px] text-sand-300">
             {['Your full prescription history, kept together',
               'A projection that shows its own uncertainty',
-              'What-if scenarios for habits you can actually change',
+              'Scenario availability explained by measured data',
               'Past and upcoming appointments in one list'].map((t) => (
               <li key={t} className="flex items-start gap-3">
                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sand-500" />
@@ -82,14 +82,14 @@ export function Login() {
         </Field>
         <Field label="Password">
           <input className="input" type="password" autoComplete="current-password"
-                 required value={form.password} placeholder="••••••••"
+                 required value={form.password} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                  onChange={(e) => setForm({ ...form, password: e.target.value })} />
         </Field>
 
         <ErrorNote error={error} />
 
         <button className="btn-primary w-full" disabled={busy}>
-          {busy ? 'Signing in…' : 'Sign in'}
+          {busy ? 'Signing inâ€¦' : 'Sign in'}
         </button>
       </form>
 
@@ -97,13 +97,9 @@ export function Login() {
                       bg-sand-50 p-4">
         <p className="text-[13px] font-medium">Just looking around?</p>
         <p className="mt-1 text-[12.5px] leading-relaxed text-ink-muted">
-          The demo account has four years of history already in it.
+          Explore the research simulator without signing in. Public deployments contain only de-identified open research records.
         </p>
-        <button type="button" disabled={busy}
-                onClick={(e) => { setForm(DEMO); submit(e, DEMO) }}
-                className="btn btn-secondary btn-sm mt-3 w-full">
-          Open the demo account
-        </button>
+        <Link to="/try" className="btn btn-secondary btn-sm mt-3 w-full">Explore the simulator</Link>
       </div>
     </Shell>
   )
@@ -119,7 +115,7 @@ export function Signup() {
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
-  const weak = form.password.length > 0 && form.password.length < 8
+  const weak = form.password.length > 0 && form.password.length < 12
 
   async function submit(e) {
     e.preventDefault()
@@ -155,11 +151,11 @@ export function Signup() {
                  onChange={(e) => setForm({ ...form, email: e.target.value })} />
         </Field>
         <Field label="Password" required
-               error={weak ? 'Use at least 8 characters.' : null}
-               hint="At least 8 characters.">
+               error={weak ? 'Use at least 12 characters.' : null}
+               hint="At least 12 characters.">
           <input className={`input ${weak ? 'input-error' : ''}`} type="password"
-                 autoComplete="new-password" required minLength={8}
-                 value={form.password} placeholder="••••••••"
+                 autoComplete="new-password" required minLength={12}
+                 value={form.password} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                  onChange={(e) => setForm({ ...form, password: e.target.value })} />
         </Field>
 
@@ -202,7 +198,7 @@ export function Signup() {
         <ErrorNote error={error} />
 
         <button className="btn-primary w-full" disabled={busy || weak}>
-          {busy ? 'Creating your account…' : 'Create account'}
+          {busy ? 'Creating your accountâ€¦' : 'Create account'}
         </button>
         <p className="text-[11.5px] leading-relaxed text-ink-faint">
           Iiris stores what you enter so you can track it over time. It is a

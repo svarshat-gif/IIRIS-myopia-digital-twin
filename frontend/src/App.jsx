@@ -1,19 +1,31 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import './lib/charts'
 import { installRipple } from './lib/interactions'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { Spinner, ToastProvider } from './components/ui'
 import AppLayout from './components/AppLayout'
-import Landing from './pages/Landing'
-import { Login, Signup } from './pages/Auth'
-import Dashboard from './pages/Dashboard'
-import Records from './pages/Records'
-import Appointments from './pages/Appointments'
-import Simulator from './pages/Simulator'
-import PublicSimulator from './pages/PublicSimulator'
-import Insights from './pages/Insights'
-import Profile from './pages/Profile'
+const Landing = lazy(() => import('./pages/Landing'))
+const Login = lazy(() => import('./pages/Auth').then(m => ({ default: m.Login })))
+const Signup = lazy(() => import('./pages/Auth').then(m => ({ default: m.Signup })))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Records = lazy(() => import('./pages/Records'))
+const Appointments = lazy(() => import('./pages/Appointments'))
+const Simulator = lazy(() => import('./pages/Simulator'))
+const PublicSimulator = lazy(() => import('./pages/PublicSimulator'))
+const Insights = lazy(() => import('./pages/Insights'))
+const Profile = lazy(() => import('./pages/Profile'))
+
+const ModelCard = lazy(() => import('./pages/ModelCard'))
+const Cohort = lazy(() => import('./pages/Clinician').then(m => ({ default: m.Cohort })))
+const PatientDetail = lazy(() => import('./pages/Clinician').then(m => ({ default: m.PatientDetail })))
+export function RequireRole({ children }) {
+  const { user } = useAuth()
+  return ['clinician', 'admin'].includes(user?.role) ? children : <Navigate to="/app" replace />
+}
+function Home() {
+  const { user } = useAuth()
+  return ['clinician', 'admin'].includes(user?.role) ? <Navigate to="cohort" replace /> : <Dashboard />
+}
 
 /** Sends signed-out visitors to sign-in, remembering where they were going. */
 function RequireAuth({ children }) {
@@ -39,14 +51,17 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
-          <Routes>
+          <Suspense fallback={<Spinner label="Opening page" />}><Routes>
             <Route path="/" element={<RedirectIfAuthed><Landing /></RedirectIfAuthed>} />
             <Route path="/login" element={<RedirectIfAuthed><Login /></RedirectIfAuthed>} />
             <Route path="/signup" element={<RedirectIfAuthed><Signup /></RedirectIfAuthed>} />
             <Route path="/try" element={<PublicSimulator />} />
 
             <Route path="/app" element={<RequireAuth><AppLayout /></RequireAuth>}>
-              <Route index element={<Dashboard />} />
+              <Route index element={<Home />} />
+              <Route path="cohort" element={<RequireRole><Cohort /></RequireRole>} />
+              <Route path="cohort/:patientId" element={<RequireRole><PatientDetail /></RequireRole>} />
+              <Route path="model" element={<ModelCard />} />
               <Route path="records" element={<Records />} />
               <Route path="appointments" element={<Appointments />} />
               <Route path="simulator" element={<Simulator />} />
@@ -55,7 +70,7 @@ export default function App() {
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          </Routes></Suspense>
         </ToastProvider>
       </AuthProvider>
     </BrowserRouter>

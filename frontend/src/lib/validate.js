@@ -2,17 +2,18 @@
  * Client-side field rules.
  *
  * These mirror the API's pydantic bounds exactly. The point is not to replace
- * server validation — it is that the person finds out beside the field they are
+ * server validation â€” it is that the person finds out beside the field they are
  * typing in, in words that name the field as the interface labels it, rather
  * than after a round trip in a banner naming a schema field they have never seen.
  */
 import { FIELD_LABELS } from './api'
 
 export const RULES = {
-  age:                    { min: 3,   max: 30,   label: 'Age', unit: 'years' },
+  followup_month:         { min: 0, max: 600, label: 'Follow-up month', unit: 'months' },
+  age:                    { min: 0,   max: 30,   label: 'Age', unit: 'years' },
   spherical_equivalent:   { min: -30, max: 15,   label: 'Prescription', unit: 'D' },
   axial_length:           { min: 15,  max: 35,   label: 'Eye length', unit: 'mm',
-                            typical: '20–30 mm in a human eye' },
+                            typical: '20â€“30 mm in a human eye' },
   visual_acuity:          { min: -0.3, max: 2,   label: 'Vision', unit: 'logMAR' },
   corneal_curvature:      { min: 5,   max: 12,   label: 'Corneal curvature', unit: 'mm' },
   parental_myopia:        { min: 0,   max: 2,    label: 'Short-sighted parents', unit: '' },
@@ -33,7 +34,7 @@ export function checkField(name, value, { required = false } = {}) {
     return required ? `${label} is needed.` : null
   }
   const n = Number(value)
-  if (Number.isNaN(n)) return `${label} must be a number.`
+  if (!Number.isFinite(n)) return `${label} must be a number.`
   if (!rule) return null
   const unit = rule.unit ? ` ${rule.unit}` : ''
   if (n < rule.min) {

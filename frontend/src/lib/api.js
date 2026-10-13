@@ -5,7 +5,6 @@
  * language a person can act on rather than an HTTP status.
  */
 const BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
-const DEPLOY_KEY = import.meta.env.VITE_API_KEY || ''
 const PREFIX = `${BASE}/api/v1`
 const TOKEN_KEY = 'iiris.token'
 
@@ -31,7 +30,6 @@ export function setUnauthorizedHandler(fn) { onUnauthorized = fn }
 async function request(path, { method = 'GET', body, auth = true, signal } = {}) {
   const headers = { Accept: 'application/json' }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
-  if (DEPLOY_KEY) headers['X-API-Key'] = DEPLOY_KEY
   const t = auth ? token.get() : null
   if (t) headers.Authorization = `Bearer ${t}`
 
@@ -127,7 +125,6 @@ function upload(path, formData, onProgress, method = 'POST') {
     xhr.open(method, `${PREFIX}${path}`)
     const t = token.get()
     if (t) xhr.setRequestHeader('Authorization', `Bearer ${t}`)
-    if (DEPLOY_KEY) xhr.setRequestHeader('X-API-Key', DEPLOY_KEY)
 
     if (onProgress) {
       xhr.upload.onprogress = (e) => {
@@ -157,13 +154,20 @@ async function blobUrl(path) {
   const headers = {}
   const t = token.get()
   if (t) headers.Authorization = `Bearer ${t}`
-  if (DEPLOY_KEY) headers['X-API-Key'] = DEPLOY_KEY
   const res = await fetch(`${PREFIX}${path}`, { headers })
   if (!res.ok) throw new ApiError('That file could not be loaded.', res.status, null)
   return URL.createObjectURL(await res.blob())
 }
 
 export const api = {
+  cohort: () => request('/patients?limit=1000'),
+  patientTwin: (id) => request(`/patients/${encodeURIComponent(id)}/twin`),
+  patientVersions: (id) => request(`/patients/${encodeURIComponent(id)}/twin/versions`),
+  patientExplanation: (id) => request(`/patients/${encodeURIComponent(id)}/explanation`),
+  patientVisit: (id, body) => request(`/patients/${encodeURIComponent(id)}/observations`, { method: 'POST', body }),
+  patientDiff: (id, from, to) => request(`/patients/${encodeURIComponent(id)}/twin/compare?from_version=${from}&to_version=${to}`),
+  patientQuery: (id, question) => request(`/patients/${encodeURIComponent(id)}/query`, { method: 'POST', body: { question } }),
+  patientScenarios: (id, scenarios) => request(`/patients/${encodeURIComponent(id)}/simulate/batch`, { method: 'POST', body: { scenarios } }),
   // --- public ---
   health: () => request('/health', { auth: false }),
   simulatorInputs: () => request('/simulator/inputs', { auth: false }),
@@ -223,21 +227,21 @@ export const fmt = {
   /** Dioptres always carry an explicit sign: -2.50 D and +0.25 D read differently. */
   dioptre: (v, digits = 2) =>
     v === null || v === undefined || Number.isNaN(v)
-      ? '—' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
+      ? 'â€”' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
   mm: (v, digits = 2) =>
-    v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(digits),
+    v === null || v === undefined || Number.isNaN(v) ? 'â€”' : Number(v).toFixed(digits),
   num: (v, digits = 1) =>
-    v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(digits),
+    v === null || v === undefined || Number.isNaN(v) ? 'â€”' : Number(v).toFixed(digits),
   signed: (v, digits = 2) =>
-    v === null || v === undefined ? '—' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
+    v === null || v === undefined ? 'â€”' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
   pct: (v, digits = 0) =>
-    v === null || v === undefined ? '—' : `${(Number(v) * 100).toFixed(digits)}%`,
+    v === null || v === undefined ? 'â€”' : `${(Number(v) * 100).toFixed(digits)}%`,
   date: (s) => (s ? new Date(s + (s.length === 10 ? 'T00:00:00' : ''))
     .toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
-    : '—'),
+    : 'â€”'),
   monthYear: (s) => (s ? new Date(s + (s.length === 10 ? 'T00:00:00' : ''))
-    .toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : '—'),
-  /** "in 3 months", "2 weeks ago" — friendlier than a bare date on a dashboard. */
+    .toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'â€”'),
+  /** "in 3 months", "2 weeks ago" â€” friendlier than a bare date on a dashboard. */
   relative: (days) => {
     if (days === null || days === undefined) return ''
     const abs = Math.abs(days)

@@ -1,16 +1,17 @@
 import Logo from '../components/Logo'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { api, fmt } from '../lib/api'
 import { installScrollReveal } from '../lib/interactions'
 
 
 const STEPS = [
   { n: '01', title: 'Add your results',
-    body: 'Type in what your optometrist measured — your prescription, and the eye length scan if you have it. Anything you do not have, you leave blank.' },
+    body: 'Type in what your optometrist measured â€” your prescription, and the eye length scan if you have it. Anything you do not have, you leave blank.' },
   { n: '02', title: 'Watch the trend',
     body: 'Iiris keeps every visit and draws the line between them, so you can see whether things are moving quickly, slowly, or holding steady.' },
   { n: '03', title: 'Try a different future',
-    body: 'Change the habits — more time outdoors, a longer arm on the screen — and see how the modelled trajectory shifts.' },
+    body: 'Change the habits â€” more time outdoors, a longer arm on the screen â€” and see how the modelled trajectory shifts.' },
 ]
 
 const FEATURES = [
@@ -18,7 +19,7 @@ const FEATURES = [
     body: 'Every appointment and every measurement, kept together instead of scattered across prescription slips.',
     icon: IconStack },
   { title: 'A forecast that admits doubt',
-    body: 'Every projection comes with a range, not a single confident number. The range widens the further out you look — because it should.',
+    body: 'Every projection comes with a range, not a single confident number. The range widens the further out you look â€” because it should.',
     icon: IconRange },
   { title: 'Reasons, not just results',
     body: 'Iiris shows which of your habits and measurements moved the estimate, in plain words.',
@@ -83,7 +84,7 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Illustrative trajectory — not real patient data, and labelled as such. */}
+          {/* Illustrative trajectory â€” not real patient data, and labelled as such. */}
           <div className="animate-fade-up [animation-delay:.12s]">
             <HeroCard />
           </div>
@@ -183,75 +184,18 @@ export default function Landing() {
 /* ------------------------------------------------------------ hero visual */
 
 function HeroCard() {
-  // A fixed, illustrative curve. Deliberately not live data on a public page.
-  const pts = [[0, 18], [1, 34], [2, 47], [3, 66], [4, 82], [5, 96]]
-  const w = 300, h = 130
-  const x = (i) => 20 + (i / 5) * (w - 40)
-  const y = (v) => 18 + (v / 110) * (h - 36)
-  const line = pts.map(([i, v], k) => `${k ? 'L' : 'M'}${x(i)},${y(v)}`).join(' ')
-  const band = `M${x(3)},${y(66)} L${x(4)},${y(70)} L${x(5)},${y(80)} L${x(5)},${y(112)} L${x(4)},${y(94)} L${x(3)},${y(66)} Z`
-
-  return (
-    <div className="card p-6 shadow-lift">
-      <div className="flex items-baseline justify-between">
-        <div>
-          <p className="eyebrow">Prescription over time</p>
-          <p className="mt-1 text-2xl font-semibold">−3.15 <span
-            className="text-sm font-normal text-ink-muted">D today</span></p>
-        </div>
-        <span className="chip-watch">moving</span>
-      </div>
-
-      <svg viewBox={`0 0 ${w} ${h}`} className="mt-4 w-full" role="img"
-           aria-label="Illustrative chart showing a prescription becoming stronger over time, with a widening range of uncertainty">
-        {[0, 1, 2, 3].map((g) => (
-          <line key={g} x1="20" x2={w - 20} y1={22 + g * 30} y2={22 + g * 30}
-                stroke="#E6DFD3" strokeWidth="1" />
-        ))}
-        <path d={band} fill="rgba(166,149,122,.22)" />
-        <path d={line} fill="none" stroke="#1A1815" strokeWidth="2.4"
-              strokeLinecap="round" strokeLinejoin="round"
-              pathLength="1" strokeDasharray="1"
-              style={{ animation: 'draw 1.6s cubic-bezier(.4,0,.2,1) .3s both' }} />
-        {pts.slice(0, 4).map(([i, v]) => (
-          <circle key={i} cx={x(i)} cy={y(v)} r="3.4" fill="#fff" stroke="#1A1815"
-                  strokeWidth="2" />
-        ))}
-        {pts.slice(4).map(([i, v]) => (
-          <circle key={i} cx={x(i)} cy={y(v)} r="3.4" fill="#fff" stroke="#A6957A"
-                  strokeWidth="2" />
-        ))}
-      </svg>
-
-      <div className="mt-3 flex items-center justify-between text-[11px] text-ink-faint">
-        <span>2022</span><span>measured</span><span>projected</span><span>2027</span>
-      </div>
-
-      <p className="mt-4 rounded-xl bg-sand-200/70 px-3 py-2 text-[11.5px]
-                    leading-relaxed text-ink-muted">
-        The shaded area is the range Iiris is confident about. It widens further out —
-        because honestly, so does the uncertainty.
-      </p>
-      <p className="mt-2 text-center text-[10.5px] text-ink-faint">
-        Illustration, not a real person's data.
-      </p>
+  const [card, setCard] = useState(null)
+  useEffect(() => { let alive = true; api.modelCard().then(x => alive && setCard(x)).catch(() => {}); return () => { alive = false } }, [])
+  const result = card?.metrics?.regression?.y_se_12m
+  return <div className="card p-6 shadow-lift">
+    <p className="eyebrow">Open research data</p>
+    <p className="mt-1 text-2xl font-semibold">{card?.metrics?.n_patients ?? '?'} <span className="text-sm font-normal text-ink-muted">participants</span></p>
+    <div className="mt-4 space-y-4 border-y border-line py-5 text-sm">
+      <p>Trained on: {card?.data_source || 'Provenance unavailable'}</p>
+      <p>12-month SE error: {result ? `${fmt.num(result.mae, 3)} D` : 'unavailable'}.</p>
+      <p>Carry-forward error: {result ? `${fmt.num(result.baselines.carry_forward.mae, 3)} D` : 'unavailable'}.</p>
+      <p>Measured interval coverage: {result ? `${fmt.num(result.interval_coverage * 100, 1)}%` : 'unavailable'}.</p>
     </div>
-  )
-}
-
-/* ------------------------------------------------------------------ icons */
-const s = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none',
-            stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round',
-            strokeLinejoin: 'round', 'aria-hidden': true }
-function IconStack() {
-  return <svg {...s}><path d="M12 3 3 7.5l9 4.5 9-4.5z"/><path d="m3 12.5 9 4.5 9-4.5"/><path d="m3 17 9 4.5 9-4.5"/></svg>
-}
-function IconRange() {
-  return <svg {...s}><path d="M3 17c4-9 14-9 18-4"/><path d="M3 20c4-11 14-12 18-6"/><path d="M3 14c4-7 14-6 18-2"/></svg>
-}
-function IconWhy() {
-  return <svg {...s}><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.5.2-.7.6-.7 1.1v.5"/><path d="M12 16.5h.01"/></svg>
-}
-function IconBell() {
-  return <svg {...s}><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>
+    <p className="mt-4 rounded-xl bg-sand-200/70 px-3 py-2 text-[11.5px] leading-relaxed text-ink-muted">Exploratory research estimates. This model has no demonstrated clinical utility; it does not diagnose or prescribe.</p>
+  </div>
 }

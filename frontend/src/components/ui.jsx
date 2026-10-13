@@ -218,6 +218,7 @@ export function NumberField({ label, hint, unit, value, onChange, error, name,
       <div className="relative">
         <input
           type="number" inputMode="decimal"
+          required={required}
           min={lo} max={hi}
           aria-invalid={!!shown}
           className={`input ${unit ? 'pr-16' : ''} ${shown ? 'input-error' : ''}`}

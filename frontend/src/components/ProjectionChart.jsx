@@ -19,11 +19,11 @@ export default function ProjectionChart({
     const hi = measure === 'se' ? 'se_upper' : 'al_upper'
 
     const observed = history
-      .map((h) => ({ label: fmt.monthYear(h.visit_date), value: h[key] }))
+      .map((h) => ({ label: h.visit_date ? fmt.monthYear(h.visit_date) : `Month ${h.followup_month}`, value: h[key] }))
       .filter((p) => p.value !== null && p.value !== undefined)
 
     const labels = [...observed.map((o) => o.label),
-                    ...baseline.points.map((p) => `${yr(p.date)}`)]
+                    ...baseline.points.map((p) => p.date ? `${yr(p.date)}` : `Month ${p.followup_month}`)]
     const anchor = Math.max(0, observed.length - 1)
     const pad = observed.map(() => null)
     const withAnchor = (vals, anchorValue) => {

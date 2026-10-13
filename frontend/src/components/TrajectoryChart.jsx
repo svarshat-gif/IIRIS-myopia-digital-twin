@@ -22,7 +22,7 @@ export default function TrajectoryChart({
     if (!history?.length) return null
     const key = measure === 'se' ? 'spherical_equivalent' : 'axial_length'
     const observed = history
-      .map((h) => ({ date: new Date(`${h.visit_date}T00:00:00`), value: h[key] }))
+      .map((h) => ({ date: new Date(`${h.visit_date}T00:00:00`), value: h[key], month: h.followup_month }))
       .filter((p) => p.value !== null && p.value !== undefined)
     if (!observed.length) return null
 
@@ -34,8 +34,8 @@ export default function TrajectoryChart({
                scenario: scenario?.horizons?.[h]?.[measure] || null }
     }).filter(Boolean)
 
-    const labels = [...observed.map((p) => short(p.date)),
-                    ...future.map((f) => `${short(f.date)}`)]
+    const labels = [...observed.map((p) => Number.isNaN(p.date.getTime()) ? `Month ${p.month}` : short(p.date)),
+                    ...future.map((f) => Number.isNaN(f.date.getTime()) ? f.label : short(f.date))]
     const anchor = observed.length - 1
     const pad = observed.map(() => null)
     // Anchoring the forecast on the last observed point keeps the line continuous.
@@ -91,5 +91,5 @@ export default function TrajectoryChart({
       : `${ctx.dataset.label}: ${fmt.num(ctx.parsed.y, 2)}${unit}`,
   }
 
-  return <div style={{ height }}><Line data={data} options={opts} /></div>
+  return <div style={{ height }}><Line data={data} options={opts} role="img" aria-label="Observed trajectory with model estimate and prediction interval" /></div>
 }
