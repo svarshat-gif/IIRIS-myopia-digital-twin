@@ -91,7 +91,7 @@ def summary(user: User = Depends(get_current_user),
             "parental_myopia": patient.parental_myopia,
         },
         "latest": None if latest is None else {
-            "visit_date": latest.visit_date.isoformat(),
+            "visit_date": latest.visit_date.isoformat() if latest.visit_date else None,
             "age": latest.age,
             "spherical_equivalent": latest.spherical_equivalent,
             "axial_length": latest.axial_length,
@@ -102,10 +102,10 @@ def summary(user: User = Depends(get_current_user),
             "spherical_equivalent": round(
                 latest.spherical_equivalent - previous.spherical_equivalent, 3),
             "axial_length": round(latest.axial_length - previous.axial_length, 3),
-            "months": round((latest.visit_date - previous.visit_date).days / 30.4375, 1),
+            "months": round(twin_service.elapsed_months(previous, latest), 1),
             # Days too, so the UI can avoid saying "over 0 months" when two
             # results were entered close together.
-            "days": (latest.visit_date - previous.visit_date).days,
+            "days": round(twin_service.elapsed_months(previous, latest) * 30.4375),
         },
         "category": projection.categorise(
             latest.spherical_equivalent if latest else None),
@@ -124,6 +124,8 @@ def summary(user: User = Depends(get_current_user),
         "appointment_counts": {"upcoming": len(upcoming), "past": len(past)},
         "model_version": registry.model_version(),
         "model_loaded": registry.is_ready(),
+        "data_source": registry.load_bundle().get("data_source") if registry.is_ready() else None,
+        "monitor": state.get("monitor") if state else None,
         "data_is_synthetic": (registry.load_bundle().get("data_is_synthetic")
                               if registry.is_ready() else None),
         "disclaimer": settings.disclaimer,
@@ -146,7 +148,8 @@ def my_records(user: User = Depends(get_current_user),
         previous = observations[i - 1] if i > 0 else None
         rows.append({
             "observation_id": obs.observation_id,
-            "visit_date": obs.visit_date.isoformat(),
+            "visit_date": obs.visit_date.isoformat() if obs.visit_date else None,
+            "followup_month": obs.followup_month,
             "age": obs.age,
             "spherical_equivalent": obs.spherical_equivalent,
             "axial_length": obs.axial_length,
@@ -166,7 +169,7 @@ def my_records(user: User = Depends(get_current_user),
                 "spherical_equivalent": round(
                     obs.spherical_equivalent - previous.spherical_equivalent, 3),
                 "axial_length": round(obs.axial_length - previous.axial_length, 3),
-                "months": round((obs.visit_date - previous.visit_date).days / 30.4375, 1),
+                "months": round(twin_service.elapsed_months(previous, obs), 1),
             },
         })
     rows.reverse()
@@ -180,11 +183,12 @@ def add_record(payload: ObservationIn, user: User = Depends(get_current_user),
     patient = _patient(db, user)
     clash = db.scalars(
         select(Observation).where(Observation.patient_id == patient.patient_id,
-                                  Observation.visit_date == payload.visit_date)).first()
+                                  Observation.visit_date == payload.visit_date,
+                                  Observation.followup_month == payload.followup_month)).first()
     if clash:
         raise HTTPException(
             status.HTTP_409_CONFLICT,
-            f"You already have a result saved for {payload.visit_date:%d %B %Y}. "
+            f"You already have a result saved at this visit time. "
             f"Edit or delete it first.")
 
     previous = twin_service.get_current_version(db, patient.patient_id)

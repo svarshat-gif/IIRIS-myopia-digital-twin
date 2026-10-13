@@ -66,11 +66,15 @@ def project(
     """
     if not registry.is_ready():
         raise RuntimeError("No trained model is loaded.")
+    if overrides:
+        from app.simulator.engine import require_supported_inputs
+        require_supported_inputs(overrides)
     years = max(1, min(int(years), MAX_YEARS))
 
     working = [dict(v) for v in history]
     last = working[-1]
-    current_date = date.fromisoformat(str(last["visit_date"]))
+    current_date = date.fromisoformat(str(last["visit_date"])) if last.get("visit_date") else None
+    relative_month = last.get("followup_month")
     current_age = last.get("age")
 
     points: list[dict[str, Any]] = []
@@ -92,14 +96,18 @@ def project(
         se_half = float(np.sqrt(se_var))
         al_half = float(np.sqrt(al_var))
 
-        current_date = current_date + timedelta(days=int(STEP_MONTHS * 30.4375))
+        if current_date:
+            current_date = current_date + timedelta(days=int(STEP_MONTHS * 30.4375))
+        if relative_month is not None:
+            relative_month += STEP_MONTHS
         if current_age is not None:
             current_age = round(current_age + STEP_MONTHS / 12.0, 2)
 
         points.append({
             "step": step,
             "years_ahead": step,
-            "date": current_date.isoformat(),
+            "date": current_date.isoformat() if current_date else None,
+            "followup_month": relative_month,
             "age": current_age,
             "spherical_equivalent": round(se["value"], 3),
             "se_lower": round(se["value"] - se_half, 3),
@@ -117,7 +125,8 @@ def project(
         next_visit = {
             **last,
             **(overrides or {}),
-            "visit_date": current_date.isoformat(),
+            "visit_date": current_date.isoformat() if current_date else None,
+            "followup_month": relative_month,
             "age": current_age,
             "spherical_equivalent": se["value"],
             "axial_length": al["value"],
@@ -152,6 +161,7 @@ def project(
             "reliable_through_year": RELIABLE_STEPS,
         },
         "model_version": registry.model_version(),
+        "warnings": prediction.get("warnings", []) if points else [],
         "projection_disclaimer": PROJECTION_DISCLAIMER,
         "disclaimer": settings.disclaimer,
     }
@@ -192,7 +202,7 @@ def quick_project(payload: dict[str, Any], years: int = 5) -> dict[str, Any]:
         "axial_length": payload.get("axial_length"),
         "visual_acuity": payload.get("visual_acuity"),
         "corneal_curvature": payload.get("corneal_curvature"),
-        "treatment": payload.get("treatment") or "none",
+        "treatment": payload.get("treatment"),
         "screen_time_hours": payload.get("screen_time_hours"),
         "near_work_min": payload.get("near_work_min"),
         "outdoor_min": payload.get("outdoor_min"),

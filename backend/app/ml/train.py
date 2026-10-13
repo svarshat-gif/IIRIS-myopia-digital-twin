@@ -322,7 +322,7 @@ def run_ablation(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, Any]:
                 target = f"y_{measure}_{horizon}m"
                 Xtr, ytr = _xy(train, features, target)
                 Xte, yte = _xy(test, features, target)
-                if len(ytr) < 50 or len(yte) < 10:
+                if len(ytr) < 12 or len(yte) < 2:
                     continue
                 model = HistGradientBoostingRegressor(**HGB_PARAMS).fit(Xtr, ytr)
                 entry[target] = regression_metrics(yte, model.predict(Xte))

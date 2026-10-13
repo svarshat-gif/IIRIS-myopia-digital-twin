@@ -94,9 +94,6 @@ def verify_numbers(text: str, facts: Any) -> tuple[bool, list[str]]:
         value = float(token)
         if _norm(value) in allowed:
             continue
-        # Small integers are ordinals/counts in prose ("in 12 months", "3 factors").
-        if value.is_integer() and abs(value) <= 24:
-            continue
         unsupported.append(token)
     return (not unsupported), unsupported
 
@@ -118,25 +115,6 @@ def _call_ollama(prompt: str) -> str:
         return r.json().get("message", {}).get("content", "").strip()
 
 
-def _call_openai_compatible(prompt: str) -> str:
-    url = f"{settings.llm_base_url.rstrip('/')}/chat/completions"
-    headers = {"Content-Type": "application/json"}
-    if settings.llm_api_key:
-        headers["Authorization"] = f"Bearer {settings.llm_api_key}"
-    payload = {
-        "model": settings.llm_model,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0.1,
-    }
-    with httpx.Client(timeout=settings.llm_timeout_seconds) as client:
-        r = client.post(url, json=payload, headers=headers)
-        r.raise_for_status()
-        return r.json()["choices"][0]["message"]["content"].strip()
-
-
 def narrate(question: str, facts: dict[str, Any],
             fallback: str) -> dict[str, Any]:
     """Return {answer, llm_used, guardrail}. Falls back on any failure."""
@@ -153,8 +131,12 @@ def narrate(question: str, facts: dict[str, Any],
     )
     provider = settings.llm_provider.lower()
     try:
-        text = (_call_ollama(prompt) if provider == "ollama"
-                else _call_openai_compatible(prompt))
+        if provider != "ollama":
+            raise ValueError("Only a local Ollama model is supported")
+        from urllib.parse import urlparse
+        if urlparse(settings.llm_base_url).hostname not in {"localhost", "127.0.0.1", "::1"}:
+            raise ValueError("Ollama must use loopback")
+        text = _call_ollama(prompt)
     except Exception as exc:
         log.warning("LLM call failed (%s): %s", provider, exc)
         return {"answer": fallback, "llm_used": "none",

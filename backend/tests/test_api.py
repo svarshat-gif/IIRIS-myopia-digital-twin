@@ -3,7 +3,12 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-from tests.conftest import API
+from tests.conftest import API, AuthorizedClient
+import pytest
+
+@pytest.fixture
+def client(http_client, admin_headers):
+    return AuthorizedClient(http_client, admin_headers)
 
 
 def test_health(client):
@@ -32,8 +37,9 @@ def test_prediction_interval_is_ordered_and_nonzero(client, patient):
     assert se["lower"] <= se["value"] <= se["upper"]
     assert se["upper"] - se["lower"] > 0
     risk = r.json()["risk"]
-    assert 0.0 <= risk["probability"] <= 1.0
-    assert risk["band"] in {"low", "moderate", "high"}
+    if risk is not None:
+        assert 0.0 <= risk["probability"] <= 1.0
+        assert risk["band"] in {"low", "moderate", "high"}
 
 
 def test_new_observation_creates_a_new_version(client, patient):
@@ -88,21 +94,17 @@ def test_simulation_changes_the_trajectory(client, patient):
         "changes": {"outdoor_min": 120, "screen_time_hours": 2.5,
                     "viewing_distance_cm": 40},
     })
-    assert r.status_code == 200, r.text
-    body = r.json()
-    se = body["comparison"]["12m"]["se"]
-    assert se["baseline"] != se["scenario"]
-    assert se["difference"] == round(se["scenario"] - se["baseline"], 3)
-    assert body["causal_disclaimer"]
-    assert {c["input"] for c in body["applied_changes"]} == {
-        "outdoor_min", "screen_time_hours", "viewing_distance_cm"}
+    assert r.status_code == 422
+    assert "not measured" in r.text
+
 
 
 def test_simulation_is_deterministic(client, patient):
     payload = {"changes": {"outdoor_min": 100}}
     a = client.post(f"{API}/patients/{patient}/simulate", json=payload).json()
     b = client.post(f"{API}/patients/{patient}/simulate", json=payload).json()
-    assert a["comparison"]["12m"]["se"] == b["comparison"]["12m"]["se"]
+    assert a == b
+    assert "unavailable" in str(a)
 
 
 def test_implausible_scenario_is_rejected_not_answered(client, patient):
@@ -122,10 +124,9 @@ def test_sensitivity_sweep(client, patient):
     r = client.post(f"{API}/patients/{patient}/sensitivity", json={
         "input_name": "outdoor_min", "values": [0, 30, 60, 90, 120, 180],
         "horizon": "12m"})
-    assert r.status_code == 200
-    points = r.json()["points"]
-    assert len(points) == 6
-    assert all(p["predicted_se"] is not None for p in points)
+    assert r.status_code == 422
+    assert "unavailable" in r.text
+
 
 
 def test_explanation_returns_contributions(client, patient):
@@ -145,7 +146,7 @@ def test_agent_uses_tools_and_answers(client, patient):
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["intent"] == "simulate"
-    assert "simulate" in body["tools_called"]
+    assert any(t["tool"] == "simulate" and t["status"] == "error" for t in body["trace"])
     assert "get_twin" in body["tools_called"]
     assert body["answer"]
     assert body["llm_used"] == "none"      # no LLM configured in tests
@@ -155,10 +156,8 @@ def test_agent_uses_tools_and_answers(client, patient):
 def test_agent_refuses_when_patient_unknown(client):
     r = client.post(f"{API}/agent/query", json={
         "question": "What is the prediction?", "patient_id": "does-not-exist"})
-    assert r.status_code == 200
-    body = r.json()
-    assert body["issues"], "agent should report that it could not get the data"
-    assert "does-not-exist" in " ".join(body["issues"])
+    assert r.status_code == 404
+
 
 
 def test_agent_trace_is_auditable(client, patient):

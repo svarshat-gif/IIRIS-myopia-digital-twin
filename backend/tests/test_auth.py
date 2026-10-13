@@ -176,12 +176,9 @@ def test_projection_scenario_beats_baseline(client):
     r = client.post(f"{API}/me/project", headers=h, json={
         "years": 5, "changes": {"outdoor_min": 120, "screen_time_hours": 2,
                                 "viewing_distance_cm": 40}})
-    assert r.status_code == 200, r.text
-    body = r.json()
-    base = body["baseline"]["summary"]["final_se"]
-    scen = body["scenario"]["summary"]["final_se"]
-    # Better habits should not project a worse outcome than the baseline.
-    assert scen >= base, (scen, base)
+    assert r.status_code == 422
+    assert "not measured" in r.text
+
 
 
 def test_public_simulator_needs_no_account(client):

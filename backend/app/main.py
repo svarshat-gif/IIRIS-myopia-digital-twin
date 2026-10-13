@@ -138,6 +138,13 @@ app.include_router(admin.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(fhir.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(fhir.router, dependencies=_guard)
 
+from app.simulator.constraints import ScenarioRejected
+
+
+@app.exception_handler(ScenarioRejected)
+async def rejected_scenario(request, exc):
+    return JSONResponse({"detail": {"message": "Scenario unavailable", "errors": exc.errors}}, status_code=422)
+
 
 @app.get("/readyz", tags=["meta"])
 def readyz():

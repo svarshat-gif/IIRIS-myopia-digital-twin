@@ -27,6 +27,16 @@ CAUSAL_DISCLAIMER = (
 )
 
 
+def require_supported_inputs(changes: dict):
+    bundle = registry.load_bundle()
+    supported = bundle.get("supported_scenario_inputs", [])
+    unsupported = sorted(set(changes) - set(supported))
+    if unsupported:
+        raise ScenarioRejected(["What-if unavailable for " + ", ".join(unsupported) +
+            ": these exposures/treatment contrasts were not measured or evaluated in the training cohort. "
+            "No numeric treatment or behavioural effect can be estimated by this model."])
+
+
 def _current_inputs(state: dict[str, Any]) -> dict[str, Any]:
     cur = state["current"]
     values = {**cur.get("behaviour", {}), **cur.get("ergonomics", {})}
@@ -124,6 +134,7 @@ def simulate(state: dict[str, Any], scenario: dict[str, Any]) -> dict[str, Any]:
     """Run one scenario against the twin state."""
     current = _current_inputs(state)
     changes, warnings = validate_scenario(scenario.get("changes", {}), current)
+    require_supported_inputs(changes)
 
     history = _history_from_state(state)
     patient = state["patient"]
@@ -180,6 +191,7 @@ def sensitivity_sweep(state: dict[str, Any], input_name: str,
     """Sweep one input across a range -> the dose-response curve the UI plots."""
     if input_name not in MODIFIABLE_INPUTS:
         raise ScenarioRejected([f"'{input_name}' is not a modifiable input."])
+    require_supported_inputs({input_name: None})
 
     patient = state["patient"]
     history = _history_from_state(state)

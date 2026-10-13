@@ -90,7 +90,7 @@ def test_treatment_choice_is_validated():
 
 def test_llm_guardrail_accepts_traceable_numbers():
     facts = {"prediction": {"se": -2.42, "lower": -2.85, "upper": -2.01},
-             "risk": 0.31}
+             "risk": 0.31, "horizon_months": 12}
     ok, bad = verify_numbers(
         "The 12-month estimate is -2.42 D (interval -2.85 to -2.01 D), "
         "with a 31% risk of fast progression.", facts)
@@ -106,6 +106,6 @@ def test_llm_guardrail_rejects_invented_numbers():
 
 
 def test_llm_guardrail_allows_rounding_and_small_counts():
-    facts = {"prediction": {"se": -2.418}}
+    facts = {"prediction": {"se": -2.418}, "horizon_months": 12}
     ok, _ = verify_numbers("Roughly -2.4 D over the next 12 months.", facts)
     assert ok

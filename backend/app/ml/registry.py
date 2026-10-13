@@ -79,6 +79,11 @@ def predict_from_row(row: dict[str, float]) -> dict[str, Any]:
     bundle = load_bundle()
     names = bundle["feature_names"]
     x = row_to_vector(row, names)
+    warnings = list(bundle.get("provenance", {}).get("limitations", []))
+    for feature, (low, high) in bundle.get("training_ranges", {}).items():
+        value = row.get(feature)
+        if value is not None and np.isfinite(value) and not low <= value <= high:
+            warnings.append(f"{feature} is outside the observed training range [{low:g}, {high:g}]; extrapolation is unreliable")
 
     horizons: dict[str, Any] = {}
     for horizon in bundle["horizons"]:
@@ -134,6 +139,9 @@ def predict_from_row(row: dict[str, float]) -> dict[str, Any]:
         "risk": risk,
         "model_version": bundle["model_version"],
         "features_used": names,
+        "warnings": warnings,
+        "data_source": bundle.get("data_source"),
+        "risk_unavailable_reason": "Insufficient independent labelled patients for a risk classifier" if risk is None else None,
     }
 
 

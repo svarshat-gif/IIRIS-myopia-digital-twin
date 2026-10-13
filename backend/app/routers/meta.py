@@ -74,7 +74,7 @@ def model_card() -> dict[str, Any]:
             "non-medical-grade.",
             "Performance figures apply to the cohort the model was trained on and will "
             "differ on a different population.",
-        ] + (["THIS MODEL IS TRAINED ON SYNTHETIC DATA. Its metrics describe a "
+        ] + bundle.get("provenance", {}).get("limitations", []) + (["THIS MODEL IS TRAINED ON SYNTHETIC DATA. Its metrics describe a "
               "generated cohort and carry no clinical meaning."]
              if bundle["data_is_synthetic"] else []),
     }
@@ -83,7 +83,8 @@ def model_card() -> dict[str, Any]:
 @router.get("/meta/inputs", summary="Modifiable inputs and their plausible ranges")
 def modifiable_inputs() -> dict[str, Any]:
     return {
-        "inputs": [{"name": k, **v} for k, v in MODIFIABLE_INPUTS.items()],
+        "inputs": [{"name": k, **v, "available": k in registry.load_bundle().get("supported_scenario_inputs", [])}
+                   for k, v in MODIFIABLE_INPUTS.items()] if registry.is_ready() else [],
         "note": "The simulator rejects values outside these ranges rather than "
                 "returning a confident-looking extrapolation.",
     }

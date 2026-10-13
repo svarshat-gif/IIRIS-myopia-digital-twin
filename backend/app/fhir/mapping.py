@@ -117,7 +117,7 @@ def _observation_resource(obs: Observation, field: str, value: float) -> dict[st
             "text": display,
         },
         "subject": {"reference": f"Patient/{obs.patient_id}"},
-        "effectiveDateTime": obs.visit_date.isoformat(),
+        **({"effectiveDateTime": obs.visit_date.isoformat()} if obs.visit_date else {"extension": [{"url": "http://myopia-twin.local/StructureDefinition/followup-month", "valueDecimal": obs.followup_month}]}),
         "valueQuantity": {
             "value": round(float(value), 4),
             "unit": unit_display,
@@ -155,7 +155,7 @@ def observation_to_fhir(obs: Observation) -> list[dict[str, Any]]:
                 "text": "Myopia control intervention in use",
             },
             "subject": {"reference": f"Patient/{obs.patient_id}"},
-            "effectiveDateTime": obs.visit_date.isoformat(),
+            **({"effectiveDateTime": obs.visit_date.isoformat()} if obs.visit_date else {"extension": [{"url": "http://myopia-twin.local/StructureDefinition/followup-month", "valueDecimal": obs.followup_month}]}),
             "valueCodeableConcept": {
                 "coding": [{"system": f"{LOCAL_CODE_SYSTEM}/treatment",
                             "code": obs.treatment, "display": obs.treatment}],

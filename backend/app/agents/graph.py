@@ -189,14 +189,12 @@ def node_plan(state: AgentState) -> AgentState:
     pid = state.patient_id
     plan: list[dict[str, Any]] = []
 
-    if state.intent == "model":
-        state.plan = [{"tool": "model_info", "args": {}, "why": "Report how the model was built and validated."}]
-        return state
-
     if pid is None:
-        state.plan = [{"tool": "list_patients", "args": {},
-                       "why": "No patient was specified, so list what is available."}]
+        state.issues.append("Choose an authorized patient before running the agent")
+        state.plan = []
         return state
+    if state.intent == "model":
+        state.intent = "predict"
 
     plan.append({"tool": "get_twin", "args": {"patient_id": pid},
                  "why": "Every answer starts from the patient's current twin state."})
@@ -216,10 +214,6 @@ def node_plan(state: AgentState) -> AgentState:
     if state.intent == "monitor":
         plan.append({"tool": "flag_changes", "args": {"patient_id": pid},
                      "why": "Check whether the latest update moved the trajectory materially."})
-
-    if state.intent == "twin":
-        plan.append({"tool": "get_history", "args": {"patient_id": pid, "limit": 8},
-                     "why": "Summarise the recorded visit history."})
 
     if state.intent in {"evidence", "simulate"}:
         plan.append({"tool": "__evidence_placeholder__", "args": {},

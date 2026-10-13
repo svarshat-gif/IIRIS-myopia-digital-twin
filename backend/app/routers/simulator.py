@@ -35,6 +35,8 @@ def quick_project(payload: QuickSimulationIn) -> dict[str, Any]:
         current = {k: values.get(k) for k in MODIFIABLE_INPUTS}
         try:
             changes, warnings = validate_scenario(payload.compare_with, current)
+            from app.simulator.engine import require_supported_inputs
+            require_supported_inputs(changes)
         except ScenarioRejected as exc:
             raise HTTPException(
                 status.HTTP_422_UNPROCESSABLE_ENTITY,

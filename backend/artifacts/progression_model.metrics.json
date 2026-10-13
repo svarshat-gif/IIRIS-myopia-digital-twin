@@ -268,7 +268,31 @@
   "risk": {},
   "ablation": {
     "clinical": {
-      "n_features": 20
+      "n_features": 20,
+      "y_se_6m": {
+        "n": 6,
+        "mae": 0.1421,
+        "rmse": 0.1451,
+        "r2": 0.9893
+      },
+      "y_se_12m": {
+        "n": 6,
+        "mae": 0.371,
+        "rmse": 0.4175,
+        "r2": 0.9193
+      },
+      "y_al_6m": {
+        "n": 6,
+        "mae": 0.977,
+        "rmse": 0.9931,
+        "r2": 0.6958
+      },
+      "y_al_12m": {
+        "n": 6,
+        "mae": 0.823,
+        "rmse": 0.8304,
+        "r2": 0.7959
+      }
     },
     "clinical_behaviour": {
       "status": "not_evaluable",
@@ -513,6 +537,6 @@
       "Peripheral refraction is retained in the raw workbook but excluded from the shared clinical model."
     ]
   },
-  "trained_at": "2026-10-13T17:08:39.412743+00:00",
+  "trained_at": "2026-10-13T17:18:36.143150+00:00",
   "model_version": "mdt-20261013-02002927"
 }

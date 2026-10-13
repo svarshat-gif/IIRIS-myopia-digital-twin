@@ -252,6 +252,9 @@ TOOLS: dict[str, Tool] = {
 }
 
 
+TOOLS = {name: TOOLS[name] for name in ("get_twin", "predict", "simulate", "explain", "retrieve_evidence", "compare_scenarios", "flag_changes")}
+
+
 def tool_schemas() -> list[dict[str, Any]]:
     return [t.schema() for t in TOOLS.values()]
 

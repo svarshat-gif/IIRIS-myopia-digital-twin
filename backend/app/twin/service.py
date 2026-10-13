@@ -29,6 +29,14 @@ ERGONOMIC_FIELDS = ["viewing_distance_cm", "posture_score", "continuous_session_
 CLINICAL_FIELDS = ["spherical_equivalent", "axial_length", "visual_acuity", "corneal_curvature"]
 
 
+def elapsed_months(a: Observation, b: Observation) -> float:
+    if a.visit_date is not None and b.visit_date is not None:
+        return (b.visit_date - a.visit_date).days / 30.4375
+    if a.followup_month is not None and b.followup_month is not None:
+        return b.followup_month - a.followup_month
+    raise ValueError("Cannot mix calendar dates and relative follow-up for one patient")
+
+
 def _clean(value: Any) -> Any:
     """JSON cannot hold NaN; missing stays missing as null."""
     if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
@@ -156,6 +164,9 @@ def predict_from_state(feature_row: dict[str, float]) -> dict[str, Any]:
         "horizons": result["horizons"],
         "risk": result["risk"],
         "model_version": result["model_version"],
+        "warnings": result.get("warnings", []),
+        "data_source": result.get("data_source"),
+        "risk_unavailable_reason": result.get("risk_unavailable_reason"),
         "disclaimer": settings.disclaimer,
     }
 
@@ -203,12 +214,21 @@ def save_version(db: Session, patient: Patient, state: dict[str, Any],
                 model_version=prediction["model_version"],
             ))
     db.flush()
+    prior = get_version(db, patient.patient_id, version - 1) if version > 1 else None
+    flag = compare_versions(db, patient.patient_id, version - 1, version) if prior else {
+        "materially_changed": False, "flags": [], "note": "Baseline version; nothing to compare"}
+    tv.state_json = {**state, "monitor": flag}
+    db.flush()
     return tv
 
 
 def refresh_twin(db: Session, patient: Patient, triggered_by: str) -> dict[str, Any]:
     """Rebuild the twin from all observations and store it as a new version."""
-    state = build_state(db, patient)
+    db.execute(select(Patient).where(Patient.patient_id == patient.patient_id).with_for_update())
+    observations = get_observations(db, patient.patient_id)
+    if any(o.visit_date is None for o in observations) and any(o.visit_date is not None for o in observations):
+        raise ValueError("Use source-recorded followup_month for this research record; calendar dates are unknown")
+    state = build_state(db, patient, observations)
     tv = save_version(db, patient, state, triggered_by)
     db.commit()
     return {**tv.state_json, "created_at": tv.created_at.isoformat()}
