@@ -135,3 +135,10 @@ rejected. The Dryad longitudinal adapter remains deliberately unimplemented
 until actual headers, eye linkage and visit timing can be reviewed. Shanghai is
 excluded from progression training unless a reliable longitudinal linkage is
 established. The DIMS-only release remains reproducible while that review is pending.
+
+## Additional datasets and separate onset endpoint
+
+See [CURRENT_DATASETS.md](CURRENT_DATASETS.md) and [ONSET_MODEL_CARD.md](ONSET_MODEL_CARD.md)
+for the newly integrated OLSM onset model, Aier-SERI baseline reference and
+Miopia noncommercial research tables. The progression metrics/cohort above are
+unchanged. Make/Docker now build both models offline from bundled licensed inputs.

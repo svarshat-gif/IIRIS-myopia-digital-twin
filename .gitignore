@@ -26,12 +26,14 @@ backend/artifacts/*.json
 # research workbook in backend/data/open is intentionally versioned with attribution.
 backend/data/*.csv
 backend/data/raw/
+backend/data/research/
 backend/tests/fixtures/legacy/
 .tools/
 .coverage*
 coverage.xml
 .ruff_cache/
 !backend/artifacts/progression_model.metrics.json
+!backend/artifacts/onset_model.metrics.json
 !backend/data/corpus/
 
 # OS / editor

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api, fmt } from '../lib/api'
 import { Card, Disclaimer, ErrorNote, SkeletonCard, StatusChip } from '../components/ui'
+import ResearchData from '../components/ResearchData'
 
 export default function ModelCard() {
   const [data, setData] = useState(null)
@@ -41,6 +42,7 @@ export default function ModelCard() {
         {result.reason || `SE 12-month MAE ${result.y_se_12m?.mae ?? 'not evaluable'} D`}</p>)}
       <p className="text-sm text-ink-muted">Development cross-validation groups patients. Interval calibration uses separate patients and each patient's maximum nonconformity score. Reported coverage is measured on the untouched test patients. Multi-year rollout bands are heuristic and are not calibrated beyond the first year.</p>
     </Card>
+    <ResearchData catalog={data.research_datasets} model={data.onset_model} />
     <Card title="Limits"><ul className="list-disc space-y-2 pl-5 text-sm text-ink-muted">{data.limitations.map(x => <li key={x}>{x}</li>)}</ul></Card>
   </div>
 }

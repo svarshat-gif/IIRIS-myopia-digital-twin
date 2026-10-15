@@ -20,6 +20,9 @@ jobs:
           path: |
             backend/artifacts/progression_model.joblib
             backend/artifacts/progression_model.metrics.json
+            backend/artifacts/onset_model.joblib
+            backend/artifacts/onset_model.metrics.json
+            backend/data/research/
             backend/data/training_visits.csv
             backend/data/training_visits.provenance.json
   leakage-guards:

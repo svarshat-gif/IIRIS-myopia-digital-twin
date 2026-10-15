@@ -160,6 +160,7 @@ async function blobUrl(path) {
 }
 
 export const api = {
+  onsetPrediction: (body) => request('/research/onset/predict', { method: 'POST', body }),
   cohort: () => request('/patients?limit=1000'),
   patientTwin: (id) => request(`/patients/${encodeURIComponent(id)}/twin`),
   patientVersions: (id) => request(`/patients/${encodeURIComponent(id)}/twin/versions`),

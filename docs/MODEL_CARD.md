@@ -107,3 +107,10 @@ assessment, calibrated long-term clinical risk or evidence for treatment effects
 Obtain and inspect the larger Dryad workbook, resolve units/eye linkage, expand
 the cohort and repeat a locked external evaluation before making performance
 claims. See [benchmarks and source-paper context](BENCHMARKS.md).
+
+## Additional datasets and separate onset endpoint
+
+See [CURRENT_DATASETS.md](CURRENT_DATASETS.md) and [ONSET_MODEL_CARD.md](ONSET_MODEL_CARD.md)
+for the newly integrated OLSM onset model, Aier-SERI baseline reference and
+Miopia noncommercial research tables. The progression metrics/cohort above are
+unchanged. Make/Docker now build both models offline from bundled licensed inputs.

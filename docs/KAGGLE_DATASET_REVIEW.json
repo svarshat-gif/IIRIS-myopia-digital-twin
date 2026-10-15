@@ -128,7 +128,9 @@
       "metadata_last_updated": "2023-02-08T22:03:39.047Z",
       "decision": "conditional_separate_onset_model",
       "reason": "618 baseline subjects; five-year binary onset outcome, not 6/12-month progression. Kaggle license Unknown; source description count conflicts with actual file.",
-      "used_in_release": false
+      "used_in_release": false,
+      "equivalent_upstream_added": true,
+      "use_role": "Verified GPL-3 upstream supplies five-year onset training; Kaggle copy itself not redistributed"
     },
     {
       "ref": "drskprabhakar/axial-length-prediction-dataset",
@@ -150,7 +152,8 @@
       "metadata_last_updated": "2025-11-17T16:21:15.377Z",
       "decision": "conditional_noncommercial_cross_sectional_research",
       "reason": "132 labeled and 24 unlabeled rows, adult students, no linked repeats or actual SE column. CC BY-NC 4.0; near-activity column entirely missing.",
-      "used_in_release": false
+      "used_in_release": true,
+      "use_role": "reference/research only; not model training"
     },
     {
       "ref": "panwei052117/ivi-questionnaire-responses-aier-seri",
@@ -161,7 +164,8 @@
       "metadata_last_updated": "2025-08-19T02:50:10.763Z",
       "decision": "candidate_adult_baseline_or_quality_of_life_analysis",
       "reason": "431 unique adults; bilateral SE/AL/VA and IVI. Source paper confirms CC0 and cross-sectional baseline. No forecast labels/exposures; eye-side dictionary ambiguity needs clarification.",
-      "used_in_release": false
+      "used_in_release": true,
+      "use_role": "reference/research only; not model training"
     },
     {
       "ref": "sajvom99/eye-sight-children",
@@ -917,5 +921,12 @@
     }
   ],
   "release_model_unchanged": "mdt-20261015-3e539413",
-  "fingerprint_note": "SHA256 values are locally calculated download fingerprints, not Kaggle-provided repository checksums. No candidate admitted to verified training manifest."
+  "fingerprint_note": "SHA256 values are locally calculated download fingerprints, not Kaggle-provided repository checksums. No candidate admitted to verified training manifest.",
+  "integration_update": {
+    "olsm": "GPL-3 CRAN upstream verified and equivalent Kaggle values confirmed; independent five-year onset model trained",
+    "aier_seri": "CC0 baseline reference included",
+    "miopia": "CC BY-NC research table included; no training",
+    "current_report": "CURRENT_DATASETS.md",
+    "onset_model_version": "onset5y-1637991b19"
+  }
 }

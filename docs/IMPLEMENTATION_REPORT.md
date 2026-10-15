@@ -64,3 +64,10 @@ container path verified. For the free research host, create Render, Neon and
 Cloudflare Pages/R2 accounts; set exact HTTPS CORS, TLS Postgres connection and
 private S3 credentials as documented. These are manual account/secret steps.
 Public free hosts may contain only de-identified open research records.
+
+## Additional datasets and separate onset endpoint
+
+See [CURRENT_DATASETS.md](CURRENT_DATASETS.md) and [ONSET_MODEL_CARD.md](ONSET_MODEL_CARD.md)
+for the newly integrated OLSM onset model, Aier-SERI baseline reference and
+Miopia noncommercial research tables. The progression metrics/cohort above are
+unchanged. Make/Docker now build both models offline from bundled licensed inputs.

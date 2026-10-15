@@ -13,7 +13,7 @@ from app.core.access import admin
 from app.db.database import get_db
 from app.db.models import Observation, Patient, TwinVersion
 from app.explain import explainer
-from app.ml import registry
+from app.ml import registry, onset
 from app.ml.features import MODIFIABLE_INPUTS
 from app.schemas.models import HealthOut
 
@@ -62,6 +62,8 @@ def model_card() -> dict[str, Any]:
         "feature_names": bundle["feature_names"],
         "feature_sets": bundle["feature_sets"],
         "metrics": bundle["metrics"],
+        "research_datasets": onset.catalog(),
+        "onset_model": onset.metadata(),
         "global_importance": explainer.global_importance(),
         "limitations": [
             "Trained on observational longitudinal data; associations only, never "
@@ -78,6 +80,11 @@ def model_card() -> dict[str, Any]:
               "generated cohort and carry no clinical meaning."]
              if bundle["data_is_synthetic"] else []),
     }
+
+
+@router.get('/meta/datasets', summary='Dataset roles: training, reference and research only')
+def research_datasets():
+    return onset.catalog()
 
 
 @router.get("/meta/inputs", summary="Modifiable inputs and their plausible ranges")

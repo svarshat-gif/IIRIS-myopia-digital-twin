@@ -48,7 +48,7 @@ class ControlsMiddleware(BaseHTTPMiddleware):
         started = time.monotonic()
         response = None
         group = "auth" if "/auth/" in path and request.method == "POST" else (
-            "compute" if any(s in path for s in ("simulate", "simulator", "projection", "query", "evidence/search", "sensitivity")) else None)
+            "compute" if any(s in path for s in ("simulate", "simulator", "projection", "query", "evidence/search", "sensitivity", "/research/")) else None)
         if settings.rate_limit_enabled and group:
             if len(self.buckets) > 10000:
                 for k in list(self.buckets):
@@ -77,7 +77,7 @@ class ControlsMiddleware(BaseHTTPMiddleware):
                 request._body = b"".join(chunks)
                 response = await call_next(request)
         actor = getattr(request.state, "actor_id", None)
-        sensitive = any(s in path for s in ("/patients", "/me/", "/auth/me", "/meta/stats", "/fhir/", "/agent/query", "/agent/runs", "/admin/"))
+        sensitive = any(s in path for s in ("/patients", "/me/", "/auth/me", "/meta/stats", "/fhir/", "/agent/query", "/agent/runs", "/admin/", "/research/"))
         if sensitive:
             try:
                 with SessionLocal() as db:

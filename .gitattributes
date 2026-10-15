@@ -1,0 +1,4 @@
+# Preserve licensed source bytes/checksums, including original line endings.
+backend/data/open/olsm/** -text whitespace=-blank-at-eol,-blank-at-eof
+backend/data/open/aier_seri/** -text whitespace=-blank-at-eol,-blank-at-eof
+backend/data/open/miopia/** -text whitespace=-blank-at-eol,-blank-at-eof

@@ -1,0 +1,42 @@
+{
+  "olsm": {
+    "source_url": "https://cran.r-project.org/src/contrib/aplore3_0.9.tar.gz",
+    "license": "GPL-3",
+    "role": "five_year_onset_training",
+    "files": {
+      "aplore3_0.9.tar.gz": "1c6615945fcb805328910e10708371daff1548362b8572ab227077cd349dc629",
+      "COPYING": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "CRAN-PACKAGES.txt": "6377eea027f251e8648d0d8cd1f3197193d61b29053f61ea8a2f3650c401ef3a",
+      "DESCRIPTION": "14cfc11eb897a1b9c26e04bd70e09f54f8a956f6dccb4922e469cf8ef9377ad7",
+      "myopia.csv": "2f7468fbf963efd7c4b676988663f0105c71a0951340f99782f1486a5ee05e8d",
+      "myopia.Rd": "e28104b4653422c3593c6a4d30bdd71356b676e3b68140470015c2f5dcce3533",
+      "myopia.rda": "dbe24fa224c404938007814ad181d5e0561800e8f325aefebe55d48ca644d4bc"
+    },
+    "data_is_synthetic": false,
+    "repository_md5": "21812a5e3837d10d46cd32f5e0333ddf",
+    "conversion": "rdata 1.0.0 read_rda; lower-case columns and categorical labels retained; no values invented; numeric/category-decoded values match all Kaggle rows."
+  },
+  "aier_seri": {
+    "source_url": "https://www.kaggle.com/datasets/panwei052117/ivi-questionnaire-responses-aier-seri",
+    "license": "CC0-1.0",
+    "role": "adult_baseline_reference",
+    "files": {
+      "metadata.json": "763bc56f8bcfa22c924599d1735cd590915c1c95aea8c42aac729be669b45f3d",
+      "S3 Data.xlsx": "5cc085a5e62db42a7b36254a1ec02dee4f176851552c538bd92f792a124ceee4"
+    },
+    "data_is_synthetic": false,
+    "source_paper": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12510582/"
+  },
+  "miopia": {
+    "source_url": "https://www.kaggle.com/datasets/manueldepradogarcia/miopia",
+    "license": "CC-BY-NC-4.0",
+    "role": "noncommercial_research_only",
+    "files": {
+      "metadata.json": "244792fe3b092bd62db171ae3cfb53159f64c79487b9a6de79fa15f387009f7d",
+      "X_test.csv": "8f5be9b12297c28c7a2cfeeda32206a4cabf09d3c5d2b67e04163f07aed939be",
+      "X_train.csv": "04fe5032f8918378d167309c4221dc14323cb805b5fe9cb3f3e4fc56171928e5",
+      "Y_train.csv": "428cadcc2a144830fa369b7bf8169d16f658834cdf002dea7310425fde466e1c"
+    },
+    "data_is_synthetic": false
+  }
+}

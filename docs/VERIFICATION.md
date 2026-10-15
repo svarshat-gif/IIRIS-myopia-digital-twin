@@ -8,15 +8,15 @@ from prepared infrastructure. The full deployment definition of done remains ope
 | Check | Result |
 |---|---|
 | Verified workbook -> normalization -> real training | Passed; 20 subjects, 140 visits; no generated fallback |
-| Backend pytest | 88 passed; 10 upstream/deprecated-name warnings |
-| Requested aggregate coverage | 89.73% |
-| Coverage by requested module | core 88.17%, ML 90.25%, simulator 91.23%, twin 89.19% |
+| Backend pytest | 94 passed; 10 upstream/deprecated-name warnings |
+| Requested aggregate coverage | 89.81% |
+| Coverage by requested module | core 88.17%, ML 90.34%, simulator 91.23%, twin 89.19% |
 | Ruff | Passed |
 | Installed Python dependency consistency | pip check: no broken requirements |
 | Frontend Vitest/Testing Library | Four tests passed |
-| Frontend production build | Passed; initial JS 214.32 kB / 70.53 kB gzip; charts loaded separately |
+| Frontend production build | Passed; initial JS 214.39 kB / 70.54 kB gzip; charts loaded separately |
 | Playwright/Chrome smoke | Two flows passed on an isolated SQLite test database |
-| Lighthouse 12.8.2 accessibility, production build | Sign-in 100; public simulator 95 |
+| Last Lighthouse 12.8.2 accessibility run (before onset UI addition) | Sign-in 100; public simulator 95 |
 | SQLite Alembic upgrade + schema check | Passed on fresh databases; no pending operations |
 | Postgres initial migration SQL generation | Passed in offline mode; not a live Postgres test |
 | Production browser dependencies | npm audit --omit=dev: zero advisories |
@@ -81,3 +81,8 @@ Smoke-test accounts/data are isolated in ignored databases ending smoke_test.db.
 Start with [DEPLOYMENT.md](DEPLOYMENT.md), then run the prepared CI/container checks.
 The larger-data, container, storage, hosted-deployment and clinical-validation
 items must not be marked complete on the basis of this local verification.
+
+New dataset integration: source hash/license guards, 618-subject independent onset
+training, missingness preservation and authenticated domain checks are included
+in the 94 passing tests. The browser Model Card smoke also exercises the separate
+five-year estimate form. See CURRENT_DATASETS.md. Docker/cloud remain unverified.

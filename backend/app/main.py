@@ -134,6 +134,8 @@ app.include_router(simulate.router, prefix=API_PREFIX, dependencies=_cohort_guar
 app.include_router(agent.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(evidence.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(admin.router, prefix=API_PREFIX, dependencies=_guard)
+from app.routers import research  # noqa: E402
+app.include_router(research.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(fhir.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(fhir.router, dependencies=_guard)
 

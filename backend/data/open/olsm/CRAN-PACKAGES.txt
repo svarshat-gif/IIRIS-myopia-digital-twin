@@ -1,0 +1,8 @@
+Package: aplore3
+Version: 0.9
+Depends: R (>= 3.1.1)
+Suggests: knitr, MASS, vcdExtra, nnet, survival, pROC
+License: GPL-3
+MD5sum: 21812a5e3837d10d46cd32f5e0333ddf
+NeedsCompilation: no
+Published: 2016-10-20 09:50:53

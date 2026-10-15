@@ -1,5 +1,10 @@
 # Kaggle dataset suitability review
 
+**Integration update:** OLSM is now trained via its verified GPL-3 upstream; Aier-SERI
+and Miopia are included with separate reference/research roles. See
+[the current dataset list](CURRENT_DATASETS.md). The discovery audit below records
+conditions before that integration and explains the sources still excluded.
+
 Reviewed 15 October 2026. This is a discovery and schema audit, not a training run.
 The release remains trained solely on verified Zenodo DIMS data, model
 `mdt-20261015-3e539413`. None of the candidates below was added to the training

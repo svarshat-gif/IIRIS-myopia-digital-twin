@@ -55,3 +55,10 @@ not a terminology-validated EHR integration or a complete FHIR server.
 See [the Kaggle candidate review](KAGGLE_DATASET_REVIEW.md) for inspected onset,
 cross-sectional, imaging and synthetic sources. Discovery does not admit a
 source to training; verify its license, endpoint and subject/time linkage first.
+
+## Additional datasets and separate onset endpoint
+
+See [CURRENT_DATASETS.md](CURRENT_DATASETS.md) and [ONSET_MODEL_CARD.md](ONSET_MODEL_CARD.md)
+for the newly integrated OLSM onset model, Aier-SERI baseline reference and
+Miopia noncommercial research tables. The progression metrics/cohort above are
+unchanged. Make/Docker now build both models offline from bundled licensed inputs.

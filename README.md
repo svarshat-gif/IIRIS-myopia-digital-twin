@@ -5,7 +5,7 @@ uncertainty-aware research twin with a clinician portal, audited access, a
 capability-gated simulator, cited deterministic agent tools and a FHIR read facade.
 The original warm-paper theme, fonts, tokens and component system are preserved.
 
-**Current status:** working local research application. 88 backend tests passed
+**Current status:** working local research application. 94 backend tests passed
 with 90% coverage across twin/simulator/ML/core, four frontend unit tests and two
 browser smoke flows passed. Lighthouse accessibility: sign-in 100, simulator 95.
 Docker/Compose, live Postgres/S3, remote CI and free-host deployment are not yet
@@ -15,7 +15,7 @@ verified on this machine (Docker/WSL/cloud accounts are absent). See
 
 ## Real data and honest results
 
-The release is trained on the unmodified, openly licensed
+The progression model is trained on the unmodified, openly licensed
 [Zenodo DIMS 36-month workbook](https://doi.org/10.5281/zenodo.18166476), CC BY 4.0:
 20 independent subjects, 140 visits, repeated SE/AL at baseline and 3/6/9/12/24/36
 months. Calendar dates and exposure data are absent and remain missing. The
@@ -42,8 +42,12 @@ There is no demonstrated clinical utility. No risk classifier is released becaus
 independent labels are insufficient. Behaviour/ergonomics ablations are marked
 unevaluable and numeric exposure/treatment what-ifs are refused.
 
-The [Kaggle candidate review](docs/KAGGLE_DATASET_REVIEW.md) assesses additional
-sources and explains why none has yet been added to the release model.
+The [current dataset list](docs/CURRENT_DATASETS.md) now includes a separate
+GPL-3 OLSM five-year onset model (618 children), CC0 Aier-SERI baseline reference
+(431 adults), and Miopia noncommercial research tables (156 rows). These are not
+additional progression visits. The [onset model card](docs/ONSET_MODEL_CARD.md)
+reports its independent held-out evaluation. The earlier
+[Kaggle review](docs/KAGGLE_DATASET_REVIEW.md) records the source audit.
 
 See [model card](docs/MODEL_CARD.md) for repeated patient-grouped CV, cluster
 bootstrap intervals, measured calibration coverage and benchmark limitations.
