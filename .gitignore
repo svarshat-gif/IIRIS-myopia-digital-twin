@@ -22,9 +22,11 @@ backend/artifacts/*.db
 backend/artifacts/*.joblib
 backend/artifacts/*.json
 
-# Data. Synthetic data is regenerable; real data must NEVER be committed.
+# Generated tables and unreviewed downloads. The explicitly licensed, de-identified
+# research workbook in backend/data/open is intentionally versioned with attribution.
 backend/data/*.csv
 backend/data/raw/
+backend/tests/fixtures/legacy/
 .tools/
 .coverage*
 coverage.xml

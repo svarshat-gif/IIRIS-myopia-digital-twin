@@ -12,6 +12,7 @@ loop if LangGraph is not installed.
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -29,6 +30,10 @@ _compiled = None
 
 
 def is_available() -> bool:
+    # Optional graph libraries must not enable remote trace export via ambient env.
+    os.environ["LANGCHAIN_TRACING_V2"] = "false"
+    os.environ["LANGCHAIN_TRACING"] = "false"
+    os.environ["LANGSMITH_TRACING"] = "false"
     try:
         import langgraph  # noqa: F401, PLC0415
         return True

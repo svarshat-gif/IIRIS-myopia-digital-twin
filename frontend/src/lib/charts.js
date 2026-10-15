@@ -26,6 +26,7 @@ export const C = {
 
 export function baseOptions({ yTitle, xTitle, reverseY = false } = {}) {
   return {
+    animation: typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? false : undefined,
     responsive: true,
     maintainAspectRatio: false,
     interaction: { mode: 'index', intersect: false },

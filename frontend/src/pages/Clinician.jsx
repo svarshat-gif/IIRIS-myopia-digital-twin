@@ -58,7 +58,10 @@ export function PatientDetail() {
       const relative = twin.current.visit_date === null
       const payload = { spherical_equivalent: form.spherical_equivalent, axial_length: form.axial_length,
         ...(relative ? { followup_month: form.followup_month } : { visit_date: form.visit_date }) }
-      await api.patientVisit(patientId, payload); await load()
+      await api.patientVisit(patientId, payload)
+      setAnswer(null); setDiff(null); setScenario(null)
+      setForm({ spherical_equivalent: null, axial_length: null, visit_date: '', followup_month: null })
+      await load()
     } catch (err) { setError(err) } finally { setBusy(false) }
   }
   async function ask(e) {
@@ -77,7 +80,7 @@ export function PatientDetail() {
   return <div className="space-y-5">
     <Link className="text-sm underline underline-offset-2" to="/app/cohort">Back to cohort</Link>
     <div><p className="script text-2xl text-ink-muted">the evolving record</p><h1 className="break-all text-3xl font-semibold">{twin.patient.external_key || 'Patient detail'}</h1>
-      <p className="lede mt-2">Twin v{twin.version} Â· {twin.patient.data_source}</p></div>
+      <p className="lede mt-2">Twin v{twin.version} · {twin.patient.data_source}</p></div>
     <ErrorNote error={error} />
     <Card title="Current twin"><dl className="grid gap-3 text-sm sm:grid-cols-3"><div><dt className="eyebrow">Spherical equivalent</dt><dd>{twin.current.spherical_equivalent} D</dd></div><div><dt className="eyebrow">Axial length</dt><dd>{twin.current.axial_length} mm</dd></div><div><dt className="eyebrow">Visit time</dt><dd>{twin.current.visit_date ? fmt.date(twin.current.visit_date) : `Month ${twin.current.followup_month} since baseline`}</dd></div></dl>
       <p className="note-watch mt-4" role="status">Monitor: {twin.monitor?.materially_changed ? twin.monitor.flags.join('; ') : twin.monitor?.note || 'No material change flagged'}</p>
@@ -90,8 +93,8 @@ export function PatientDetail() {
     </Card>
     <Card title="Prediction attribution" subtitle={explanation?.method === 'shap' ? 'SHAP feature attribution' : 'Feature ablation attribution; this is not an exact Shapley value'}><div className="overflow-x-auto"><table className="table"><thead><tr><th scope="col">Factor</th><th scope="col">Contribution</th></tr></thead><tbody>{explanation?.contributions?.map(c => <tr key={c.feature}><th scope="row">{c.label}</th><td>{fmt.num(c.contribution, 3)}</td></tr>)}</tbody></table></div><Disclaimer text={explanation?.attribution_disclaimer} /></Card>
     <Card title="Version history" actions={<button className="btn btn-secondary btn-sm" disabled={busy || versions.length < 2} onClick={compare}>Compare latest versions</button>}>
-      <ol className="space-y-2 text-sm">{versions.map(v => <li key={v.version}>v{v.version} Â· {v.triggered_by} Â· {fmt.date(v.created_at)}</li>)}</ol>
-      {diff && <div className="mt-4 space-y-2 text-sm" role="status">{diff.observed_changes?.map(c => <p key={c.field}>{c.field}: {c.from ?? 'missing'} â†’ {c.to ?? 'missing'} {c.unit}</p>)}</div>}
+      <ol className="space-y-2 text-sm">{versions.map(v => <li key={v.version}>v{v.version} · {v.triggered_by} · {fmt.date(v.created_at)}</li>)}</ol>
+      {diff && <div className="mt-4 space-y-2 text-sm" role="status">{diff.observed_changes?.map(c => <p key={c.field}>{c.field}: {c.from ?? 'missing'} → {c.to ?? 'missing'} {c.unit}</p>)}</div>}
     </Card>
     <Card title="Add a new observation" subtitle="This saves a new twin version, recalculates the prediction and records a monitor flag.">
       <form onSubmit={submitVisit} className="space-y-4">
@@ -106,8 +109,8 @@ export function PatientDetail() {
     </Card>
     <Card title="Agent console" subtitle="Deterministic tools, an auditable trace, and cited evidence.">
       <form onSubmit={ask} className="space-y-3"><Field label="Question"><textarea className="input" required minLength={3} maxLength={1000} value={question} onChange={e => setQuestion(e.target.value)} /></Field><button className="btn-primary" disabled={busy}>Ask the twin</button></form>
-      {answer && <div className="mt-4 space-y-3 text-sm" aria-live="polite"><p className="whitespace-pre-wrap">{answer.answer}</p><ol className="list-decimal space-y-2 pl-5">{answer.trace.map((t, i) => <li key={i}>{t.tool} Â· {t.status} Â· {t.why}{t.error && <p className="text-status-watch">{t.error}</p>}</li>)}</ol>
-        {answer.facts?.retrieve_evidence?.results?.map(c => <p key={c.external_id}><a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.title}</a> Â· {c.external_id} {c.doi && `Â· DOI ${c.doi}`}</p>)}<Disclaimer text={answer.disclaimer} /></div>}
+      {answer && <div className="mt-4 space-y-3 text-sm" aria-live="polite"><p className="whitespace-pre-wrap">{answer.answer}</p><ol className="list-decimal space-y-2 pl-5">{answer.trace.map((t, i) => <li key={i}>{t.tool} · {t.status} · {t.why}{t.error && <p className="text-status-watch">{t.error}</p>}</li>)}</ol>
+        {answer.facts?.retrieve_evidence?.results?.map(c => <p key={c.external_id}><a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.title}</a> · {c.external_id} {c.doi && `· DOI ${c.doi}`}</p>)}<Disclaimer text={answer.disclaimer} /></div>}
     </Card>
   </div>
 }

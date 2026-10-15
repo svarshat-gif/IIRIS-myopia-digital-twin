@@ -49,11 +49,19 @@ def load_visits(csv_path: str | Path) -> pd.DataFrame:
         df["followup_month"] = np.nan
     if (df.visit_date.isna() & df.followup_month.isna()).any():
         raise ValueError("Every visit needs a real date or source-recorded followup_month")
+    if (df.visit_date.notna() & df.followup_month.notna()).any():
+        raise ValueError("Use one time basis: visit_date or followup_month, not both")
     if df.patient_key.isna().any():
         raise ValueError("Missing patient_key")
+    if df.visit_date.notna().groupby(df.patient_key).nunique().gt(1).any():
+        raise ValueError("A patient cannot mix calendar dates and relative follow-up months")
     for col, low, high in [("spherical_equivalent", -30, 15), ("axial_length", 15, 35),
                            ("age", 0, 120), ("visual_acuity", -.3, 2), ("posture_score", 0, 1),
-                           ("followup_month", 0, 600)]:
+                           ("followup_month", 0, 600), ("corneal_curvature", 5, 12),
+                           ("parental_myopia", 0, 2), ("screen_time_hours", 0, 24),
+                           ("sleep_hours", 0, 24), ("near_work_min", 0, 1440),
+                           ("outdoor_min", 0, 1440), ("viewing_distance_cm", 5, 200),
+                           ("continuous_session_min", 0, 1440)]:
         df[col] = pd.to_numeric(df[col], errors="raise")
         if (~df[col].dropna().between(low, high)).any():
             raise ValueError(f"{col} outside [{low}, {high}]")
@@ -85,14 +93,12 @@ def build_supervised_table(df: pd.DataFrame) -> pd.DataFrame:
 
     for patient_key, group in df.groupby("patient_key", sort=False):
         visits = group.to_dict("records")
-        sex = next((v.get("sex") for v in visits if isinstance(v.get("sex"), str)), None)
-        parental = next(
-            (int(v["parental_myopia"]) for v in visits
-             if pd.notna(v.get("parental_myopia"))), None
-        )
-
         for i, current in enumerate(visits):
             history = visits[: i + 1]
+            # Metadata first reported later is not available to an earlier twin.
+            sex = next((v.get("sex") for v in history if isinstance(v.get("sex"), str)), None)
+            parental = next((int(v["parental_myopia"]) for v in history
+                             if pd.notna(v.get("parental_myopia"))), None)
             try:
                 row = build_feature_row(history, sex=sex, parental_myopia=parental)
             except ValueError:

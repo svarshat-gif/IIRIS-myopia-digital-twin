@@ -29,6 +29,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install -r backend/requirements-dev.txt
+      - run: make model
       - run: cd backend && pytest tests/test_data_integrity.py tests/test_hardening.py::test_production_refuses_unsafe_defaults tests/test_hardening.py::test_hosted_ai_configuration_rejected -q
   frontend:
     runs-on: ubuntu-latest
@@ -70,7 +71,7 @@ jobs:
       - run: cd frontend && npm ci && npx playwright install --with-deps chromium
       - run: |
           cd backend
-          python scripts/seed_demo.py --patients 2
+          python scripts/seed_demo.py --patients 2 --through-month 24
           python tests/setup_smoke.py
           python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --no-access-log > /tmp/iiris-api.log 2>&1 &
       - run: cd frontend && npm run dev -- --host 127.0.0.1 > /tmp/iiris-ui.log 2>&1 &

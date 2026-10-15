@@ -53,3 +53,33 @@ def test_future_target_does_not_change_features(tmp_path):
     after = build_supervised_table(load_visits(p))
     assert before.iloc[0].se == after.iloc[0].se
     assert before.iloc[0].y_se_12m != after.iloc[0].y_se_12m
+
+
+def test_later_metadata_is_not_leaked_into_baseline():
+    fixture = pd.DataFrame([{"patient_key": "test", "visit_date": __import__('datetime').date(2020, 1, 1),
+        "spherical_equivalent": -1, "axial_length": 24, "sex": None, "parental_myopia": None},
+        {"patient_key": "test", "visit_date": __import__('datetime').date(2021, 1, 1),
+        "spherical_equivalent": -1.5, "axial_length": 24.3, "sex": "male", "parental_myopia": 2}])
+    table = build_supervised_table(fixture)
+    assert pd.isna(table.iloc[0].sex_male)
+    assert pd.isna(table.iloc[0].parental_myopia)
+    assert table.iloc[1].parental_myopia == 2
+
+
+@pytest.mark.parametrize('invalid', ['mixed', 'both', 'duplicate', 'range'])
+def test_training_loader_rejects_ambiguous_time_duplicates_and_invalid_exposure(tmp_path, invalid):
+    fixture = pd.DataFrame({'patient_key': ['test'] * 2, 'visit_date': [None] * 2,
+        'followup_month': [0, 12], 'spherical_equivalent': [-1, -1.5],
+        'axial_length': [24, 24.3], 'outdoor_min': [None, None]})
+    if invalid in ('mixed', 'both'):
+        fixture.loc[0, 'visit_date'] = '2020-01-01'
+        if invalid == 'mixed':
+            fixture.loc[0, 'followup_month'] = None
+    elif invalid == 'duplicate':
+        fixture.loc[1, 'followup_month'] = 0
+    else:
+        fixture.loc[1, 'outdoor_min'] = -1
+    path = tmp_path / 'invalid.csv'
+    fixture.to_csv(path, index=False)
+    with pytest.raises(ValueError):
+        load_visits(path)

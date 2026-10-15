@@ -71,8 +71,8 @@ export default function Records() {
       {adding && <AddForm relative={data?.records?.[0]?.followup_month != null} onClose={closeForm} onSaved={(r) => {
         setLastSave(r); closeForm(); load()
         toast(r.previous_version
-          ? `Saved â€” your record is now version ${r.twin_version}`
-          : 'Saved â€” your record has started')
+          ? `Saved — your record is now version ${r.twin_version}`
+          : 'Saved — your record has started')
       }} />}
 
       {lastSave && <Card title={`Twin updated to v${lastSave.twin_version}`}><p role="status" className="text-sm">Prediction recalculated. Monitor: {lastSave.twin.monitor?.materially_changed ? lastSave.twin.monitor.flags.join('; ') : 'No material change flagged'}.</p><Disclaimer text={lastSave.disclaimer} /></Card>}
@@ -87,7 +87,7 @@ export default function Records() {
                         action={<button className="btn-primary"
                                         onClick={() => setAdding(true)}>
                           Add my first result</button>}>
-              Once you add a result from an eye test, it will appear here â€” newest
+              Once you add a result from an eye test, it will appear here — newest
               first, with the change since the visit before it.
             </EmptyState>
           </Card>
@@ -155,7 +155,7 @@ function RecordCard({ record: r, latest, onDelete }) {
             <div className={`mt-1 text-[12px] ${
               tone === 'alert' ? 'text-status-alert'
                 : tone === 'watch' ? 'text-status-watch' : 'text-status-calm'}`}>
-              {fmt.signed(change.spherical_equivalent)} D â€” {
+              {fmt.signed(change.spherical_equivalent)} D — {
                 seDirection(change.spherical_equivalent)}
             </div>
           )}
@@ -180,7 +180,7 @@ function RecordCard({ record: r, latest, onDelete }) {
         <div className="card-quiet px-4 py-3">
           <span className="eyebrow">Treatment</span>
           <div className="mt-1 text-[15px] font-medium">
-            {TREATMENTS.find(([v]) => v === r.treatment)?.[1] || r.treatment || 'â€”'}
+            {TREATMENTS.find(([v]) => v === r.treatment)?.[1] || r.treatment || '—'}
           </div>
           {r.visual_acuity !== null && r.visual_acuity !== undefined && (
             <div className="mt-1 text-[12px] text-ink-muted">
@@ -211,7 +211,7 @@ function RecordCard({ record: r, latest, onDelete }) {
           ) : (
             <p className="text-[13px] text-ink-muted">
               Nothing was recorded about screen time, reading or time outdoors at this
-              visit. That is fine â€” Iiris leaves it blank rather than guessing.
+              visit. That is fine — Iiris leaves it blank rather than guessing.
             </p>
           )}
         </Collapsible>
@@ -271,7 +271,7 @@ function AddForm({ onClose, onSaved, relative = false }) {
                          step="0.01"
                          value={form.axial_length} onChange={set('axial_length')}
                          placeholder="24.30"
-                         hint="From a biometry scan. Usually 20â€“30 mm." />
+                         hint="From a biometry scan. Usually 20–30 mm." />
             <NumberField name="age" label="Your age" unit="yrs" step="0.5"
                          value={form.age} onChange={set('age')} placeholder="12" />
             <NumberField name="visual_acuity" label="Vision" unit="logMAR" step="0.01"
@@ -311,7 +311,7 @@ function AddForm({ onClose, onSaved, relative = false }) {
         <section>
           <p className="eyebrow mb-1">Your screen setup</p>
           <p className="mb-3 text-[12.5px] text-ink-muted">
-            Rough estimates are fine â€” these are not clinical measurements.
+            Rough estimates are fine — these are not clinical measurements.
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <NumberField name="viewing_distance_cm" label="Screen or book distance"
@@ -322,7 +322,7 @@ function AddForm({ onClose, onSaved, relative = false }) {
                          unit="min" step="5"
                          value={form.continuous_session_min}
                          onChange={set('continuous_session_min')} placeholder="45" />
-            <NumberField name="posture_score" label="Posture" unit="0â€“1" step="0.05"
+            <NumberField name="posture_score" label="Posture" unit="0–1" step="0.05"
                          value={form.posture_score} onChange={set('posture_score')}
                          placeholder="0.7" hint="1 means upright and well supported." />
           </div>
@@ -332,7 +332,7 @@ function AddForm({ onClose, onSaved, relative = false }) {
 
         <div className="flex flex-wrap items-center gap-3">
           <button className="btn-primary" disabled={busy || !canSave}>
-            {busy ? 'Savingâ€¦' : 'Save result'}
+            {busy ? 'Saving…' : 'Save result'}
           </button>
           <button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button>
           {!canSave && !invalid && (

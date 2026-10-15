@@ -113,7 +113,7 @@ def add_observation(patient_id: str, payload: ObservationIn,
     validate -> store observation -> rebuild twin state -> re-run prediction ->
     save a NEW immutable version -> report what changed.
     """
-    patient = db.get(Patient, patient_id)
+    patient = db.scalar(select(Patient).where(Patient.patient_id == patient_id).with_for_update())
     if patient is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Patient not found.")
 

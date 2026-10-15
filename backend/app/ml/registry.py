@@ -1,7 +1,7 @@
 """Loads the trained model bundle and serves predictions for one twin state.
 
 The bundle is produced by `python -m app.ml.train` and holds, for every target:
-  - a median model  (HistGradientBoostingRegressor, loss="squared_error")
+  - a point model (legacy key "median"; squared-error loss estimates the conditional mean)
   - a lower and an upper quantile model -> the prediction interval
 plus a progression-risk classifier, the feature list, evaluation metrics and a
 background sample used by the explainer.

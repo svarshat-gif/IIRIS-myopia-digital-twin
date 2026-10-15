@@ -5,7 +5,7 @@ import struct
 import zlib
 
 from tests.conftest import API
-from tests.test_auth import PW, auth, register
+from tests.test_auth import auth, register
 
 
 def png_bytes(w: int = 8, h: int = 8) -> bytes:

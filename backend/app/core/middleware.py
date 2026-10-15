@@ -77,12 +77,12 @@ class ControlsMiddleware(BaseHTTPMiddleware):
                 request._body = b"".join(chunks)
                 response = await call_next(request)
         actor = getattr(request.state, "actor_id", None)
-        sensitive = any(s in path for s in ("/patients", "/me/", "/fhir/", "/agent/query", "/agent/runs", "/admin/"))
+        sensitive = any(s in path for s in ("/patients", "/me/", "/auth/me", "/meta/stats", "/fhir/", "/agent/query", "/agent/runs", "/admin/"))
         if sensitive:
             try:
                 with SessionLocal() as db:
-                    patient_id = getattr(request.state, "patient_id", None)
-                    if not patient_id and actor and "/me/" in path:
+                    patient_id = getattr(request.state, "patient_id", None) or request.path_params.get("patient_id")
+                    if not patient_id and actor and ("/me/" in path or "/auth/me" in path):
                         patient_id = db.scalar(select(Patient.patient_id).where(Patient.owner_user_id == actor).limit(1))
                     db.add(AccessAudit(actor_id=actor, patient_id=patient_id, action=request.method,
                                        resource=path[:255], status_code=response.status_code,

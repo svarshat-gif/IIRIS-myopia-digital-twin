@@ -98,12 +98,12 @@ class Patient(Base):
     owner_user_id: Mapped[str | None] = mapped_column(
         ForeignKey("users.user_id", ondelete="CASCADE"), index=True)
     external_key: Mapped[str | None] = mapped_column(String(128), unique=True, index=True)
-    age_at_start: Mapped[float] = mapped_column(Float)
+    age_at_start: Mapped[float | None] = mapped_column(Float)
     sex: Mapped[str | None] = mapped_column(String(16))
     ethnicity: Mapped[str | None] = mapped_column(String(64))
     parental_myopia: Mapped[int | None] = mapped_column(Integer)  # 0 / 1 / 2 parents
-    consent_status: Mapped[str] = mapped_column(String(32), default="synthetic")
-    data_source: Mapped[str] = mapped_column(String(64), default="synthetic")
+    consent_status: Mapped[str] = mapped_column(String(32), default="unverified")
+    data_source: Mapped[str] = mapped_column(String(64), default="unverified")
     notes: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 

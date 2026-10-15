@@ -157,8 +157,8 @@ export default function Profile() {
                      onChange={(e) => setPw({ ...pw,
                                               current_password: e.target.value })} />
             </Field>
-            <Field label="New password" hint="At least 8 characters.">
-              <input className="input" type="password" required minLength={8}
+            <Field label="New password" hint="At least 12 characters.">
+              <input className="input" type="password" required minLength={12}
                      autoComplete="new-password" value={pw.new_password}
                      onChange={(e) => setPw({ ...pw, new_password: e.target.value })} />
             </Field>
@@ -197,18 +197,13 @@ function ModelNote() {
   if (!card) return <p className="text-[12.5px] text-ink-muted">Loading…</p>
   return (
     <div className="space-y-3 text-[12.5px] leading-relaxed text-ink-muted">
-      {card.data_is_synthetic && (
-        <div className="note-watch">
-          This model was trained on <strong>synthetic data</strong> generated for
-          development. Its numbers demonstrate how Iiris works; they carry no clinical
-          meaning.
-        </div>
-      )}
+      <div className="note-watch">Trained on: <strong>{card.data_source}</strong>.
+        Exploratory research model; no demonstrated clinical utility.</div>
       <p>
         Version <code className="rounded bg-sand-200 px-1.5 py-0.5">
           {card.model_version}</code>, {card.algorithm}. Predictions come with a{' '}
-        {Math.round(card.interval_coverage * 100)}% range that is calibrated against
-        people the model never saw during training.
+        nominal {Math.round(card.interval_coverage * 100)}% range calibrated on separate
+        patients. Actual test coverage is reported on the Model card page.
       </p>
       <ul className="space-y-1.5">
         {card.limitations.slice(0, 4).map((l, i) => (

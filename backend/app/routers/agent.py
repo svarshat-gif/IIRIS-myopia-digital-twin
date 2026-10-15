@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -11,7 +11,7 @@ from app.agents import graph, llm
 from app.agents.tools import tool_schemas
 from app.core.config import settings
 from app.core.auth import get_current_user
-from app.core.access import check_patient, admin
+from app.core.access import check_patient
 from app.db.database import get_db
 from app.db.models import AgentRun, User
 from app.schemas.models import AgentQueryIn
@@ -54,10 +54,11 @@ def query_patient(patient_id: str, payload: AgentQueryIn,
 
 
 @router.post("/agent/query", summary="Ask the agent (patient optional)")
-def query(payload: AgentQueryIn, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> dict[str, Any]:
+def query(payload: AgentQueryIn, request: Request, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> dict[str, Any]:
     if not payload.patient_id:
         raise HTTPException(422, "Choose a patient; cohort-wide agent access is disabled")
     check_patient(db, user, payload.patient_id, own_allowed=True)
+    request.state.patient_id = payload.patient_id
     return _run(db, payload.question, payload.patient_id)
 
 

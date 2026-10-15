@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from datetime import date
-from pathlib import Path
 import re
 from urllib.parse import quote
 from typing import Any

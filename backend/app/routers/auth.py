@@ -82,7 +82,7 @@ def signup(payload: SignupIn, db: Session = Depends(get_db)) -> dict[str, Any]:
     db.add(Patient(
         owner_user_id=user.user_id,
         external_key=None,
-        age_at_start=payload.age if payload.age is not None else 0.0,
+        age_at_start=payload.age,
         sex=payload.sex,
         parental_myopia=payload.parental_myopia,
         consent_status="self_reported",

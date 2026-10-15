@@ -181,6 +181,7 @@ def my_records(user: User = Depends(get_current_user),
 def add_record(payload: ObservationIn, user: User = Depends(get_current_user),
                db: Session = Depends(get_db)) -> dict[str, Any]:
     patient = _patient(db, user)
+    db.execute(select(Patient).where(Patient.patient_id == patient.patient_id).with_for_update())
     clash = db.scalars(
         select(Observation).where(Observation.patient_id == patient.patient_id,
                                   Observation.visit_date == payload.visit_date,
@@ -188,8 +189,8 @@ def add_record(payload: ObservationIn, user: User = Depends(get_current_user),
     if clash:
         raise HTTPException(
             status.HTTP_409_CONFLICT,
-            f"You already have a result saved at this visit time. "
-            f"Edit or delete it first.")
+            "You already have a result saved at this visit time. "
+            "Edit or delete it first.")
 
     previous = twin_service.get_current_version(db, patient.patient_id)
     previous_version = previous.version if previous else None

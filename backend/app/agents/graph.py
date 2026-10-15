@@ -344,7 +344,7 @@ def _deterministic_answer(state: AgentState) -> str:
         cur = twin["current"]
         parts.append(
             f"Twin v{twin.get('twin_version')} for patient {twin['patient_id']}: at the "
-            f"visit on {cur['visit_date']} the spherical equivalent was "
+            f"visit on {cur.get('visit_date') or 'month ' + str(cur.get('followup_month'))} the spherical equivalent was "
             f"{_fmt(cur['spherical_equivalent'], 2, ' D')} and the axial length "
             f"{_fmt(cur['axial_length'], 2, ' mm')}, across {twin['n_visits']} recorded "
             f"visits. Recent trend: {_fmt(twin['derived'].get('se_slope_per_year'), 2, ' D/year')} "

@@ -21,13 +21,31 @@
       },
       "calibration_patients": 10,
       "development_grouped_cv": {
-        "n": 24,
-        "mae": 0.6619,
-        "rmse": 0.8892,
-        "r2": 0.6375
+        "strategy": "3 repeated patient-grouped 4-fold runs on training patients only",
+        "repeats": [
+          {
+            "n": 24,
+            "mae": 0.5958,
+            "rmse": 0.7943,
+            "r2": 0.7107
+          },
+          {
+            "n": 24,
+            "mae": 0.8233,
+            "rmse": 1.0239,
+            "r2": 0.5193
+          },
+          {
+            "n": 24,
+            "mae": 0.6605,
+            "rmse": 0.889,
+            "r2": 0.6376
+          }
+        ]
       },
       "interval_coverage_raw": 0.8333,
       "interval_coverage": 0.8333,
+      "interval_patient_coverage": 0.5,
       "mean_interval_width": 3.3455,
       "conformal_delta": 0.2407,
       "nominal_coverage": 0.9,
@@ -87,13 +105,31 @@
       },
       "calibration_patients": 10,
       "development_grouped_cv": {
-        "n": 24,
-        "mae": 0.7247,
-        "rmse": 0.9978,
-        "r2": 0.5592
+        "strategy": "3 repeated patient-grouped 4-fold runs on training patients only",
+        "repeats": [
+          {
+            "n": 24,
+            "mae": 0.7269,
+            "rmse": 0.9847,
+            "r2": 0.5707
+          },
+          {
+            "n": 24,
+            "mae": 0.8681,
+            "rmse": 1.1036,
+            "r2": 0.4607
+          },
+          {
+            "n": 24,
+            "mae": 0.7345,
+            "rmse": 1.0116,
+            "r2": 0.5468
+          }
+        ]
       },
       "interval_coverage_raw": 0.6667,
       "interval_coverage": 0.6667,
+      "interval_patient_coverage": 0.5,
       "mean_interval_width": 3.5066,
       "conformal_delta": 0.4001,
       "nominal_coverage": 0.9,
@@ -153,13 +189,31 @@
       },
       "calibration_patients": 10,
       "development_grouped_cv": {
-        "n": 24,
-        "mae": 0.4815,
-        "rmse": 0.6619,
-        "r2": 0.438
+        "strategy": "3 repeated patient-grouped 4-fold runs on training patients only",
+        "repeats": [
+          {
+            "n": 24,
+            "mae": 0.4663,
+            "rmse": 0.5302,
+            "r2": 0.6394
+          },
+          {
+            "n": 24,
+            "mae": 0.4362,
+            "rmse": 0.6327,
+            "r2": 0.4865
+          },
+          {
+            "n": 24,
+            "mae": 0.4092,
+            "rmse": 0.5021,
+            "r2": 0.6766
+          }
+        ]
       },
       "interval_coverage_raw": 0.0,
       "interval_coverage": 1.0,
+      "interval_patient_coverage": 1.0,
       "mean_interval_width": 3.5173,
       "conformal_delta": 0.814,
       "nominal_coverage": 0.9,
@@ -219,13 +273,31 @@
       },
       "calibration_patients": 10,
       "development_grouped_cv": {
-        "n": 24,
-        "mae": 0.353,
-        "rmse": 0.4445,
-        "r2": 0.7702
+        "strategy": "3 repeated patient-grouped 4-fold runs on training patients only",
+        "repeats": [
+          {
+            "n": 24,
+            "mae": 0.4294,
+            "rmse": 0.5081,
+            "r2": 0.6998
+          },
+          {
+            "n": 24,
+            "mae": 0.3488,
+            "rmse": 0.4371,
+            "r2": 0.7778
+          },
+          {
+            "n": 24,
+            "mae": 0.3163,
+            "rmse": 0.3669,
+            "r2": 0.8434
+          }
+        ]
       },
       "interval_coverage_raw": 0.0,
       "interval_coverage": 0.8333,
+      "interval_patient_coverage": 0.5,
       "mean_interval_width": 3.5363,
       "conformal_delta": 0.7202,
       "nominal_coverage": 0.9,
@@ -525,18 +597,19 @@
         "n_visits": 140
       }
     },
-    "table_sha256": "5f3d6df24cb6a719fc5d1c87a4648208b5d06b8bf96001bdcccc0cb96b021ec1",
+    "table_sha256": "57316025019f82879d7f7df86ecefad5c2ba827a0dc3138eb65cff652eecf691",
     "decisions": [
       "Shanghai c2fqz615c excluded: independent 2014/2018 school samples; longitudinal linkage unverified."
     ],
     "limitations": [
       "Only 20 DIMS subjects; very small patient-level holdout; not clinical validation.",
+      "SER is interpreted in diopters and AL in millimeters from field names, study context and value ranges; no separate units/eye-selection codebook was published with this workbook. Values are not converted.",
       "Calendar dates absent: visit_date remains null; scheduled follow-up months are preserved.",
       "Age recorded at baseline only; later ages remain missing. Gender B/G lacks a supplied codebook and is left missing.",
       "No behavioural/ergonomic measurements. No treatment-effect inference from an all-DIMS cohort.",
       "Peripheral refraction is retained in the raw workbook but excluded from the shared clinical model."
     ]
   },
-  "trained_at": "2026-10-13T17:18:36.143150+00:00",
-  "model_version": "mdt-20261013-02002927"
+  "trained_at": "2026-10-15T15:16:23.466730+00:00",
+  "model_version": "mdt-20261015-3e539413"
 }

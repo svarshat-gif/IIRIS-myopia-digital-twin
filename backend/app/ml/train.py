@@ -6,18 +6,17 @@ Design decisions that matter for the report:
 
 * Splits are BY PATIENT (GroupShuffleSplit). No patient contributes rows to more
   than one split, so repeated visits cannot leak between train and test.
-* Five model families are compared on the identical split -- Ridge, Random Forest,
-  XGBoost, LightGBM and HistGradientBoosting -- plus a carry-forward baseline.
+* Ridge, Random Forest and HistGradientBoosting are compared on the identical
+  split, plus carry-forward. XGBoost/LightGBM join only when installed.
   HistGradientBoosting is the DEPLOYED model because it is the one that also
   supports quantile loss (needed for the prediction interval) and NaN inputs
   natively (needed because behaviour/ergonomics are often unrecorded).
 * Uncertainty comes from quantile regression that is then CONFORMALIZED
   (Romano et al., "Conformalized Quantile Regression"): a 5th- and 95th-percentile
-  model is trained alongside each median model, and the resulting band is widened
-  by a constant estimated on a held-out validation split of *unseen patients* so
-  that the stated 90% interval actually covers ~90% of unseen outcomes. Raw
-  quantile forests routinely under-cover; without this step the interval would
-  claim more confidence than it has.
+  model is trained alongside each squared-error point estimator. The band is
+  widened using maximum nonconformity per held-out calibration patient, targeting
+  90% simultaneous patient coverage under exchangeability. Actual held-out
+  coverage is measured separately and can be much lower on this tiny cohort.
 * HistGradientBoosting accepts NaN natively, so partially-recorded behaviour and
   ergonomics rows are used as-is rather than imputed with invented values.
 * The ablation (clinical / +behaviour / +ergonomics) runs on the same splits and
@@ -209,15 +208,23 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
             entry["calibration_patients"] = int(calibration.patient_key.nunique())
             # Out-of-fold development scores do not inspect calibration/test patients.
             development = train.dropna(subset=[target])
-            folds = GroupKFold(n_splits=min(4, development.patient_key.nunique()))
-            oof = cross_val_predict(HistGradientBoostingRegressor(**HGB_PARAMS), Xtr, ytr,
-                                   cv=folds, groups=development.patient_key)
-            entry["development_grouped_cv"] = regression_metrics(ytr, oof)
+            repeats = []
+            for repeat_seed in (41, 42, 43):
+                folds = GroupKFold(n_splits=min(4, development.patient_key.nunique()),
+                                   shuffle=True, random_state=repeat_seed)
+                oof = cross_val_predict(HistGradientBoostingRegressor(**HGB_PARAMS), Xtr, ytr,
+                                       cv=folds, groups=development.patient_key)
+                repeats.append(regression_metrics(ytr, oof))
+            entry["development_grouped_cv"] = {"strategy": "3 repeated patient-grouped 4-fold runs on training patients only",
+                                                "repeats": repeats}
             entry["interval_coverage_raw"] = round(
                 float(np.mean((yte >= lo) & (yte <= hi))), 4)
-            lo_c, hi_c = lo - delta, hi + delta
+            # Evaluate exactly the band served by registry (includes point estimate).
+            lo_c, hi_c = np.minimum(lo - delta, pred), np.maximum(hi + delta, pred)
             entry["interval_coverage"] = round(
                 float(np.mean((yte >= lo_c) & (yte <= hi_c))), 4)
+            within = pd.Series((yte >= lo_c) & (yte <= hi_c))
+            entry["interval_patient_coverage"] = float(within.groupby(test.dropna(subset=[target]).patient_key.to_numpy()).all().mean())
             entry["mean_interval_width"] = round(float(np.mean(hi_c - lo_c)), 4)
             entry["conformal_delta"] = round(delta, 4)
             entry["nominal_coverage"] = INTERVAL_COVERAGE
@@ -380,7 +387,7 @@ def main() -> None:
 
     features = list(ALL_FEATURES)
 
-    print("\nTraining regression models (median + 5th/95th quantile):")
+    print("\nTraining regression models (point + 5th/95th quantile):")
     models, metrics = train_regressors(train, val, test, features)
     if not models:
         raise ValueError("No evaluable real-data targets; refusing to write a deployable bundle")
@@ -412,8 +419,10 @@ def main() -> None:
                    else float(np.nanmedian(train_X[:, i])))
                for i, f in enumerate(features)}
 
+    protocol = b"".join((Path(__file__).parent / name).read_text(encoding="utf-8").encode()
+                        for name in ("train.py", "features.py", "dataset.py"))
     fingerprint = hashlib.sha256(
-        args.data.read_bytes() + str(args.seed).encode()).hexdigest()[:8]
+        args.data.read_bytes() + protocol + str(args.seed).encode()).hexdigest()[:8]
     trained_at = datetime.now(timezone.utc)
     bundle = {
         "model_version": f"mdt-{trained_at:%Y%m%d}-{fingerprint}",

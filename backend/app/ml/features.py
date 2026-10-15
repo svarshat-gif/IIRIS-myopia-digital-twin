@@ -250,7 +250,7 @@ def build_feature_row(
         # --- clinical ---
         "age": current.age if current.age is not None else NAN,
         "sex_male": 1.0 if (sex or "").lower() in {"m", "male"} else
-                    (0.0 if sex else NAN),
+                    (0.0 if (sex or "").lower() in {"f", "female"} else NAN),
         "parental_myopia": float(parental_myopia) if parental_myopia is not None else NAN,
         "se": current.spherical_equivalent if current.spherical_equivalent is not None else NAN,
         "al": current.axial_length if current.axial_length is not None else NAN,

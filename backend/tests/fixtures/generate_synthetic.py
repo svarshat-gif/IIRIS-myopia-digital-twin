@@ -1,21 +1,5 @@
-"""Generate a SYNTHETIC longitudinal myopia cohort.
-
-WHY THIS EXISTS
----------------
-Real de-identified hospital data is not available yet. This generator produces a
-plausible longitudinal cohort so the twin, the models, the simulator and the UI
-can be built and demonstrated end to end today.
-
-IT IS NOT REAL DATA. Every number here comes from a hand-written progression
-equation, not from patients. Nothing measured on this cohort is a clinical
-finding. Replace it with real data by following docs/DATA_ONBOARDING.md -- the
-CSV column contract is identical, so no other code has to change.
-
-The equation encodes directions that are broadly reported in the myopia
-literature (younger age, parental myopia, more near work and less outdoor time
-associate with faster progression) so that the pipeline has learnable signal and
-the what-if simulator responds in a sensible direction. The magnitudes are
-illustrative.
+"""TEST FIXTURE ONLY. Never use this generated cohort for a shipped model,
+demo database or UI metrics. Release training explicitly rejects generated data.
 """
 from __future__ import annotations
 
@@ -150,11 +134,13 @@ def main() -> None:
     ap.add_argument("--interval-months", type=int, default=6)
     ap.add_argument("--seed", type=int, default=20260908)
     ap.add_argument("--out", type=Path,
-                    default=Path(__file__).resolve().parents[1] / "data" / "synthetic_cohort.csv")
+                    default=Path(__file__).resolve().parent / "synthetic_cohort.csv")
     # Simulates a real-world dataset where behaviour/ergonomics are only partly recorded.
     ap.add_argument("--missing-behaviour", type=float, default=0.12)
     ap.add_argument("--missing-ergonomics", type=float, default=0.22)
     args = ap.parse_args()
+    if not args.out.resolve().is_relative_to(Path(__file__).resolve().parent):
+        raise ValueError("Synthetic output must stay inside tests/fixtures")
 
     rng = np.random.default_rng(args.seed)
     rows: list[dict] = []

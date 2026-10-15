@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.core.config import settings
+from app.simulator.constraints import ScenarioRejected
 from app.core.security import require_api_key
 from app.core.access import cohort_access
 from app.core.middleware import ControlsMiddleware, JsonFormatter
@@ -55,8 +56,7 @@ A normal ML API answers *"what is the prediction?"*. This one answers:
 prescribe, and does not claim causal treatment effects. Simulated scenarios are
 model estimates produced by re-running a predictive model on modified inputs.
 
-**Data scope.** Check `GET /api/v1/health` -> `data_is_synthetic`. When true, the
-loaded model was trained on generated data and its metrics carry no clinical meaning.
+**Data scope.** The release uses verified open research data. `GET /api/v1/meta/model` exposes source, patient counts, held-out results and limitations. Synthetic release models are refused.
 """
 
 TAGS = [
@@ -98,8 +98,7 @@ async def lifespan(app: FastAPI):
     if settings.api_key:
         log.info("API-key authentication is ENABLED.")
     else:
-        log.warning("API-key authentication is DISABLED (development default). "
-                    "Set API_KEY before exposing this service.")
+        log.info("User JWT and assignment RBAC protect all private patient data (gate=%s).", settings.auth_gate)
     yield
 
 
@@ -138,7 +137,6 @@ app.include_router(admin.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(fhir.router, prefix=API_PREFIX, dependencies=_guard)
 app.include_router(fhir.router, dependencies=_guard)
 
-from app.simulator.constraints import ScenarioRejected
 
 
 @app.exception_handler(ScenarioRejected)

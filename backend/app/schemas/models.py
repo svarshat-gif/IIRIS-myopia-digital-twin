@@ -13,20 +13,20 @@ ExplainTarget = Literal["se_6m", "se_12m", "al_6m", "al_12m"]
 
 class PatientCreate(BaseModel):
     model_config = ConfigDict(json_schema_extra={"example": {
-        "external_key": "SYN00042", "age_at_start": 9.5, "sex": "female",
-        "parental_myopia": 1, "consent_status": "synthetic", "data_source": "synthetic",
+        "external_key": "study-example", "age_at_start": 9.5, "sex": "female",
+        "parental_myopia": 1, "consent_status": "unverified", "data_source": "manual",
     }})
 
     external_key: str | None = Field(
         None, max_length=128,
         description="De-identified study key. NEVER a name, MRN or contact detail.")
-    age_at_start: float = Field(..., ge=0, le=30)
+    age_at_start: float | None = Field(None, ge=0, le=120)
     sex: Literal["male", "female", "other", "unknown"] | None = None
     ethnicity: str | None = Field(None, max_length=64)
     parental_myopia: int | None = Field(None, ge=0, le=2,
                                         description="Number of myopic parents (0-2).")
-    consent_status: str = Field("synthetic", max_length=32)
-    data_source: str = Field("synthetic", max_length=64)
+    consent_status: str = Field("unverified", max_length=32)
+    data_source: str = Field("unverified", max_length=64)
     notes: str | None = None
 
 
@@ -35,7 +35,7 @@ class PatientOut(BaseModel):
 
     patient_id: str
     external_key: str | None
-    age_at_start: float
+    age_at_start: float | None
     sex: str | None
     ethnicity: str | None
     parental_myopia: int | None
@@ -86,7 +86,6 @@ class ObservationIn(BaseModel):
     @field_validator("visit_date")
     @classmethod
     def not_absurdly_future(cls, v: date) -> date:
-        from datetime import timedelta
         if v is not None and v > date.today():
             raise ValueError("visit_date cannot be in the future.")
         return v
@@ -95,6 +94,8 @@ class ObservationIn(BaseModel):
     def has_time(self):
         if self.visit_date is None and self.followup_month is None:
             raise ValueError("Provide visit_date or source-recorded followup_month")
+        if self.visit_date is not None and self.followup_month is not None:
+            raise ValueError("Use one time basis: visit_date or followup_month, not both")
         return self
 
 

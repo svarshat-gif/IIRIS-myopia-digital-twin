@@ -7,11 +7,11 @@ import { installScrollReveal } from '../lib/interactions'
 
 const STEPS = [
   { n: '01', title: 'Add your results',
-    body: 'Type in what your optometrist measured â€” your prescription, and the eye length scan if you have it. Anything you do not have, you leave blank.' },
+    body: 'Type in what your optometrist measured — your prescription, and the eye length scan if you have it. Anything you do not have, you leave blank.' },
   { n: '02', title: 'Watch the trend',
     body: 'Iiris keeps every visit and draws the line between them, so you can see whether things are moving quickly, slowly, or holding steady.' },
   { n: '03', title: 'Try a different future',
-    body: 'Change the habits â€” more time outdoors, a longer arm on the screen â€” and see how the modelled trajectory shifts.' },
+    body: 'See exploratory estimates with uncertainty, and check which scenarios the measured training data can support.' },
 ]
 
 const FEATURES = [
@@ -19,10 +19,10 @@ const FEATURES = [
     body: 'Every appointment and every measurement, kept together instead of scattered across prescription slips.',
     icon: IconStack },
   { title: 'A forecast that admits doubt',
-    body: 'Every projection comes with a range, not a single confident number. The range widens the further out you look â€” because it should.',
+    body: 'Every projection comes with a range, not a single confident number. The range widens the further out you look — because it should.',
     icon: IconRange },
   { title: 'Reasons, not just results',
-    body: 'Iiris shows which of your habits and measurements moved the estimate, in plain words.',
+    body: 'Iiris shows which measured inputs moved the estimate, in plain words. This model cannot estimate habit changes.',
     icon: IconWhy },
   { title: 'Appointments you will not miss',
     body: 'Keep your past visits and your next review in the same place as the numbers they produced.',
@@ -68,7 +68,7 @@ export default function Landing() {
             <p className="lede mt-6 max-w-xl text-[17px]">
               A prescription tells you where your eyes are today. Iiris keeps every
               reading you have ever had, shows you the direction of travel, and lets you
-              test what a different set of habits might do to it.
+              understand the model estimates and what the training data can support.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -84,7 +84,7 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Illustrative trajectory â€” not real patient data, and labelled as such. */}
+          {/* Illustrative trajectory — not real patient data, and labelled as such. */}
           <div className="animate-fade-up [animation-delay:.12s]">
             <HeroCard />
           </div>
@@ -123,7 +123,7 @@ export default function Landing() {
             </h2>
             <p className="lede mt-4 text-[15px]">
               Most health tools give you one confident number. Eyes do not work like
-              that. Iiris shows you the range it is actually confident about, and tells
+              that. Iiris shows model intervals and their measured coverage, and tells
               you when a difference is too small to mean anything.
             </p>
           </div>

@@ -1,10 +1,9 @@
 import pytest
 from pydantic import ValidationError
-from sqlalchemy import select
 from app.core.config import Settings, settings
 from app.core.auth import create_access_token, hash_password
 from app.db.database import SessionLocal
-from app.db.models import User, ClinicianAssignment, Patient
+from app.db.models import User
 
 
 def account(role):

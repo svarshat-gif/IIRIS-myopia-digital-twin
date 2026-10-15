@@ -227,21 +227,21 @@ export const fmt = {
   /** Dioptres always carry an explicit sign: -2.50 D and +0.25 D read differently. */
   dioptre: (v, digits = 2) =>
     v === null || v === undefined || Number.isNaN(v)
-      ? 'â€”' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
+      ? '—' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
   mm: (v, digits = 2) =>
-    v === null || v === undefined || Number.isNaN(v) ? 'â€”' : Number(v).toFixed(digits),
+    v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(digits),
   num: (v, digits = 1) =>
-    v === null || v === undefined || Number.isNaN(v) ? 'â€”' : Number(v).toFixed(digits),
+    v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(digits),
   signed: (v, digits = 2) =>
-    v === null || v === undefined ? 'â€”' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
+    v === null || v === undefined ? '—' : `${v > 0 ? '+' : ''}${Number(v).toFixed(digits)}`,
   pct: (v, digits = 0) =>
-    v === null || v === undefined ? 'â€”' : `${(Number(v) * 100).toFixed(digits)}%`,
+    v === null || v === undefined ? '—' : `${(Number(v) * 100).toFixed(digits)}%`,
   date: (s) => (s ? new Date(s + (s.length === 10 ? 'T00:00:00' : ''))
     .toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
-    : 'â€”'),
+    : '—'),
   monthYear: (s) => (s ? new Date(s + (s.length === 10 ? 'T00:00:00' : ''))
-    .toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'â€”'),
-  /** "in 3 months", "2 weeks ago" â€” friendlier than a bare date on a dashboard. */
+    .toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : '—'),
+  /** "in 3 months", "2 weeks ago" — friendlier than a bare date on a dashboard. */
   relative: (days) => {
     if (days === null || days === undefined) return ''
     const abs = Math.abs(days)

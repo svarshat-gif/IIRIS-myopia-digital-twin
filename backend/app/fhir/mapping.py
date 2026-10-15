@@ -84,14 +84,18 @@ def patient_to_fhir(patient: Patient) -> dict[str, Any]:
             "valueDecimal": patient.age_at_start,
         }],
     }
+    if patient.age_at_start is None:
+        resource["extension"] = []
     if patient.sex:
-        mapped = {"male": "male", "female": "female", "m": "male", "f": "female"}
+        mapped = {"male": "male", "female": "female", "m": "male", "f": "female", "other": "other"}
         resource["gender"] = mapped.get(patient.sex.lower(), "unknown")
     if patient.parental_myopia is not None:
         resource["extension"].append({
             "url": "http://myopia-twin.local/StructureDefinition/parental-myopia-count",
             "valueInteger": patient.parental_myopia,
         })
+    if not resource["extension"]:
+        resource.pop("extension")
     return resource
 
 

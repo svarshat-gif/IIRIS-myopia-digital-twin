@@ -21,7 +21,6 @@ from typing import Any
 
 import jwt
 from fastapi import Depends, HTTPException, Request, status
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings

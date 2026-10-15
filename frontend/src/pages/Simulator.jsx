@@ -2,9 +2,9 @@
  * The simulator.
  *
  * Two modes:
- *   "mine"  â€” projects the signed-in user's own record forward, with an optional
+ *   "mine"  — projects the signed-in user's own record forward, with an optional
  *             sustained habit change.
- *   "quick" â€” projects from values typed in by hand, for people with no record
+ *   "quick" — projects from values typed in by hand, for people with no record
  *             (and for the public /try page).
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -22,7 +22,7 @@ const PRESETS = [
     blurb: 'The single change with the most consistent support in the literature.' },
   { label: 'Less screen, further away',
     changes: { screen_time_hours: 2, viewing_distance_cm: 40 },
-    blurb: 'Cut screen time and hold it at armâ€™s length.' },
+    blurb: 'Cut screen time and hold it at arm’s length.' },
   { label: 'Break every 20 minutes',
     changes: { continuous_session_min: 20, posture_score: 0.9 },
     blurb: 'Shorter unbroken sessions and a better set-up.' },
@@ -34,7 +34,7 @@ const PRESETS = [
 
 const CONFIDENCE_COPY = {
   modelled: 'Directly modelled from your data.',
-  projected: 'Built on the year before it â€” treat as a direction, not a number.',
+  projected: 'Built on the year before it — treat as a direction, not a number.',
   indicative: 'Far out. Shows the shape of the trend only.',
 }
 
@@ -176,7 +176,7 @@ function MyProjection() {
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <button className="btn-primary btn-sm" disabled={busy} onClick={() => run()}>
-              {busy ? 'Workingâ€¦' : 'Run this scenario'}
+              {busy ? 'Working…' : 'Run this scenario'}
             </button>
             <button className="btn btn-ghost btn-sm"
                     onClick={() => { setChanges({}); run(undefined, {}) }}>
@@ -268,10 +268,10 @@ function QuickProjection({ publicMode }) {
                            step="0.25" required
                            value={form.spherical_equivalent}
                            onChange={set('spherical_equivalent')}
-                           hint="Negative for short-sighted, e.g. âˆ’1.50" />
+                           hint="Negative for short-sighted, e.g. −1.50" />
               <NumberField name="axial_length" label="Eye length" unit="mm" step="0.01"
                            value={form.axial_length} onChange={set('axial_length')}
-                           hint="Optional â€” from a biometry scan. Usually 20â€“30 mm." />
+                           hint="Optional — from a biometry scan. Usually 20–30 mm." />
               <Field label="Short-sighted parents"
                      hint="One of the strongest predictors there is.">
                 <select className="input" value={form.parental_myopia ?? ''}
@@ -321,7 +321,7 @@ function QuickProjection({ publicMode }) {
               <input type="checkbox" disabled checked={compare}
                      onChange={(e) => setCompare(e.target.checked)}
                      className="h-4 w-4 rounded border-line-strong accent-ink" />
-              Also show a healthier-habits comparison
+              Habit comparison unavailable for this training cohort
             </label>
           </div>
 
@@ -334,7 +334,7 @@ function QuickProjection({ publicMode }) {
           )}
 
           <button className="btn-primary btn-lg" disabled={busy || !ready || invalid}>
-            {busy ? 'Workingâ€¦' : 'Show me the projection'}
+            {busy ? 'Working…' : 'Show me the projection'}
           </button>
         </form>
       </Card>
@@ -352,7 +352,7 @@ function QuickProjection({ publicMode }) {
             <Card title="Keep this, and watch it change">
               <p className="lede text-sm">
                 With an account, Iiris keeps every result you add and shows the trend
-                between them â€” which is far more informative than a single estimate.
+                between them — which is far more informative than a single estimate.
               </p>
               <Link to="/signup" className="btn-primary btn-sm mt-4">
                 Create a free account
@@ -458,7 +458,7 @@ function ProjectionResult({ history, baseline, scenario, measure, onMeasure,
       </Card>
 
       <Card title="Year by year"
-            subtitle="Confidence drops the further out you look â€” that is shown, not hidden.">
+            subtitle="Confidence drops the further out you look — that is shown, not hidden.">
         <div className="overflow-x-auto">
           <table className="table">
             <thead>

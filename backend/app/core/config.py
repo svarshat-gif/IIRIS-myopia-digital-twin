@@ -105,6 +105,8 @@ class Settings(BaseSettings):
             if self.storage_backend != "s3" or not all((self.s3_endpoint_url, self.s3_bucket,
                                                           self.s3_access_key_id, self.s3_secret_access_key)):
                 failures.append("Production uploads require configured S3-compatible storage")
+            if self.storage_backend == "s3" and urlparse(self.s3_endpoint_url).scheme != "https":
+                failures.append("Production S3 endpoint must use HTTPS")
             if failures:
                 raise ValueError("; ".join(failures))
         return self

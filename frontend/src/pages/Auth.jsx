@@ -20,7 +20,7 @@ function Shell({ title, kicker, children, footer }) {
         </div>
       </div>
 
-      {/* Quiet supporting panel â€” no imagery, just the promise restated. */}
+      {/* Quiet supporting panel — no imagery, just the promise restated. */}
       <div className="grain relative hidden overflow-hidden bg-ink lg:block">
         <div className="relative z-10 flex h-full flex-col justify-center px-14
                         text-sand-100">
@@ -82,14 +82,14 @@ export function Login() {
         </Field>
         <Field label="Password">
           <input className="input" type="password" autoComplete="current-password"
-                 required value={form.password} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                 required value={form.password} placeholder="••••••••"
                  onChange={(e) => setForm({ ...form, password: e.target.value })} />
         </Field>
 
         <ErrorNote error={error} />
 
         <button className="btn-primary w-full" disabled={busy}>
-          {busy ? 'Signing inâ€¦' : 'Sign in'}
+          {busy ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
 
@@ -155,7 +155,7 @@ export function Signup() {
                hint="At least 12 characters.">
           <input className={`input ${weak ? 'input-error' : ''}`} type="password"
                  autoComplete="new-password" required minLength={12}
-                 value={form.password} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                 value={form.password} placeholder="••••••••"
                  onChange={(e) => setForm({ ...form, password: e.target.value })} />
         </Field>
 
@@ -198,7 +198,7 @@ export function Signup() {
         <ErrorNote error={error} />
 
         <button className="btn-primary w-full" disabled={busy || weak}>
-          {busy ? 'Creating your accountâ€¦' : 'Create account'}
+          {busy ? 'Creating your account…' : 'Create account'}
         </button>
         <p className="text-[11.5px] leading-relaxed text-ink-faint">
           Iiris stores what you enter so you can track it over time. It is a

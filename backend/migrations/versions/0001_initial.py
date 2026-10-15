@@ -109,7 +109,7 @@ def upgrade():
     sa.Column('patient_id', sa.String(length=64), nullable=False),
     sa.Column('owner_user_id', sa.String(length=64), nullable=True),
     sa.Column('external_key', sa.String(length=128), nullable=True),
-    sa.Column('age_at_start', sa.Float(), nullable=False),
+    sa.Column('age_at_start', sa.Float(), nullable=True),
     sa.Column('sex', sa.String(length=16), nullable=True),
     sa.Column('ethnicity', sa.String(length=64), nullable=True),
     sa.Column('parental_myopia', sa.Integer(), nullable=True),
