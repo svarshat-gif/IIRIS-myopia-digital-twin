@@ -51,3 +51,7 @@ reviewed pipeline and private deployment.
 FHIR maps actual dates only; relative months are a project extension. Ocular
 codes are explicitly project-local, not guessed LOINC/SNOMED. The read facade is
 not a terminology-validated EHR integration or a complete FHIR server.
+
+See [the Kaggle candidate review](KAGGLE_DATASET_REVIEW.md) for inspected onset,
+cross-sectional, imaging and synthetic sources. Discovery does not admit a
+source to training; verify its license, endpoint and subject/time linkage first.

@@ -42,6 +42,9 @@ There is no demonstrated clinical utility. No risk classifier is released becaus
 independent labels are insufficient. Behaviour/ergonomics ablations are marked
 unevaluable and numeric exposure/treatment what-ifs are refused.
 
+The [Kaggle candidate review](docs/KAGGLE_DATASET_REVIEW.md) assesses additional
+sources and explains why none has yet been added to the release model.
+
 See [model card](docs/MODEL_CARD.md) for repeated patient-grouped CV, cluster
 bootstrap intervals, measured calibration coverage and benchmark limitations.
 

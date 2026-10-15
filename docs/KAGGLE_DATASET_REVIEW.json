@@ -1,0 +1,921 @@
+{
+  "reviewed_at": "2026-10-15T15:36:06.831979+00:00",
+  "scope": "Kaggle candidate discovery and file/schema review only; no model training or database seeding changes",
+  "search": {
+    "unique_search_hits": 185,
+    "cached_search_responses": [
+      {
+        "cached_response": "search-axial_elongation-page1.json",
+        "result_count": 0
+      },
+      {
+        "cached_response": "search-axial_length.json",
+        "result_count": 14
+      },
+      {
+        "cached_response": "search-CLEERE.json",
+        "result_count": 0
+      },
+      {
+        "cached_response": "search-DIMS-page1.json",
+        "result_count": 20
+      },
+      {
+        "cached_response": "search-eye_strain.json",
+        "result_count": 12
+      },
+      {
+        "cached_response": "search-myopia-page2.json",
+        "result_count": 20
+      },
+      {
+        "cached_response": "search-myopia-page3.json",
+        "result_count": 20
+      },
+      {
+        "cached_response": "search-myopia-page4.json",
+        "result_count": 15
+      },
+      {
+        "cached_response": "search-myopia-page5.json",
+        "result_count": 0
+      },
+      {
+        "cached_response": "search-myopia-page6.json",
+        "result_count": 0
+      },
+      {
+        "cached_response": "search-myopia.json",
+        "result_count": 20
+      },
+      {
+        "cached_response": "search-myopia_longitudinal-page1.json",
+        "result_count": 1
+      },
+      {
+        "cached_response": "search-myopia_progression.json",
+        "result_count": 0
+      },
+      {
+        "cached_response": "search-myopia_risk-page1.json",
+        "result_count": 3
+      },
+      {
+        "cached_response": "search-myopic.json",
+        "result_count": 8
+      },
+      {
+        "cached_response": "search-near_work-page1.json",
+        "result_count": 20
+      },
+      {
+        "cached_response": "search-nearwork-page1.json",
+        "result_count": 0
+      },
+      {
+        "cached_response": "search-ocular_biometric-page1.json",
+        "result_count": 2
+      },
+      {
+        "cached_response": "search-ocular_biometry.json",
+        "result_count": 0
+      },
+      {
+        "cached_response": "search-Orinda.json",
+        "result_count": 2
+      },
+      {
+        "cached_response": "search-refraction-page1.json",
+        "result_count": 11
+      },
+      {
+        "cached_response": "search-refractive_error-page1.json",
+        "result_count": 5
+      },
+      {
+        "cached_response": "search-spherical_equivalent-page1.json",
+        "result_count": 6
+      },
+      {
+        "cached_response": "search-vision_screen_time.json",
+        "result_count": 20
+      },
+      {
+        "cached_response": "search_myopia.json",
+        "result_count": 20
+      }
+    ],
+    "note": "Hits include irrelevant datasets, images and model artifacts. Only shortlisted candidates received detailed review. Search is not proof of catalogue completeness."
+  },
+  "candidates": [
+    {
+      "ref": "neevvv/human-lifestyle-and-daily-habits-dataset",
+      "url": "https://www.kaggle.com/datasets/neevvv/human-lifestyle-and-daily-habits-dataset",
+      "title": "Human Lifestyle & Daily Habits Dataset",
+      "kaggle_declared_license": "Attribution 4.0 International (CC BY 4.0)",
+      "version": 1,
+      "metadata_last_updated": "2026-07-14T11:05:30.373Z",
+      "decision": "reject",
+      "reason": "Uploader explicitly describes SCM-generated adult data. No ocular outcomes or linked visits.",
+      "used_in_release": false
+    },
+    {
+      "ref": "mscgeorges/myopia-study",
+      "url": "https://www.kaggle.com/datasets/mscgeorges/myopia-study",
+      "title": "\ud83d\udc53 Myopia study",
+      "kaggle_declared_license": "Unknown",
+      "version": 1,
+      "metadata_last_updated": "2023-02-08T22:03:39.047Z",
+      "decision": "conditional_separate_onset_model",
+      "reason": "618 baseline subjects; five-year binary onset outcome, not 6/12-month progression. Kaggle license Unknown; source description count conflicts with actual file.",
+      "used_in_release": false
+    },
+    {
+      "ref": "drskprabhakar/axial-length-prediction-dataset",
+      "url": "https://www.kaggle.com/datasets/drskprabhakar/axial-length-prediction-dataset",
+      "title": "Axial Length Prediction dataset",
+      "kaggle_declared_license": "Other (specified in description)",
+      "version": 1,
+      "metadata_last_updated": "2024-04-11T07:09:48.757Z",
+      "decision": "exclude_from_progression",
+      "reason": "108 rows, KH/KV/AL only; no subject/time/SE/exposures and unresolved license/provenance.",
+      "used_in_release": false
+    },
+    {
+      "ref": "manueldepradogarcia/miopia",
+      "url": "https://www.kaggle.com/datasets/manueldepradogarcia/miopia",
+      "title": "Miopia",
+      "kaggle_declared_license": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
+      "version": 1,
+      "metadata_last_updated": "2025-11-17T16:21:15.377Z",
+      "decision": "conditional_noncommercial_cross_sectional_research",
+      "reason": "132 labeled and 24 unlabeled rows, adult students, no linked repeats or actual SE column. CC BY-NC 4.0; near-activity column entirely missing.",
+      "used_in_release": false
+    },
+    {
+      "ref": "panwei052117/ivi-questionnaire-responses-aier-seri",
+      "url": "https://www.kaggle.com/datasets/panwei052117/ivi-questionnaire-responses-aier-seri",
+      "title": "IVI questionnaire responses and baseline info",
+      "kaggle_declared_license": "CC0: Public Domain",
+      "version": 1,
+      "metadata_last_updated": "2025-08-19T02:50:10.763Z",
+      "decision": "candidate_adult_baseline_or_quality_of_life_analysis",
+      "reason": "431 unique adults; bilateral SE/AL/VA and IVI. Source paper confirms CC0 and cross-sectional baseline. No forecast labels/exposures; eye-side dictionary ambiguity needs clarification.",
+      "used_in_release": false
+    },
+    {
+      "ref": "sajvom99/eye-sight-children",
+      "url": "https://www.kaggle.com/datasets/sajvom99/eye-sight-children",
+      "title": "eye sight children",
+      "kaggle_declared_license": "Unknown",
+      "version": 1,
+      "metadata_last_updated": "2023-04-13T17:40:01.383Z",
+      "decision": "blocked_longitudinal_candidate",
+      "reason": "2024 examination rows across 2014-2017, refraction and AL. Unknown license, no patient IDs, year-only time and hash mismatch against Dryad; linkage unverified.",
+      "used_in_release": false
+    },
+    {
+      "ref": "prince7489/digital-eye-health-and-screen-usage-data",
+      "url": "https://www.kaggle.com/datasets/prince7489/digital-eye-health-and-screen-usage-data",
+      "title": "Digital Eye Health and Screen Usage Data",
+      "kaggle_declared_license": "CC0: Public Domain",
+      "version": 1,
+      "metadata_last_updated": "2025-12-29T14:06:34.157Z",
+      "decision": "reject",
+      "reason": "Uploader explicitly describes synthetic survey-inspired data; no quantitative SE/AL follow-up.",
+      "used_in_release": false
+    },
+    {
+      "ref": "andrewmvd/ocular-disease-recognition-odir5k",
+      "url": "https://www.kaggle.com/datasets/andrewmvd/ocular-disease-recognition-odir5k",
+      "title": "Ocular Disease Recognition",
+      "kaggle_declared_license": "Other (specified in description)",
+      "version": 2,
+      "metadata_last_updated": "2020-09-24T16:26:29.043Z",
+      "decision": "different_imaging_task",
+      "reason": "Fundus image disease labels, not progression/exposure visits; uploader says source license unspecified. Images not downloaded.",
+      "used_in_release": false
+    },
+    {
+      "ref": "fahimaislam1812/myopia",
+      "url": "https://www.kaggle.com/datasets/fahimaislam1812/myopia",
+      "title": "Myopia",
+      "kaggle_declared_license": "CC0: Public Domain",
+      "version": 1,
+      "metadata_last_updated": "2026-04-22T16:03:29.54Z",
+      "decision": "different_imaging_task",
+      "reason": "PALM pathology images/annotations, not serial refraction or exposure data. Kaggle CC0 claim not independently traced upstream; images not downloaded.",
+      "used_in_release": false
+    },
+    {
+      "ref": "ankushpanday2/indian-kids-screentime-2025",
+      "url": "https://www.kaggle.com/datasets/ankushpanday2/indian-kids-screentime-2025",
+      "title": "Indian Kids Screentime 2025",
+      "kaggle_declared_license": "MIT",
+      "version": 1,
+      "metadata_last_updated": "2025-07-08T17:25:35.483Z",
+      "decision": "reject",
+      "reason": "Uploader explicitly says simulated; not real ocular outcomes. File not downloaded.",
+      "used_in_release": false
+    },
+    {
+      "ref": "ak0212/average-daily-screen-time-for-children",
+      "url": "https://www.kaggle.com/datasets/ak0212/average-daily-screen-time-for-children",
+      "title": "Average Daily Screen Time for Children",
+      "kaggle_declared_license": "MIT",
+      "version": 1,
+      "metadata_last_updated": "2025-03-24T03:52:51.137Z",
+      "decision": "exclude",
+      "reason": "198 aggregate strata with average screen time/sample size; no individual eye outcomes/links. Real participant provenance unverified.",
+      "used_in_release": false
+    },
+    {
+      "ref": "dakshnagra/dry-eye-disease",
+      "url": "https://www.kaggle.com/datasets/dakshnagra/dry-eye-disease",
+      "title": "Dry Eye Disease",
+      "kaggle_declared_license": "Database: Open Database, Contents: Database Contents",
+      "version": 1,
+      "metadata_last_updated": "2025-02-13T12:20:35.96Z",
+      "decision": "different_target_unverified",
+      "reason": "Adult dry-eye target; no verified serial myopia outcomes or source study; metadata only.",
+      "used_in_release": false
+    },
+    {
+      "ref": "rithikaa7/mmac-3",
+      "url": "https://www.kaggle.com/datasets/rithikaa7/mmac-3",
+      "title": "mmac_3",
+      "kaggle_declared_license": "Apache 2.0",
+      "version": 1,
+      "metadata_last_updated": "2026-10-06T02:43:01.68Z",
+      "decision": "unverified_imaging_candidate",
+      "reason": "Large competition mirror without dataset description. Not downloaded; no verified linked ocular progression/exposure table.",
+      "used_in_release": false
+    }
+  ],
+  "inspected_files": [
+    {
+      "dataset": "ak0212/average-daily-screen-time-for-children",
+      "file": "screen_time.csv",
+      "sha256": "4f07ce1c77b465a41b3796e1ea50f1bb1b2424702809ef098abfa5848aad03c0",
+      "rows": 198,
+      "columns": [
+        "Age",
+        "Gender",
+        "Screen Time Type",
+        "Day Type",
+        "Average Screen Time (hours)",
+        "Sample Size"
+      ],
+      "missing": {
+        "Age": 0,
+        "Gender": 0,
+        "Screen Time Type": 0,
+        "Day Type": 0,
+        "Average Screen Time (hours)": 0,
+        "Sample Size": 0
+      }
+    },
+    {
+      "dataset": "drskprabhakar/axial-length-prediction-dataset",
+      "file": "Axial length prediction dataset 11424.xlsx",
+      "sha256": "5072eab39da6089d6d39d4d706335f95cced3882c6379fd9ecafdcd9bcceefb7",
+      "rows": 108,
+      "columns": [
+        "KH",
+        "KV",
+        "AL"
+      ],
+      "missing": {
+        "KH": 0,
+        "KV": 0,
+        "AL": 0
+      }
+    },
+    {
+      "file": "Data3.xlsx",
+      "sheet": "2014-2017",
+      "sha256": "6dfec6416c829a453fddd220b75d4fa60a988a72ea30e693fb1947ad2d5a0b58",
+      "rows": 2024,
+      "columns": [
+        "gender",
+        "birthday",
+        "examination date",
+        "height",
+        "weight",
+        "spherical refraction of right eye",
+        "spherical refraction of left eye",
+        "cylinder refraction of right eye",
+        "cylinder refraction of left eye",
+        "axis of right eye",
+        "axis of left eye",
+        "AL of right eye",
+        "AL of left eye"
+      ],
+      "missing": {
+        "gender": 0,
+        "birthday": 0,
+        "examination date": 0,
+        "height": 1,
+        "weight": 1,
+        "spherical refraction of right eye": 8,
+        "spherical refraction of left eye": 7,
+        "cylinder refraction of right eye": 7,
+        "cylinder refraction of left eye": 8,
+        "axis of right eye": 49,
+        "axis of left eye": 60,
+        "AL of right eye": 1,
+        "AL of left eye": 1
+      },
+      "dataset": "sajvom99/eye-sight-children"
+    },
+    {
+      "dataset": "neevvv/human-lifestyle-and-daily-habits-dataset",
+      "file": "Lifestyle_Habit_Dataset.csv",
+      "sha256": "9c30266135f86bbaf45e3f6c92dd5551e1a70d0153e80110d0a0faad69f805eb",
+      "rows": 25000,
+      "columns": [
+        "Personality_Archetype",
+        "Age",
+        "Gender",
+        "Environment",
+        "Relationship_Status",
+        "Occupation",
+        "Remote_Work",
+        "Day_Type",
+        "Commute_Time",
+        "Meetings_Per_Day",
+        "BMI",
+        "Chronic_Disease",
+        "Air_Quality_Index",
+        "Smartphone_Hours",
+        "Laptop_Hours",
+        "Gaming_Hours",
+        "Exercise_Days",
+        "Sleep_Hours",
+        "Sleep_Consistency",
+        "Meal_Regularity",
+        "Financial_Stress",
+        "Anxiety_Level",
+        "Burnout_Level",
+        "Depression_Score",
+        "Energy_Level",
+        "Focus_Score",
+        "Productivity_Score",
+        "Lifestyle_Category"
+      ],
+      "missing": {
+        "Personality_Archetype": 0,
+        "Age": 0,
+        "Gender": 0,
+        "Environment": 0,
+        "Relationship_Status": 0,
+        "Occupation": 0,
+        "Remote_Work": 0,
+        "Day_Type": 0,
+        "Commute_Time": 175,
+        "Meetings_Per_Day": 0,
+        "BMI": 0,
+        "Chronic_Disease": 0,
+        "Air_Quality_Index": 0,
+        "Smartphone_Hours": 0,
+        "Laptop_Hours": 0,
+        "Gaming_Hours": 200,
+        "Exercise_Days": 0,
+        "Sleep_Hours": 250,
+        "Sleep_Consistency": 0,
+        "Meal_Regularity": 0,
+        "Financial_Stress": 0,
+        "Anxiety_Level": 0,
+        "Burnout_Level": 0,
+        "Depression_Score": 0,
+        "Energy_Level": 0,
+        "Focus_Score": 0,
+        "Productivity_Score": 0,
+        "Lifestyle_Category": 0
+      }
+    },
+    {
+      "file": "S3 Data.xlsx",
+      "sheet": "shared data",
+      "sha256": "5cc085a5e62db42a7b36254a1ec02dee4f176851552c538bd92f792a124ceee4",
+      "rows": 431,
+      "columns": [
+        "id",
+        "o_disease",
+        "s_disease",
+        "s_surgery",
+        "lt_medication",
+        "fhx",
+        "ethnicity",
+        "gender",
+        "mmd",
+        "age",
+        "pva_r",
+        "pva_l",
+        "se_l",
+        "se_r",
+        "lenstar_al_l",
+        "lenstar_al_r",
+        "edu",
+        "ivi1",
+        "ivi2",
+        "ivi3",
+        "ivi4",
+        "ivi5",
+        "ivi6",
+        "ivi7",
+        "ivi8",
+        "ivi9",
+        "ivi10",
+        "ivi11",
+        "ivi12",
+        "ivi13",
+        "ivi14",
+        "ivi15",
+        "ivi16",
+        "ivi17",
+        "ivi18",
+        "ivi19",
+        "ivi20",
+        "ivi21",
+        "ivi22",
+        "ivi23",
+        "ivi24",
+        "ivi25",
+        "ivi26",
+        "ivi27",
+        "ivi28"
+      ],
+      "missing": {
+        "id": 0,
+        "o_disease": 0,
+        "s_disease": 0,
+        "s_surgery": 0,
+        "lt_medication": 0,
+        "fhx": 0,
+        "ethnicity": 0,
+        "gender": 0,
+        "mmd": 0,
+        "age": 2,
+        "pva_r": 0,
+        "pva_l": 0,
+        "se_l": 0,
+        "se_r": 0,
+        "lenstar_al_l": 0,
+        "lenstar_al_r": 0,
+        "edu": 0,
+        "ivi1": 8,
+        "ivi2": 14,
+        "ivi3": 5,
+        "ivi4": 4,
+        "ivi5": 2,
+        "ivi6": 4,
+        "ivi7": 2,
+        "ivi8": 3,
+        "ivi9": 2,
+        "ivi10": 4,
+        "ivi11": 1,
+        "ivi12": 4,
+        "ivi13": 3,
+        "ivi14": 6,
+        "ivi15": 10,
+        "ivi16": 0,
+        "ivi17": 0,
+        "ivi18": 0,
+        "ivi19": 0,
+        "ivi20": 0,
+        "ivi21": 0,
+        "ivi22": 0,
+        "ivi23": 0,
+        "ivi24": 0,
+        "ivi25": 0,
+        "ivi26": 0,
+        "ivi27": 0,
+        "ivi28": 0
+      },
+      "dataset": "panwei052117/ivi-questionnaire-responses-aier-seri"
+    },
+    {
+      "file": "S3 Data.xlsx",
+      "sheet": "data dictionary",
+      "sha256": "5cc085a5e62db42a7b36254a1ec02dee4f176851552c538bd92f792a124ceee4",
+      "rows": 45,
+      "columns": [
+        "Varaibles",
+        "Explainations",
+        "Values/Code"
+      ],
+      "missing": {
+        "Varaibles": 0,
+        "Explainations": 0,
+        "Values/Code": 0
+      },
+      "dataset": "panwei052117/ivi-questionnaire-responses-aier-seri"
+    },
+    {
+      "dataset": "manueldepradogarcia/miopia",
+      "file": "X_test.csv",
+      "sha256": "8f5be9b12297c28c7a2cfeeda32206a4cabf09d3c5d2b67e04163f07aed939be",
+      "rows": 24,
+      "columns": [
+        "fecha",
+        "edad",
+        "sexo",
+        "origen antepasados (espa\u00f1a)",
+        "origen antepasados (extranjeros)",
+        "h\u00ba deporte sem",
+        "h\u00ba naturaleza sem",
+        "h\u00ba ocio exteriores sem",
+        "horas exterior sem",
+        "h\u00ba estudiar sem",
+        "h\u00ba ocio inter sem",
+        "h\u00ba act.cerca sem",
+        "horas interior sem",
+        "Ratio Cerca/Lejos",
+        "Exterior Mucho",
+        "Interior Mcho",
+        "fototipo",
+        "Grupo fot",
+        "familiar miope",
+        "Familiar miope num.",
+        "Familiar MM SI/NO",
+        "familiar miope magno",
+        "pat. Ret. Miop magna",
+        "fumador",
+        "toma sol",
+        "protege sol",
+        "disp.elec.antes dormir",
+        "LA OD",
+        "LA OS",
+        "LA Media",
+        "Querato OD",
+        "Querato OD Eje2",
+        "Querato OS",
+        "Querato OS Eje 2",
+        "OD-Total",
+        "OD-Media",
+        "OD-DS",
+        "OS-Total",
+        "OS-Media",
+        "OS-DS",
+        "CUVAF-Total",
+        "CUVAF-Media",
+        "CUVAF-DS",
+        "Promedio Nasal",
+        "DE Nasal",
+        "Suma Nasal",
+        "Promedio Temporal",
+        "DE Temporal",
+        "Suma Temporal"
+      ],
+      "missing": {
+        "fecha": 0,
+        "edad": 0,
+        "sexo": 0,
+        "origen antepasados (espa\u00f1a)": 1,
+        "origen antepasados (extranjeros)": 18,
+        "h\u00ba deporte sem": 0,
+        "h\u00ba naturaleza sem": 2,
+        "h\u00ba ocio exteriores sem": 0,
+        "horas exterior sem": 0,
+        "h\u00ba estudiar sem": 0,
+        "h\u00ba ocio inter sem": 0,
+        "h\u00ba act.cerca sem": 24,
+        "horas interior sem": 0,
+        "Ratio Cerca/Lejos": 0,
+        "Exterior Mucho": 0,
+        "Interior Mcho": 0,
+        "fototipo": 4,
+        "Grupo fot": 4,
+        "familiar miope": 0,
+        "Familiar miope num.": 0,
+        "Familiar MM SI/NO": 0,
+        "familiar miope magno": 0,
+        "pat. Ret. Miop magna": 1,
+        "fumador": 0,
+        "toma sol": 0,
+        "protege sol": 0,
+        "disp.elec.antes dormir": 0,
+        "LA OD": 0,
+        "LA OS": 0,
+        "LA Media": 0,
+        "Querato OD": 0,
+        "Querato OD Eje2": 0,
+        "Querato OS": 0,
+        "Querato OS Eje 2": 0,
+        "OD-Total": 0,
+        "OD-Media": 0,
+        "OD-DS": 0,
+        "OS-Total": 0,
+        "OS-Media": 0,
+        "OS-DS": 0,
+        "CUVAF-Total": 0,
+        "CUVAF-Media": 0,
+        "CUVAF-DS": 0,
+        "Promedio Nasal": 0,
+        "DE Nasal": 0,
+        "Suma Nasal": 0,
+        "Promedio Temporal": 0,
+        "DE Temporal": 0,
+        "Suma Temporal": 0
+      }
+    },
+    {
+      "dataset": "manueldepradogarcia/miopia",
+      "file": "X_train.csv",
+      "sha256": "04fe5032f8918378d167309c4221dc14323cb805b5fe9cb3f3e4fc56171928e5",
+      "rows": 132,
+      "columns": [
+        "fecha",
+        "edad",
+        "sexo",
+        "origen antepasados (espa\u00f1a)",
+        "origen antepasados (extranjeros)",
+        "h\u00ba deporte sem",
+        "h\u00ba naturaleza sem",
+        "h\u00ba ocio exteriores sem",
+        "horas exterior sem",
+        "h\u00ba estudiar sem",
+        "h\u00ba ocio inter sem",
+        "h\u00ba act.cerca sem",
+        "horas interior sem",
+        "Ratio Cerca/Lejos",
+        "Exterior Mucho",
+        "Interior Mcho",
+        "fototipo",
+        "Grupo fot",
+        "familiar miope",
+        "Familiar miope num.",
+        "Familiar MM SI/NO",
+        "familiar miope magno",
+        "pat. Ret. Miop magna",
+        "fumador",
+        "toma sol",
+        "protege sol",
+        "disp.elec.antes dormir",
+        "LA OD",
+        "LA OS",
+        "LA Media",
+        "Querato OD",
+        "Querato OD Eje2",
+        "Querato OS",
+        "Querato OS Eje 2",
+        "OD-Total",
+        "OD-Media",
+        "OD-DS",
+        "OS-Total",
+        "OS-Media",
+        "OS-DS",
+        "CUVAF-Total",
+        "CUVAF-Media",
+        "CUVAF-DS",
+        "Promedio Nasal",
+        "DE Nasal",
+        "Suma Nasal",
+        "Promedio Temporal",
+        "DE Temporal",
+        "Suma Temporal"
+      ],
+      "missing": {
+        "fecha": 0,
+        "edad": 0,
+        "sexo": 0,
+        "origen antepasados (espa\u00f1a)": 2,
+        "origen antepasados (extranjeros)": 98,
+        "h\u00ba deporte sem": 0,
+        "h\u00ba naturaleza sem": 0,
+        "h\u00ba ocio exteriores sem": 2,
+        "horas exterior sem": 0,
+        "h\u00ba estudiar sem": 0,
+        "h\u00ba ocio inter sem": 0,
+        "h\u00ba act.cerca sem": 132,
+        "horas interior sem": 1,
+        "Ratio Cerca/Lejos": 0,
+        "Exterior Mucho": 0,
+        "Interior Mcho": 0,
+        "fototipo": 21,
+        "Grupo fot": 24,
+        "familiar miope": 1,
+        "Familiar miope num.": 4,
+        "Familiar MM SI/NO": 0,
+        "familiar miope magno": 0,
+        "pat. Ret. Miop magna": 2,
+        "fumador": 0,
+        "toma sol": 0,
+        "protege sol": 0,
+        "disp.elec.antes dormir": 0,
+        "LA OD": 0,
+        "LA OS": 0,
+        "LA Media": 0,
+        "Querato OD": 0,
+        "Querato OD Eje2": 0,
+        "Querato OS": 0,
+        "Querato OS Eje 2": 0,
+        "OD-Total": 0,
+        "OD-Media": 0,
+        "OD-DS": 0,
+        "OS-Total": 0,
+        "OS-Media": 0,
+        "OS-DS": 0,
+        "CUVAF-Total": 0,
+        "CUVAF-Media": 0,
+        "CUVAF-DS": 0,
+        "Promedio Nasal": 0,
+        "DE Nasal": 0,
+        "Suma Nasal": 0,
+        "Promedio Temporal": 0,
+        "DE Temporal": 0,
+        "Suma Temporal": 0
+      }
+    },
+    {
+      "dataset": "manueldepradogarcia/miopia",
+      "file": "Y_train.csv",
+      "sha256": "428cadcc2a144830fa369b7bf8169d16f658834cdf002dea7310425fde466e1c",
+      "rows": 132,
+      "columns": [
+        "M",
+        "MM",
+        "Combo",
+        "DCombo"
+      ],
+      "missing": {
+        "M": 0,
+        "MM": 0,
+        "Combo": 0,
+        "DCombo": 0
+      }
+    },
+    {
+      "dataset": "mscgeorges/myopia-study",
+      "file": "myopia.csv",
+      "sha256": "67c6eb23e15ad8ac5c92656477ecc3962ddf7ad2668facece9d1d38110d090fd",
+      "rows": 618,
+      "columns": [
+        "ID",
+        "STUDYYEAR",
+        "MYOPIC",
+        "AGE",
+        "GENDER",
+        "SPHEQ",
+        "AL",
+        "ACD",
+        "LT",
+        "VCD",
+        "SPORTHR",
+        "READHR",
+        "COMPHR",
+        "STUDYHR",
+        "TVHR",
+        "DIOPTERHR",
+        "MOMMY",
+        "DADMY"
+      ],
+      "missing": {
+        "ID": 0,
+        "STUDYYEAR": 0,
+        "MYOPIC": 0,
+        "AGE": 0,
+        "GENDER": 0,
+        "SPHEQ": 0,
+        "AL": 0,
+        "ACD": 0,
+        "LT": 0,
+        "VCD": 0,
+        "SPORTHR": 0,
+        "READHR": 0,
+        "COMPHR": 0,
+        "STUDYHR": 0,
+        "TVHR": 0,
+        "DIOPTERHR": 0,
+        "MOMMY": 0,
+        "DADMY": 0
+      },
+      "duplicate_ids": 0,
+      "duplicate_rows": 0,
+      "outcome_counts": {
+        "0": 537,
+        "1": 81
+      }
+    }
+  ],
+  "data3_structure": {
+    "rows": 2024,
+    "file_sha256": "6dfec6416c829a453fddd220b75d4fa60a988a72ea30e693fb1947ad2d5a0b58",
+    "examination_year_counts": {
+      "2014": 513,
+      "2015": 501,
+      "2016": 503,
+      "2017": 507
+    },
+    "birth_year_counts": {
+      "2006": 345,
+      "2007": 1068,
+      "2008": 611
+    },
+    "time_precision": "year only; numeric values are years, not full dates or Unix timestamps",
+    "unique_gender_birthyear_composites": 6,
+    "approx_age_year_differences": [
+      6,
+      11
+    ],
+    "no_subject_id_column": true,
+    "numeric_ranges": {
+      "height": {
+        "min": -1.0,
+        "max": 159.5,
+        "negative_count": 4
+      },
+      "weight": {
+        "min": -1.0,
+        "max": 70.7,
+        "negative_count": 4
+      },
+      "spherical refraction of right eye": {
+        "min": -6.5,
+        "max": 6.75,
+        "negative_count": 763
+      },
+      "spherical refraction of left eye": {
+        "min": -10.9,
+        "max": 7.5,
+        "negative_count": 675
+      },
+      "cylinder refraction of right eye": {
+        "min": -5.75,
+        "max": 0.5,
+        "negative_count": 1732
+      },
+      "cylinder refraction of left eye": {
+        "min": -5.5,
+        "max": 0.75,
+        "negative_count": 1654
+      },
+      "axis of right eye": {
+        "min": 0.0,
+        "max": 180.0,
+        "negative_count": 0
+      },
+      "axis of left eye": {
+        "min": 0.0,
+        "max": 180.0,
+        "negative_count": 0
+      },
+      "AL of right eye": {
+        "min": 20.84,
+        "max": 31.93,
+        "negative_count": 0
+      },
+      "AL of left eye": {
+        "min": 20.86,
+        "max": 26.74,
+        "negative_count": 0
+      }
+    },
+    "nonnumeric_tokens": {
+      "height": {},
+      "weight": {},
+      "spherical refraction of right eye": {},
+      "spherical refraction of left eye": {},
+      "cylinder refraction of right eye": {
+        "/": 5
+      },
+      "cylinder refraction of left eye": {
+        "/": 5
+      },
+      "axis of right eye": {
+        "/": 198
+      },
+      "axis of left eye": {
+        "/": 198
+      },
+      "AL of right eye": {
+        "/": 137
+      },
+      "AL of left eye": {
+        "/": 137
+      }
+    },
+    "linkage_status": "unverified; never infer subjects by birth year/gender or row order"
+  },
+  "source_documents": [
+    {
+      "url": "https://github.com/ggeop/Myopia-Study/blob/master/myopia%20variables.pdf",
+      "purpose": "Uploader codebook: baseline measures, units, original 0/1 coding, five-year onset label."
+    },
+    {
+      "url": "https://cran.r-project.org/web/packages/aplore3/aplore3.pdf",
+      "purpose": "Companion package documents matching MYOPIA schema/endpoint. Package GPL-3 is not silently assigned to the Kaggle download."
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12510582/",
+      "purpose": "Primary Aier-SERI publication confirms cross-sectional baseline, dataset link and CC0."
+    },
+    {
+      "url": "https://doi.org/10.5061/dryad.d4mb3pn",
+      "purpose": "Possible Data3 origin; Kaggle bytes differ, no origin/linkage equivalence established."
+    }
+  ],
+  "release_model_unchanged": "mdt-20261015-3e539413",
+  "fingerprint_note": "SHA256 values are locally calculated download fingerprints, not Kaggle-provided repository checksums. No candidate admitted to verified training manifest."
+}
