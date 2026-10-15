@@ -1,6 +1,6 @@
 # Deployment: local verification first, free research demo second
 
-Status on 13 October 2026: the Python/React app, tests, browser smoke flows,
+Status on 15 October 2026: the Python/React app, tests, browser smoke flows,
 SQLite migration and health endpoints were exercised locally. Docker/Compose,
 Postgres integration, S3 against a real account and a hosted deployment were NOT
 executed: this computer has no Docker engine or WSL. CI includes these container

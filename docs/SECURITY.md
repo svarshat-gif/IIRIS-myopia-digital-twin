@@ -1,108 +1,62 @@
-# Security and data protection
+# Security and privacy
 
-What must be true **before** real clinical data touches this system.
+This is an exploratory research decision-support application, not a medical
+device or an approved clinical record system. Public free hosts may contain only
+licensed, de-identified open research records. Actual patient data must never be
+uploaded to a free public deployment.
 
-The prototype ships with development defaults chosen for zero-friction local work. Those
-defaults are not appropriate for clinical data, and the application says so loudly on
-startup and in `GET /api/v1/health`.
+## Implemented and locally tested
 
----
+- JWT signature/expiry checks; 30-minute access tokens; re-login on expiry.
+- PBKDF2 password hashing, 12-character minimum and common/numeric rejection.
+- Persistent 15-minute lockout after five failed account logins.
+- Patient/clinician/admin roles and explicit clinician-patient assignments.
+  Self-signup always creates a patient role; roles cannot be submitted via profile.
+- Ownership on /me records, appointments and attachments; generic cohort,
+  simulation, explanation, version and agent access requires assigned staff.
+- Admin-only assignments and audit query; read/write/denied access events include
+  actor, resource, timestamp, status, request ID and keyed IP hash. No raw IPs or
+  request bodies are stored in access audit. Audit persistence failure returns 503.
+- In-process per-IP and verified-user auth/compute/evidence limits; 429 includes
+  Retry-After. The process is intentionally deployed with one worker. A trusted
+  reverse proxy can cause clients to share an IP limit; scale-out needs shared limits.
+- Streamed request-size cap, upload size/type sniffing, generated storage keys,
+  sanitized filenames and ownership validation of linked observations on updates.
+- Private local/S3 storage interface. Production requires S3 configuration;
+  authenticated API downloads avoid public object URLs.
+- Production config refuses weak/missing JWT secrets, wildcard/non-HTTPS CORS,
+  SQLite, missing persistent upload config and an invalid optional API-key gate.
+- Synthetic training inputs are refused; source licenses/checksums are preserved.
+  Runtime images refuse missing/synthetic artifacts.
+- Optional narration is loopback Ollama only. Unsupported numbers, including
+  small integers, cause the deterministic answer to replace generated prose.
+- Security headers and request IDs; HSTS in production. No frontend deployment
+  key or default demo password. No auth cookies are used.
 
-## Current state, honestly
+Evidence APIs are Europe PMC and PubMed, with a bundled offline fallback. Do not
+put patient identifiers in literature queries. Cache inspection is admin-only.
+AgentRun records do store question/answer/tool traces; apply private-installation
+retention controls before use with actual records. Local SHAP is optional;
+feature-ablation attribution is labeled accurately when it is unavailable.
 
-| Control | Status |
-|---|---|
-| API-key authentication | ✅ implemented, **disabled by default** (`API_KEY` empty) |
-| CORS allow-list | ✅ configurable, defaults to localhost |
-| Input validation | ✅ pydantic bounds on every clinical field |
-| SQL injection | ✅ SQLAlchemy parameterised queries throughout |
-| De-identified-by-design schema | ✅ no name/MRN/DOB/contact columns exist |
-| FHIR export omits identity fields | ✅ asserted in tests |
-| Model outputs flagged as estimates | ✅ `status: preliminary` + provenance note |
-| Agent audit trail | ✅ `agent_runs` records question, tools and answer |
-| Per-user accounts | ❌ **not implemented** |
-| Role-based access control | ❌ **not implemented** |
-| Read-access audit log | ❌ only agent runs are logged |
-| Encryption at rest | ❌ depends on your database deployment |
-| TLS | ❌ depends on your hosting |
-| Rate limiting | ❌ **not implemented** |
+## Not yet verified or implemented
 
-Rows marked ❌ must be addressed before real data. Do not skip them because the prototype
-"works".
+- Docker/Compose runtime, live Postgres and live S3: configuration exists but this
+  host has no Docker engine, WSL or cloud credentials. CI jobs are added, not run remotely.
+- No clinical validation, external clinical test cohort or medical-device approval.
+- No MFA, refresh-token rotation, external identity provider, immutable external
+  audit sink, malware scanning, backups/restore drill or institutional retention
+  workflow. Access tokens remain valid until their short expiry after a password
+  change. A disabled account is rejected on each request.
+- No database row-level security; API RBAC is the enforcement boundary.
+- Free-host quotas/cold starts preclude clinical availability guarantees.
+- Tailwind 3 retains development-only dependency advisories. The frozen theme
+  prevents a blind Tailwind 4 migration. Run npm audit, use only trusted build
+  inputs, and plan a separately reviewed compatible patch/migration. Production
+  browser dependencies are checked separately with npm audit --omit=dev.
 
----
-
-## Minimum before real data
-
-### 1. Turn on the API key
-
-```bash
-python3 -c "import secrets; print(secrets.token_urlsafe(32))"
-# backend/.env
-API_KEY=<that value>
-# frontend/.env
-VITE_API_KEY=<the same value>
-```
-
-A shared key is enough for a single-user prototype on a controlled machine. It is **not**
-enough for a multi-user deployment: it cannot attribute an action to a person.
-
-### 2. Add real authentication
-
-Use your institution's identity provider (OAuth2 / OIDC). Replace
-`app/core/security.py:require_api_key` with a dependency that validates a token and returns
-a user principal. Every router already declares that dependency, so the swap is one file.
-
-### 3. Add roles
-
-At minimum: **clinician** (full access to their patients), **researcher** (aggregate and
-de-identified only), **administrator** (user management, no clinical data by default).
-
-### 4. Log reads, not just writes
-
-Extend the `agent_runs` pattern to a general access log: who, what patient, which endpoint,
-when. Clinical data access is auditable by expectation and often by law.
-
-### 5. Encrypt and transport safely
-
-- TLS enforced, HTTP redirected
-- Database encryption at rest
-- Backups encrypted, and covered by the same retention rules as the primary data
-
-### 6. Rate limit
-
-Add `slowapi` or an nginx `limit_req` zone. An unauthenticated `/health` is fine; everything
-else should be bounded.
-
----
-
-## Data handling rules
-
-**Never:**
-
-- Commit real data. `backend/data/*.csv` is git-ignored — verify with `git status` anyway,
-  every time.
-- Deploy real data to a free-tier host. No BAA/DPA, no guarantees about storage location.
-- Send real patient data to a hosted LLM. Use local Ollama, or no LLM at all.
-- Store the study-key → patient mapping in this system. It stays at the hospital.
-- Put identifying information in `external_key`, `notes` or any free-text field.
-
-**Always:**
-
-- De-identify at source, before export.
-- Keep a written record of what was approved and by whom.
-- Set `CORS_ORIGINS` to exactly your UI's origin. Never `*` with authentication enabled.
-- Treat the `artifacts/*.db` file as clinical data once real data is loaded — it contains
-  full patient histories.
-
----
-
-## A note on the trained model
-
-A model trained on real patient data is derived from that data and should be handled under
-the same agreement. In particular, do not commit `artifacts/progression_model.joblib` to a
-public repository once it has been trained on real records — it embeds the training
-distribution, and the bundle also stores a background sample of real feature rows for the
-explainer.
-
-`.gitignore` already excludes `backend/artifacts/*.joblib` for this reason.
+Alembic initial-schema migration is intended for new installs. Back up existing
+prototype DBs and review an upgrade/export plan; never stamp an old schema as
+migrated. Joblib artifacts execute Python on load: accept only artifacts built
+from this repository's verified pipeline. Put TLS at the host/reverse proxy and
+keep DB/object credentials server-side. Never commit .env files or private data.
