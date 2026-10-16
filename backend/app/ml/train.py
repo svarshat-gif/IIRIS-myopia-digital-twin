@@ -6,11 +6,12 @@ Design decisions that matter for the report:
 
 * Splits are BY PATIENT (GroupShuffleSplit). No patient contributes rows to more
   than one split, so repeated visits cannot leak between train and test.
-* Ridge, Random Forest and HistGradientBoosting are compared on the identical
-  split, plus carry-forward. XGBoost/LightGBM join only when installed.
-  HistGradientBoosting is the DEPLOYED model because it is the one that also
-  supports quantile loss (needed for the prediction interval) and NaN inputs
-  natively (needed because behaviour/ergonomics are often unrecorded).
+* Point models are selected per target from six fixed carry-forward, mean-change,
+  change-HGB and absolute-HGB candidates using training-only grouped CV MAE.
+  Learned change is added to the observed measurement. HGB quantile models of
+  change supply intervals. An explicitly trained absolute fallback supports
+  missing anchors without inventing measurements; that input pattern is unvalidated.
+  Ridge/Random Forest are reference baselines, not selected on test performance.
 * Uncertainty comes from quantile regression that is then CONFORMALIZED
   (Romano et al., "Conformalized Quantile Regression"): a 5th- and 95th-percentile
   model is trained alongside each squared-error point estimator. The band is
@@ -19,8 +20,8 @@ Design decisions that matter for the report:
   coverage is measured separately and can be much lower on this tiny cohort.
 * HistGradientBoosting accepts NaN natively, so partially-recorded behaviour and
   ergonomics rows are used as-is rather than imputed with invented values.
-* The ablation (clinical / +behaviour / +ergonomics) runs on the same splits and
-  the same hyperparameters, so the comparison is fair.
+* Ablation uses the same patient splits and training-only selection protocol.
+  Missing exposure sets are explicitly not evaluable.
 """
 from __future__ import annotations
 
@@ -62,6 +63,7 @@ from app.ml.dataset import (
     load_visits,
 )
 from app.ml.features import ALL_FEATURES, FEATURE_SETS
+from app.ml.selection import AnchoredRegressor, select_progression
 
 INTERVAL_COVERAGE = 0.90
 LOWER_Q, UPPER_Q = 0.05, 0.95
@@ -184,11 +186,15 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
                       f"(train={len(ytr)}, test={len(yte)})")
                 continue
 
-            median = HistGradientBoostingRegressor(**HGB_PARAMS).fit(Xtr, ytr)
-            lower = HistGradientBoostingRegressor(
-                loss="quantile", quantile=LOWER_Q, **HGB_PARAMS).fit(Xtr, ytr)
-            upper = HistGradientBoostingRegressor(
-                loss="quantile", quantile=UPPER_Q, **HGB_PARAMS).fit(Xtr, ytr)
+            development = train.dropna(subset=[target])
+            anchor_index = features.index(measure)
+            point_model, selection = select_progression(Xtr, ytr,
+                development.patient_key.to_numpy(), anchor_index, HGB_PARAMS)
+            median = point_model.fit(Xtr, ytr)
+            lower = AnchoredRegressor(HistGradientBoostingRegressor(
+                loss="quantile", quantile=LOWER_Q, **HGB_PARAMS), anchor_index).fit(Xtr, ytr)
+            upper = AnchoredRegressor(HistGradientBoostingRegressor(
+                loss="quantile", quantile=UPPER_Q, **HGB_PARAMS), anchor_index).fit(Xtr, ytr)
 
             # Calibrate the band on validation patients (never seen in training).
             Xva, yva = _xy(val, features, target)
@@ -198,24 +204,26 @@ def train_regressors(train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame,
 
             models[f"{measure}_{horizon}m"] = {
                 "median": median, "lower": lower, "upper": upper,
-                "conformal_delta": delta}
+                "conformal_delta": delta, "selection": selection,
+                "anchored_point": isinstance(median, AnchoredRegressor)}
 
             pred = median.predict(Xte)
             lo = np.minimum(lower.predict(Xte), upper.predict(Xte))
             hi = np.maximum(lower.predict(Xte), upper.predict(Xte))
             entry = regression_metrics(yte, pred)
+            entry['model_selection'] = selection
+            entry['endpoint'] = 'Future measured level; changes forecast from an observed baseline when selected'
             entry["bootstrap_95ci"] = bootstrap_metrics(yte, pred, test.dropna(subset=[target]).patient_key)
             entry["calibration_patients"] = int(calibration.patient_key.nunique())
             # Out-of-fold development scores do not inspect calibration/test patients.
-            development = train.dropna(subset=[target])
             repeats = []
             for repeat_seed in (41, 42, 43):
                 folds = GroupKFold(n_splits=min(4, development.patient_key.nunique()),
                                    shuffle=True, random_state=repeat_seed)
-                oof = cross_val_predict(HistGradientBoostingRegressor(**HGB_PARAMS), Xtr, ytr,
+                oof = cross_val_predict(point_model, Xtr, ytr,
                                        cv=folds, groups=development.patient_key)
                 repeats.append(regression_metrics(ytr, oof))
-            entry["development_grouped_cv"] = {"strategy": "3 repeated patient-grouped 4-fold runs on training patients only",
+            entry["development_grouped_cv"] = {"strategy": "Post-selection development check: same 3 repeated grouped 4-fold runs; not nested unbiased CV",
                                                 "repeats": repeats}
             entry["interval_coverage_raw"] = round(
                 float(np.mean((yte >= lo) & (yte <= hi))), 4)
@@ -331,8 +339,9 @@ def run_ablation(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, Any]:
                 Xte, yte = _xy(test, features, target)
                 if len(ytr) < 12 or len(yte) < 2:
                     continue
-                model = HistGradientBoostingRegressor(**HGB_PARAMS).fit(Xtr, ytr)
-                entry[target] = regression_metrics(yte, model.predict(Xte))
+                model, _ = select_progression(Xtr, ytr,
+                    train.dropna(subset=[target]).patient_key.to_numpy(), features.index(measure), HGB_PARAMS)
+                entry[target] = regression_metrics(yte, model.fit(Xtr, ytr).predict(Xte))
 
         Xtr, ytr = _xy(train, features, "y_fast_progression")
         Xte, yte = _xy(test, features, "y_fast_progression")
@@ -420,7 +429,7 @@ def main() -> None:
                for i, f in enumerate(features)}
 
     protocol = b"".join((Path(__file__).parent / name).read_text(encoding="utf-8").encode()
-                        for name in ("train.py", "features.py", "dataset.py"))
+                        for name in ("train.py", "features.py", "dataset.py", "selection.py"))
     fingerprint = hashlib.sha256(
         args.data.read_bytes() + protocol + str(args.seed).encode()).hexdigest()[:8]
     trained_at = datetime.now(timezone.utc)
@@ -443,6 +452,7 @@ def main() -> None:
         "background": background,
         "feature_medians": medians,
         "metrics": {
+            "test_status": "Previously reported fixed benchmark reused for this comparison; not new external validation",
             "regression": metrics,
             "risk": risk_metrics,
             "ablation": ablation,

@@ -92,6 +92,8 @@ def predict_from_row(row: dict[str, float]) -> dict[str, Any]:
             models = bundle["models"].get(f"{measure}_{horizon}m")
             if not models:
                 continue
+            if row.get(measure) is None or not np.isfinite(row.get(measure, np.nan)):
+                warnings.append(f'{measure} is missing: the trained absolute-level fallback is used; this missing-input pattern is not separately validated.')
             point = _predict_one(models["median"], x)
             lower = _predict_one(models["lower"], x)
             upper = _predict_one(models["upper"], x)
@@ -139,7 +141,7 @@ def predict_from_row(row: dict[str, float]) -> dict[str, Any]:
         "risk": risk,
         "model_version": bundle["model_version"],
         "features_used": names,
-        "warnings": warnings,
+        "warnings": list(dict.fromkeys(warnings)),
         "data_source": bundle.get("data_source"),
         "risk_unavailable_reason": "Insufficient independent labelled patients for a risk classifier" if risk is None else None,
     }

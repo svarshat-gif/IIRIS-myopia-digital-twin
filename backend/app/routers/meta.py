@@ -53,8 +53,8 @@ def model_card() -> dict[str, Any]:
         "data_is_synthetic": bundle["data_is_synthetic"],
         "provenance": bundle.get("provenance", {}),
         "supported_scenario_inputs": bundle.get("supported_scenario_inputs", []),
-        "algorithm": "HistGradientBoosting (point estimate) + quantile models, "
-                     "conformally calibrated intervals",
+        "algorithm": "Training-only patient-grouped CV selection of carry-forward/change/HGB point models; "
+                     "anchored quantile models with held-out conformal calibration",
         "horizons_months": bundle["horizons"],
         "interval_coverage": bundle["interval_coverage"],
         "risk_definition": bundle["risk_definition"],

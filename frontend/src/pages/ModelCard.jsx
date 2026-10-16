@@ -34,13 +34,13 @@ export default function ModelCard() {
           <td>{m.mae}<span className="block text-xs text-ink-muted">95% bootstrap CI: {m.bootstrap_95ci?.mae?.join(' to ') ?? 'unavailable'}</span></td>
           <td>{m.baselines.carry_forward.mae}</td><td>{m.baselines.ridge.mae}</td><td>{m.rmse}</td><td>{m.r2}</td>
           <td>{fmt.num(m.interval_coverage * 100, 1)}% / nominal {fmt.num(m.nominal_coverage * 100, 0)}%</td></tr>)}</tbody></table></div>
-      <p className="note-watch mt-4">Only {metrics.split.test_patients} test patients. Bootstrap intervals are unstable at this sample size. The current 12-month models do not outperform carry-forward. This model has no demonstrated clinical utility.</p>
+      <p className="note-watch mt-4">Only {metrics.split.test_patients} test patients. Bootstrap intervals are unstable at this sample size. R-squared and interval coverage are not prediction accuracy. These results reuse the existing benchmark and do not establish 95% overall accuracy. This model has no demonstrated clinical utility.</p>
       <Disclaimer text="Model estimates for decision support only. Not a diagnosis, prescription, medical device or causal treatment effect." />
     </Card>
     <Card title="Ablation and uncertainty">
       {Object.entries(metrics.ablation || {}).map(([name, result]) => <p key={name} className="mb-3 text-sm"><strong>{name}: </strong>
         {result.reason || `SE 12-month MAE ${result.y_se_12m?.mae ?? 'not evaluable'} D`}</p>)}
-      <p className="text-sm text-ink-muted">Development cross-validation groups patients. Interval calibration uses separate patients and each patient's maximum nonconformity score. Reported coverage is measured on the untouched test patients. Multi-year rollout bands are heuristic and are not calibrated beyond the first year.</p>
+      <p className="text-sm text-ink-muted">Forecasts of change from measured values are selected using training-only patient-grouped cross-validation. Development scores after selection are not an independent evaluation. Interval calibration uses separate patients and each patient's maximum nonconformity score. Test patients are excluded from fitting and calibration; this benchmark was previously reported. Multi-year rollout bands are heuristic and are not calibrated beyond the first year.</p>
     </Card>
     <ResearchData catalog={data.research_datasets} model={data.onset_model} />
     <Card title="Limits"><ul className="list-disc space-y-2 pl-5 text-sm text-ink-muted">{data.limitations.map(x => <li key={x}>{x}</li>)}</ul></Card>

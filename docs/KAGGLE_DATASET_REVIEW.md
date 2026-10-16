@@ -1,5 +1,9 @@
 # Kaggle dataset suitability review
 
+Historical source-review snapshot from 15 October 2026. For the integrated
+current datasets and 16 October retraining results, see
+[CURRENT_DATASETS.md](CURRENT_DATASETS.md) and [MODEL_IMPROVEMENT.md](MODEL_IMPROVEMENT.md).
+
 **Integration update:** OLSM is now trained via its verified GPL-3 upstream; Aier-SERI
 and Miopia are included with separate reference/research roles. See
 [the current dataset list](CURRENT_DATASETS.md). The discovery audit below records

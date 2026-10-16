@@ -1,6 +1,6 @@
 # Five-year onset research model
 
-Version: `onset5y-1637991b19`. Trained at `2026-10-15T15:53:16.317394+00:00`.
+Version: `onset5y-e8e0b40d33`. Trained at `2026-10-16T03:14:02.373756+00:00`.
 
 This is a separate incident-myopia endpoint for initially nonmyopic children aged
 5-9. It does not replace Iiris's 6/12-month SE/AL progression models or their risk
@@ -28,9 +28,9 @@ Male/Female categories to original 0/1 values; all absent measurements stay abse
 ## Fixed protocol and predictors
 
 One row per independent subject; fixed stratified split into 370 fitting, 124
-calibration and 124 untouched test subjects, with 49/16/16 positive outcomes.
-The trainer asserts subject disjointness. Neither features/settings nor model
-selection is tuned on the test set. HGB classifier: 100 iterations, five leaves,
+calibration and 124 fixed test subjects, with 49/16/16 positive outcomes.
+The trainer asserts subject disjointness. Features/settings are not tuned on test subjects.
+This is the previously reported benchmark, not new external validation. HGB classifier: 100 iterations, five leaves,
 minimum leaf 15, learning rate .05, L2 10, no early stopping, seed 42. A separate
 sigmoid calibrator fits only the calibration subjects.
 
@@ -52,6 +52,38 @@ of independent test subjects; one-class samples are skipped. Only 16 test onsets
 and a historical single cohort limit precision. The activity-model difference is
 not proof of a reliable improvement, generalization or intervention effect.
 There is no external validation or validated individual probability interval.
+
+## Classification accuracy and challenger experiment
+
+| Inputs | Accuracy at .5 | Balanced accuracy | Sensitivity | Specificity | Confusion matrix [[TN,FP],[FN,TP]] |
+|---|---|---|---|---|---|
+| clinical | 87.10% | 50.00% | 0.00% | 100.00% | [[108, 0], [16, 0]] |
+| clinical_activity | 87.90% | 53.12% | 6.25% | 100.00% | [[108, 0], [15, 1]] |
+
+The majority/prevalence baseline is **87.10% accuracy, 50% balanced accuracy,
+0% sensitivity**. Overall accuracy above 95% has not been achieved. The .5
+threshold is fixed and is not optimized on test labels. This endpoint returns a
+research probability, not a clinical screening decision.
+
+An opt-in search compared 13 fixed logistic, RBF SVM, HGB and random-forest
+configurations with ten training-only stratified CV folds per feature set,
+selecting by ROC AUC before test evaluation. Selected logistic challengers did
+not consistently improve test probability quality (clinical Brier .0967 vs .0934;
+activity .0952 vs .0920). They were **not promoted**. The retained model and its
+predictions are unchanged apart from version/expanded reporting. The deployment
+decision considered this reused benchmark; independent validation remains needed.
+See [MODEL_IMPROVEMENT.md](MODEL_IMPROVEMENT.md) and its full candidate scores.
+
+To reproduce the experiment without overwriting the release:
+
+```sh
+OMP_NUM_THREADS=1 python -m app.ml.onset --search --out artifacts/onset_challenger.joblib
+```
+
+The default command rebuilds the incumbent. Challenger search requires a separate
+path; a bundle explicitly marked challenger_only is refused by the serving loader.
+Source NaNs are never imputed; experimental models use a separately calibrated
+native-missing fallback if needed. Missing-pattern validity is not established.
 
 ## API and UI
 

@@ -3,7 +3,7 @@
 The numerical model-vs-baseline comparison is in [MODEL_CARD.md](MODEL_CARD.md)
 and its linked generated metrics JSON. Carry-forward retains the current SE/AL;
 Ridge is a regularized linear baseline; Random Forest is the additional nonlinear
-comparison. All use the same untouched patient holdout. No result from a generated
+comparison. All use the same fixed, previously reported patient holdout. No result from a generated
 cohort is reported as performance.
 
 The [Dryad three-year dataset abstract](https://datadryad.org/dataset/doi:10.5061/dryad.d4mb3pn)

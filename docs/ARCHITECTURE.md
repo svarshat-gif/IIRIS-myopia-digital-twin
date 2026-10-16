@@ -41,11 +41,15 @@ checks, and composes from tool output. Optional narration can use loopback Ollam
 only; all numbers must be traceable. The default LLM_PROVIDER=none is fully usable.
 
 Model training uses separate patient groups for fitting, calibration and testing.
-Three repeated four-fold patient-grouped CV runs inspect training patients only.
+Six fixed point-model candidates are compared over three repeated four-fold
+patient-grouped CV runs using training patients only; minimum mean fold MAE selects
+per target. Current models predict change plus measured baseline; absent anchors
+use a trained absolute fallback with an unvalidated-missing-pattern warning.
 Quantile intervals use patient-maximum conformal scores on held-out calibration
 patients. Test metrics include cluster bootstrap CIs and carry-forward/Ridge/RF
-comparisons. The deployed regressor family/settings are fixed in advance; test
-scores do not choose hyperparameters. No risk classifier is released when its
+comparisons. The candidate set is fixed before evaluation; test
+scores do not choose hyperparameters. Post-selection CV scores are not nested
+evaluation, and the test benchmark was previously reported. No risk classifier is released when its
 independent test labels are insufficient. Exposure what-ifs are rejected when
 the training source cannot support them. Multi-year bands are heuristic rollouts,
 not calibrated long-horizon confidence intervals.
@@ -53,7 +57,7 @@ not calibrated long-horizon confidence intervals.
 Routes load lazily; Chart.js is absent from the initial landing/auth bundle.
 Clinician screens add cohort search/status, measured history, prediction bands,
 attribution, version diff, new observations/monitor, scenarios and cited agent
-traces. The public model card discloses the tiny test cohort and failed baselines.
+traces. The public model card discloses the tiny test cohort, baseline comparisons and unavailable 95% accuracy claim.
 
 Readiness checks DB/model. Middleware caps request bodies, limits auth/compute
 by IP and verified subject, appends security/request-ID headers and persists

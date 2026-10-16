@@ -1,6 +1,6 @@
 # Verification and remaining work
 
-Local verification on 15 October 2026. This report distinguishes executed checks
+Local verification on 16 October 2026. This report distinguishes executed checks
 from prepared infrastructure. The full deployment definition of done remains open.
 
 ## Executed checks
@@ -8,9 +8,9 @@ from prepared infrastructure. The full deployment definition of done remains ope
 | Check | Result |
 |---|---|
 | Verified workbook -> normalization -> real training | Passed; 20 subjects, 140 visits; no generated fallback |
-| Backend pytest | 94 passed; 10 upstream/deprecated-name warnings |
-| Requested aggregate coverage | 89.81% |
-| Coverage by requested module | core 88.17%, ML 90.34%, simulator 91.23%, twin 89.19% |
+| Backend pytest | 99 passed; 10 upstream/deprecated-name warnings |
+| Requested aggregate coverage | 88.89% |
+| Coverage by requested module | core 88.17%, ml 88.15%, simulator 92.11%, twin 89.19% |
 | Ruff | Passed |
 | Installed Python dependency consistency | pip check: no broken requirements |
 | Frontend Vitest/Testing Library | Four tests passed |
@@ -38,7 +38,8 @@ color-contrast. Lighthouse reports a color-contrast issue on the simulator; the
 existing palette remains frozen, and the score still exceeds the requested 90.
 No claim is made that every screen is fully WCAG conformant.
 
-Local QA reports are ignored in .tools/final-coverage.json,
+Latest QA coverage is ignored in .tools/improved-coverage.json; earlier reports are in
+.tools/final-coverage.json,
 .tools/lighthouse-login.json and .tools/lighthouse-simulator.json. Browser
 screenshots/traces are ignored under frontend/test-results. These are local
 verification evidence, not release inputs.
@@ -52,10 +53,13 @@ accounts/data without using them in the current application. Do not publish this
 archive or use it for training, metrics or demonstrations.
 
 A fresh default SQLite database was migrated and seeded with 20 verified DIMS
-subjects and 120 observations/versions through month 24, withholding the real
+subjects and 120 observations with 120 initial versions through month 24, withholding the real
 month-36 measurements for the demo loop. It contains no invented appointments or
 default accounts/passwords. Create an admin explicitly using bootstrap_admin.py
-and a password you supply. The complete 140 visits are used in model training.
+and a password you supply. The complete 140 visits are used in model training. After retraining, 20 new
+model_refresh snapshots were appended (140 total versions). The original 120
+snapshots and every observation were verified unchanged against a SQLite backup;
+a repeated refresh skipped all 20 subjects and created no duplicates.
 Smoke-test accounts/data are isolated in ignored databases ending smoke_test.db.
 
 ## Not executed / still required
@@ -84,5 +88,22 @@ items must not be marked complete on the basis of this local verification.
 
 New dataset integration: source hash/license guards, 618-subject independent onset
 training, missingness preservation and authenticated domain checks are included
-in the 94 passing tests. The browser Model Card smoke also exercises the separate
+in the 99 passing tests. The browser Model Card smoke also exercises the separate
 five-year estimate form. See CURRENT_DATASETS.md. Docker/cloud remain unverified.
+
+
+## Model improvement verification
+
+The six-candidate-per-target progression search uses training-only grouped CV.
+The released artifact is mdt-20261016-174a69a1. Independent-model tests verify
+anchor preservation, NaN retention, patient-disjoint CV folds and candidate output
+protection. The 13-configuration onset search was executed separately and its
+challengers were not promoted; the incumbent is onset5y-e8e0b40d33 with expanded
+classification metrics. The updated frontend build/four unit tests and both
+browser flows passed, including accuracy/sensitivity/95%-target disclosures.
+Ruff, pip check and git diff --check passed; the original theme files are unchanged.
+
+The reused benchmark does not establish 95% overall prediction accuracy. See
+[MODEL_IMPROVEMENT.md](MODEL_IMPROVEMENT.md) for before/after errors, unsuccessful
+onset candidates, low sensitivity and evaluation limits. This update did not run
+Docker, live Postgres/S3, remote CI or deployment checks.

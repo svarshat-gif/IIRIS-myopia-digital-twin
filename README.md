@@ -5,8 +5,8 @@ uncertainty-aware research twin with a clinician portal, audited access, a
 capability-gated simulator, cited deterministic agent tools and a FHIR read facade.
 The original warm-paper theme, fonts, tokens and component system are preserved.
 
-**Current status:** working local research application. 94 backend tests passed
-with 90% coverage across twin/simulator/ML/core, four frontend unit tests and two
+**Current status:** working local research application. 99 backend tests passed
+with 88.89% coverage across twin/simulator/ML/core, four frontend unit tests and two
 browser smoke flows passed. Lighthouse accessibility: sign-in 100, simulator 95.
 Docker/Compose, live Postgres/S3, remote CI and free-host deployment are not yet
 verified on this machine (Docker/WSL/cloud accounts are absent). See
@@ -27,17 +27,22 @@ returned HTML and failed verification. They are not silently used. The Dryad
 longitudinal adapter needs actual workbook inspection; Shanghai appears to compare
 independent cross-sectional school samples. See [data card](docs/DATA_CARD.md).
 
-| Untouched holdout target | Model MAE | Carry-forward MAE | Ridge MAE | Model RMSE | R-squared | Measured interval coverage |
-|---|---:|---:|---:|---:|---:|---:|
-| SE 6 months (D) | 0.1421 | 0.1675 | 0.2589 | 0.1451 | 0.9893 | 83.33% |
-| SE 12 months (D) | 0.3710 | 0.3350 | 0.2851 | 0.4175 | 0.9193 | 66.67% |
-| AL 6 months (mm) | 0.9770 | 0.0633 | 0.6807 | 0.9931 | 0.6958 | 100% |
-| AL 12 months (mm) | 0.8230 | 0.1333 | 0.6302 | 0.8304 | 0.7959 | 83.33% |
+| Existing benchmark target | Model MAE | Carry-forward MAE | Ridge MAE | Model RMSE | R-squared | Measured interval coverage |
+|---|---|---|---|---|---|---|
+| SE 6 months (D) | 0.1258 | 0.1675 | 0.2589 | 0.1551 | 0.9877 | 100% |
+| SE 12 months (D) | 0.3204 | 0.335 | 0.2851 | 0.3604 | 0.9399 | 100% |
+| AL 6 months (mm) | 0.0363 | 0.0633 | 0.6807 | 0.0404 | 0.9995 | 100% |
+| AL 12 months (mm) | 0.04 | 0.1333 | 0.6302 | 0.0457 | 0.9994 | 100% |
 
 Only two independent test patients. Training/calibration/test are 8/10/2 patients.
-These scores and patient-bootstrap intervals are highly unstable. High R-squared largely
-reflects differences in refractive level between subjects; it does not demonstrate
-useful progression prediction. The 12-month models fail to beat carry-forward.
+The new point models forecast change from observed measurements and are selected
+using training-only patient-grouped CV. All four targets beat carry-forward on
+this **previously reported benchmark**; SE at six months still trails RF; at 12 months it trails Ridge/RF.
+These scores and patient-bootstrap intervals are highly unstable. R-squared and
+coverage are not percent prediction accuracy. Overall accuracy above 95% has not
+been achieved. The retained onset model has 87.9% activity-model accuracy at the
+fixed .5 threshold, versus 87.1% for predicting no onset for everyone; its
+sensitivity is only 6.25%. See [model improvement report](docs/MODEL_IMPROVEMENT.md).
 There is no demonstrated clinical utility. No risk classifier is released because
 independent labels are insufficient. Behaviour/ergonomics ablations are marked
 unevaluable and numeric exposure/treatment what-ifs are refused.

@@ -1,6 +1,6 @@
 {
-  "model_version": "onset5y-1637991b19",
-  "trained_at": "2026-10-15T15:53:16.317394+00:00",
+  "model_version": "onset5y-e8e0b40d33",
+  "trained_at": "2026-10-16T03:14:02.373756+00:00",
   "data_is_synthetic": false,
   "source": {
     "id": "olsm",
@@ -39,6 +39,12 @@
       "average_precision": 0.4482,
       "brier": 0.0934,
       "log_loss": 0.3189,
+      "accuracy": 0.871,
+      "balanced_accuracy": 0.5,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "precision": 0.0,
+      "f1": 0.0,
       "bootstrap_95ci": {
         "roc_auc": [
           0.6813,
@@ -55,13 +61,70 @@
         "log_loss": [
           0.2175,
           0.4505
+        ],
+        "accuracy": [
+          0.8065,
+          0.9274
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.5
+        ],
+        "sensitivity": [
+          0.0,
+          0.0
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0
         ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "fixed_hgb_incumbent",
+        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.7914,
+        "average_precision": 0.4482,
+        "brier": 0.0934,
+        "log_loss": 0.3189,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
       },
       "prevalence_baseline": {
         "roc_auc": 0.5,
         "average_precision": 0.129,
         "brier": 0.1124,
-        "log_loss": 0.3846
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
       }
     },
     "clinical_activity": {
@@ -69,6 +132,12 @@
       "average_precision": 0.5052,
       "brier": 0.092,
       "log_loss": 0.3135,
+      "accuracy": 0.879,
+      "balanced_accuracy": 0.5312,
+      "sensitivity": 0.0625,
+      "specificity": 1.0,
+      "precision": 1.0,
+      "f1": 0.1176,
       "bootstrap_95ci": {
         "roc_auc": [
           0.7013,
@@ -85,23 +154,84 @@
         "log_loss": [
           0.2047,
           0.4449
+        ],
+        "accuracy": [
+          0.8145,
+          0.9355
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.6145
+        ],
+        "sensitivity": [
+          0.0,
+          0.2291
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          1.0
+        ],
+        "f1": [
+          0.0,
+          0.3728
         ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          15,
+          1
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "fixed_hgb_incumbent",
+        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.8067,
+        "average_precision": 0.5052,
+        "brier": 0.092,
+        "log_loss": 0.3135,
+        "accuracy": 0.879,
+        "balanced_accuracy": 0.5312,
+        "sensitivity": 0.0625,
+        "specificity": 1.0,
+        "precision": 1.0,
+        "f1": 0.1176
       },
       "prevalence_baseline": {
         "roc_auc": 0.5,
         "average_precision": 0.129,
         "brier": 0.1124,
-        "log_loss": 0.3846
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
       }
     }
   },
+  "selection": "Original fixed HGB retained; candidate search is an opt-in, separately saved experiment",
+  "release_status": "retained_incumbent",
+  "test_status": "Same locked benchmark as previous report; previously reported results, not new external validation",
   "limitations": [
     "Baseline predictors and five-year binary onset only; no serial SE/AL.",
     "Weekly activities are proxies; sports/outdoor is not pure outdoor exposure.",
     "Ages 5-9, initially nonmyopic; no causal intervention estimates.",
     "Only 81 onsets; small historical single-cohort holdout.",
     "No external validation, individual probability interval or causal exposure effect.",
-    "Activity and clinical models have separate test results; no test-selected winner."
+    "Activity and clinical models have separate test results; no test-selected winner.",
+    "Accuracy is threshold-dependent; always compare majority baseline, sensitivity and balanced accuracy."
   ],
   "disclaimer": "Exploratory five-year myopia-onset association for initially nonmyopic children aged 5-9. Not a 6/12-month progression estimate, diagnosis, clinical validation or causal intervention effect."
 }

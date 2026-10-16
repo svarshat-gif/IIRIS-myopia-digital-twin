@@ -53,6 +53,10 @@ def test_onset_training_has_real_provenance_and_independent_evaluation():
     for metrics in m['metrics'].values():
         assert 0 <= metrics['roc_auc'] <= 1 and 0 <= metrics['brier'] <= 1
         assert metrics['bootstrap_95ci']['roc_auc'][0] <= metrics['roc_auc'] <= metrics['bootstrap_95ci']['roc_auc'][1]
+        assert sum(map(sum, metrics['confusion_matrix'])) == 124
+        assert metrics['decision_threshold'] == .5
+        assert metrics['prevalence_baseline']['sensitivity'] == 0
+        assert metrics['model_selection']['selected'] == 'fixed_hgb_incumbent'
 
 
 def test_onset_uses_measured_activity_or_clinical_model_without_filling():

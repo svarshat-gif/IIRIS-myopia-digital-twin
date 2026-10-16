@@ -60,5 +60,4 @@ source to training; verify its license, endpoint and subject/time linkage first.
 
 See [CURRENT_DATASETS.md](CURRENT_DATASETS.md) and [ONSET_MODEL_CARD.md](ONSET_MODEL_CARD.md)
 for the newly integrated OLSM onset model, Aier-SERI baseline reference and
-Miopia noncommercial research tables. The progression metrics/cohort above are
-unchanged. Make/Docker now build both models offline from bundled licensed inputs.
+Miopia noncommercial research tables. Progression data remain separate; current retraining results are in MODEL_CARD.md. Make/Docker now build both models offline from bundled licensed inputs.

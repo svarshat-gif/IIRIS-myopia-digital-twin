@@ -62,6 +62,8 @@ test('clinician cohort, patient detail, evidence trace and mobile layout', async
   await expect(page.getByText('no demonstrated clinical utility', { exact: false }).first()).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Additional research datasets' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Five-year onset research model' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Sensitivity', exact: true })).toBeVisible()
+  await expect(page.getByText('Overall accuracy above 95% has not been achieved.', { exact: false })).toBeVisible()
   await page.getByText('Try an onset research estimate', { exact: true }).click()
   await page.getByRole('spinbutton', { name: /^Baseline age/ }).fill('6')
   await page.getByRole('spinbutton', { name: /^Baseline spherical equivalent/ }).fill('0.608')

@@ -1,0 +1,1040 @@
+{
+  "date": "2026-10-16",
+  "target_above_95_percent_achieved": false,
+  "evaluation_status": "Previously reported benchmarks reused; not independent external validation",
+  "progression_version": "mdt-20261016-174a69a1",
+  "onset_version": "onset5y-e8e0b40d33",
+  "progression": {
+    "y_se_6m": {
+      "previous": {
+        "mae": 0.1421,
+        "rmse": 0.1451,
+        "r2": 0.9893
+      },
+      "current": {
+        "n": 6,
+        "mae": 0.1258,
+        "rmse": 0.1551,
+        "r2": 0.9877,
+        "model_selection": {
+          "selected": "change_hgb_smooth",
+          "criterion": "Lowest mean training-only patient-grouped CV MAE",
+          "folds": 12,
+          "candidates": [
+            {
+              "candidate": "carry_forward",
+              "mean_cv_mae": 0.213125,
+              "std_cv_mae": 0.052118
+            },
+            {
+              "candidate": "mean_change",
+              "mean_cv_mae": 0.17591,
+              "std_cv_mae": 0.064408
+            },
+            {
+              "candidate": "change_hgb_regularized",
+              "mean_cv_mae": 0.152192,
+              "std_cv_mae": 0.033228
+            },
+            {
+              "candidate": "change_hgb_smooth",
+              "mean_cv_mae": 0.146752,
+              "std_cv_mae": 0.059861
+            },
+            {
+              "candidate": "change_hgb_flexible",
+              "mean_cv_mae": 0.153211,
+              "std_cv_mae": 0.03267
+            },
+            {
+              "candidate": "absolute_hgb_previous",
+              "mean_cv_mae": 0.693217,
+              "std_cv_mae": 0.398553
+            }
+          ]
+        },
+        "endpoint": "Future measured level; changes forecast from an observed baseline when selected",
+        "bootstrap_95ci": {
+          "mae": [
+            0.0805,
+            0.1711
+          ],
+          "rmse": [
+            0.086,
+            0.2018
+          ],
+          "r2": [
+            -1329.7944,
+            0.9877
+          ]
+        },
+        "calibration_patients": 10,
+        "development_grouped_cv": {
+          "strategy": "Post-selection development check: same 3 repeated grouped 4-fold runs; not nested unbiased CV",
+          "repeats": [
+            {
+              "n": 24,
+              "mae": 0.154,
+              "rmse": 0.2047,
+              "r2": 0.9808
+            },
+            {
+              "n": 24,
+              "mae": 0.1364,
+              "rmse": 0.1909,
+              "r2": 0.9833
+            },
+            {
+              "n": 24,
+              "mae": 0.1498,
+              "rmse": 0.1967,
+              "r2": 0.9823
+            }
+          ]
+        },
+        "interval_coverage_raw": 0.8333,
+        "interval_coverage": 1.0,
+        "interval_patient_coverage": 1.0,
+        "mean_interval_width": 1.3278,
+        "conformal_delta": 0.4998,
+        "nominal_coverage": 0.9,
+        "baselines": {
+          "ridge": {
+            "n": 6,
+            "mae": 0.2589,
+            "rmse": 0.3483,
+            "r2": 0.9381
+          },
+          "random_forest": {
+            "n": 6,
+            "mae": 0.0956,
+            "rmse": 0.113,
+            "r2": 0.9935
+          },
+          "carry_forward": {
+            "n": 6,
+            "mae": 0.1675,
+            "rmse": 0.2282,
+            "r2": 0.9734,
+            "bootstrap_95ci": {
+              "mae": [
+                0.085,
+                0.25
+              ],
+              "rmse": [
+                0.1021,
+                0.3062
+              ],
+              "r2": [
+                -1875.5,
+                0.9734
+              ]
+            }
+          }
+        }
+      }
+    },
+    "y_se_12m": {
+      "previous": {
+        "mae": 0.371,
+        "rmse": 0.4175,
+        "r2": 0.9193
+      },
+      "current": {
+        "n": 6,
+        "mae": 0.3204,
+        "rmse": 0.3604,
+        "r2": 0.9399,
+        "model_selection": {
+          "selected": "change_hgb_smooth",
+          "criterion": "Lowest mean training-only patient-grouped CV MAE",
+          "folds": 12,
+          "candidates": [
+            {
+              "candidate": "carry_forward",
+              "mean_cv_mae": 0.265417,
+              "std_cv_mae": 0.059216
+            },
+            {
+              "candidate": "mean_change",
+              "mean_cv_mae": 0.213333,
+              "std_cv_mae": 0.044814
+            },
+            {
+              "candidate": "change_hgb_regularized",
+              "mean_cv_mae": 0.224417,
+              "std_cv_mae": 0.035163
+            },
+            {
+              "candidate": "change_hgb_smooth",
+              "mean_cv_mae": 0.202363,
+              "std_cv_mae": 0.034164
+            },
+            {
+              "candidate": "change_hgb_flexible",
+              "mean_cv_mae": 0.255398,
+              "std_cv_mae": 0.049339
+            },
+            {
+              "candidate": "absolute_hgb_previous",
+              "mean_cv_mae": 0.776513,
+              "std_cv_mae": 0.400509
+            }
+          ]
+        },
+        "endpoint": "Future measured level; changes forecast from an observed baseline when selected",
+        "bootstrap_95ci": {
+          "mae": [
+            0.2077,
+            0.4331
+          ],
+          "rmse": [
+            0.216,
+            0.4616
+          ],
+          "r2": [
+            -11.4215,
+            0.9399
+          ]
+        },
+        "calibration_patients": 10,
+        "development_grouped_cv": {
+          "strategy": "Post-selection development check: same 3 repeated grouped 4-fold runs; not nested unbiased CV",
+          "repeats": [
+            {
+              "n": 24,
+              "mae": 0.2042,
+              "rmse": 0.2463,
+              "r2": 0.9731
+            },
+            {
+              "n": 24,
+              "mae": 0.1937,
+              "rmse": 0.2251,
+              "r2": 0.9776
+            },
+            {
+              "n": 24,
+              "mae": 0.2092,
+              "rmse": 0.2458,
+              "r2": 0.9733
+            }
+          ]
+        },
+        "interval_coverage_raw": 0.5,
+        "interval_coverage": 1.0,
+        "interval_patient_coverage": 1.0,
+        "mean_interval_width": 1.7125,
+        "conformal_delta": 0.5819,
+        "nominal_coverage": 0.9,
+        "baselines": {
+          "ridge": {
+            "n": 6,
+            "mae": 0.2851,
+            "rmse": 0.3768,
+            "r2": 0.9343
+          },
+          "random_forest": {
+            "n": 6,
+            "mae": 0.2857,
+            "rmse": 0.3172,
+            "r2": 0.9534
+          },
+          "carry_forward": {
+            "n": 6,
+            "mae": 0.335,
+            "rmse": 0.4275,
+            "r2": 0.9155,
+            "bootstrap_95ci": {
+              "mae": [
+                0.0867,
+                0.5833
+              ],
+              "rmse": [
+                0.1061,
+                0.5951
+              ],
+              "r2": [
+                -5.375,
+                0.9155
+              ]
+            }
+          }
+        }
+      }
+    },
+    "y_al_6m": {
+      "previous": {
+        "mae": 0.977,
+        "rmse": 0.9931,
+        "r2": 0.6958
+      },
+      "current": {
+        "n": 6,
+        "mae": 0.0363,
+        "rmse": 0.0404,
+        "r2": 0.9995,
+        "model_selection": {
+          "selected": "mean_change",
+          "criterion": "Lowest mean training-only patient-grouped CV MAE",
+          "folds": 12,
+          "candidates": [
+            {
+              "candidate": "carry_forward",
+              "mean_cv_mae": 0.057083,
+              "std_cv_mae": 0.015171
+            },
+            {
+              "candidate": "mean_change",
+              "mean_cv_mae": 0.043904,
+              "std_cv_mae": 0.01825
+            },
+            {
+              "candidate": "change_hgb_regularized",
+              "mean_cv_mae": 0.058628,
+              "std_cv_mae": 0.015642
+            },
+            {
+              "candidate": "change_hgb_smooth",
+              "mean_cv_mae": 0.052998,
+              "std_cv_mae": 0.016366
+            },
+            {
+              "candidate": "change_hgb_flexible",
+              "mean_cv_mae": 0.059315,
+              "std_cv_mae": 0.013152
+            },
+            {
+              "candidate": "absolute_hgb_previous",
+              "mean_cv_mae": 0.437213,
+              "std_cv_mae": 0.23459
+            }
+          ]
+        },
+        "endpoint": "Future measured level; changes forecast from an observed baseline when selected",
+        "bootstrap_95ci": {
+          "mae": [
+            0.0329,
+            0.0396
+          ],
+          "rmse": [
+            0.0356,
+            0.0447
+          ],
+          "r2": [
+            -0.1647,
+            0.9995
+          ]
+        },
+        "calibration_patients": 10,
+        "development_grouped_cv": {
+          "strategy": "Post-selection development check: same 3 repeated grouped 4-fold runs; not nested unbiased CV",
+          "repeats": [
+            {
+              "n": 24,
+              "mae": 0.0433,
+              "rmse": 0.0508,
+              "r2": 0.9967
+            },
+            {
+              "n": 24,
+              "mae": 0.0461,
+              "rmse": 0.0533,
+              "r2": 0.9964
+            },
+            {
+              "n": 24,
+              "mae": 0.0423,
+              "rmse": 0.049,
+              "r2": 0.9969
+            }
+          ]
+        },
+        "interval_coverage_raw": 0.8333,
+        "interval_coverage": 1.0,
+        "interval_patient_coverage": 1.0,
+        "mean_interval_width": 0.4524,
+        "conformal_delta": 0.1709,
+        "nominal_coverage": 0.9,
+        "baselines": {
+          "ridge": {
+            "n": 6,
+            "mae": 0.6807,
+            "rmse": 0.6815,
+            "r2": 0.8567
+          },
+          "random_forest": {
+            "n": 6,
+            "mae": 0.8514,
+            "rmse": 0.8598,
+            "r2": 0.7719
+          },
+          "carry_forward": {
+            "n": 6,
+            "mae": 0.0633,
+            "rmse": 0.0742,
+            "r2": 0.9983,
+            "bootstrap_95ci": {
+              "mae": [
+                0.05,
+                0.0767
+              ],
+              "rmse": [
+                0.0614,
+                0.085
+              ],
+              "r2": [
+                -2.4592,
+                0.9983
+              ]
+            }
+          }
+        }
+      }
+    },
+    "y_al_12m": {
+      "previous": {
+        "mae": 0.823,
+        "rmse": 0.8304,
+        "r2": 0.7959
+      },
+      "current": {
+        "n": 6,
+        "mae": 0.04,
+        "rmse": 0.0457,
+        "r2": 0.9994,
+        "model_selection": {
+          "selected": "mean_change",
+          "criterion": "Lowest mean training-only patient-grouped CV MAE",
+          "folds": 12,
+          "candidates": [
+            {
+              "candidate": "carry_forward",
+              "mean_cv_mae": 0.123333,
+              "std_cv_mae": 0.022037
+            },
+            {
+              "candidate": "mean_change",
+              "mean_cv_mae": 0.069213,
+              "std_cv_mae": 0.015713
+            },
+            {
+              "candidate": "change_hgb_regularized",
+              "mean_cv_mae": 0.088098,
+              "std_cv_mae": 0.017952
+            },
+            {
+              "candidate": "change_hgb_smooth",
+              "mean_cv_mae": 0.084414,
+              "std_cv_mae": 0.014154
+            },
+            {
+              "candidate": "change_hgb_flexible",
+              "mean_cv_mae": 0.101053,
+              "std_cv_mae": 0.016074
+            },
+            {
+              "candidate": "absolute_hgb_previous",
+              "mean_cv_mae": 0.364844,
+              "std_cv_mae": 0.151096
+            }
+          ]
+        },
+        "endpoint": "Future measured level; changes forecast from an observed baseline when selected",
+        "bootstrap_95ci": {
+          "mae": [
+            0.0331,
+            0.0469
+          ],
+          "rmse": [
+            0.0333,
+            0.0554
+          ],
+          "r2": [
+            0.7688,
+            0.9994
+          ]
+        },
+        "calibration_patients": 10,
+        "development_grouped_cv": {
+          "strategy": "Post-selection development check: same 3 repeated grouped 4-fold runs; not nested unbiased CV",
+          "repeats": [
+            {
+              "n": 24,
+              "mae": 0.0672,
+              "rmse": 0.0913,
+              "r2": 0.9903
+            },
+            {
+              "n": 24,
+              "mae": 0.0738,
+              "rmse": 0.0964,
+              "r2": 0.9892
+            },
+            {
+              "n": 24,
+              "mae": 0.0667,
+              "rmse": 0.0914,
+              "r2": 0.9903
+            }
+          ]
+        },
+        "interval_coverage_raw": 0.8333,
+        "interval_coverage": 1.0,
+        "interval_patient_coverage": 1.0,
+        "mean_interval_width": 0.6009,
+        "conformal_delta": 0.2111,
+        "nominal_coverage": 0.9,
+        "baselines": {
+          "ridge": {
+            "n": 6,
+            "mae": 0.6302,
+            "rmse": 0.6316,
+            "r2": 0.8819
+          },
+          "random_forest": {
+            "n": 6,
+            "mae": 0.8182,
+            "rmse": 0.8335,
+            "r2": 0.7944
+          },
+          "carry_forward": {
+            "n": 6,
+            "mae": 0.1333,
+            "rmse": 0.1402,
+            "r2": 0.9942,
+            "bootstrap_95ci": {
+              "mae": [
+                0.1067,
+                0.16
+              ],
+              "rmse": [
+                0.1111,
+                0.1643
+              ],
+              "r2": [
+                -1.0352,
+                0.9942
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "onset_incumbent": {
+    "clinical": {
+      "roc_auc": 0.7914,
+      "average_precision": 0.4482,
+      "brier": 0.0934,
+      "log_loss": 0.3189,
+      "accuracy": 0.871,
+      "balanced_accuracy": 0.5,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "precision": 0.0,
+      "f1": 0.0,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.6813,
+          0.8993
+        ],
+        "average_precision": [
+          0.2539,
+          0.7098
+        ],
+        "brier": [
+          0.0581,
+          0.1397
+        ],
+        "log_loss": [
+          0.2175,
+          0.4505
+        ],
+        "accuracy": [
+          0.8065,
+          0.9274
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.5
+        ],
+        "sensitivity": [
+          0.0,
+          0.0
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "fixed_hgb_incumbent",
+        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.7914,
+        "average_precision": 0.4482,
+        "brier": 0.0934,
+        "log_loss": 0.3189,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    },
+    "clinical_activity": {
+      "roc_auc": 0.8067,
+      "average_precision": 0.5052,
+      "brier": 0.092,
+      "log_loss": 0.3135,
+      "accuracy": 0.879,
+      "balanced_accuracy": 0.5312,
+      "sensitivity": 0.0625,
+      "specificity": 1.0,
+      "precision": 1.0,
+      "f1": 0.1176,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.7013,
+          0.9031
+        ],
+        "average_precision": [
+          0.2874,
+          0.7318
+        ],
+        "brier": [
+          0.056,
+          0.1361
+        ],
+        "log_loss": [
+          0.2047,
+          0.4449
+        ],
+        "accuracy": [
+          0.8145,
+          0.9355
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.6145
+        ],
+        "sensitivity": [
+          0.0,
+          0.2291
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          1.0
+        ],
+        "f1": [
+          0.0,
+          0.3728
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          15,
+          1
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "fixed_hgb_incumbent",
+        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.8067,
+        "average_precision": 0.5052,
+        "brier": 0.092,
+        "log_loss": 0.3135,
+        "accuracy": 0.879,
+        "balanced_accuracy": 0.5312,
+        "sensitivity": 0.0625,
+        "specificity": 1.0,
+        "precision": 1.0,
+        "f1": 0.1176
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  "onset_challenger": {
+    "clinical": {
+      "roc_auc": 0.8032,
+      "average_precision": 0.4407,
+      "brier": 0.0967,
+      "log_loss": 0.3169,
+      "accuracy": 0.871,
+      "balanced_accuracy": 0.5,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "precision": 0.0,
+      "f1": 0.0,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.6787,
+          0.9032
+        ],
+        "average_precision": [
+          0.2545,
+          0.697
+        ],
+        "brier": [
+          0.0589,
+          0.1436
+        ],
+        "log_loss": [
+          0.2126,
+          0.444
+        ],
+        "accuracy": [
+          0.8065,
+          0.9274
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.5
+        ],
+        "sensitivity": [
+          0.0,
+          0.0
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "logistic_C30",
+        "criterion": "Highest mean training-only repeated stratified CV ROC AUC",
+        "folds": 10,
+        "candidates": [
+          {
+            "candidate": "logistic_C0.03",
+            "mean_cv_roc_auc": 0.887527,
+            "std_cv_roc_auc": 0.083558
+          },
+          {
+            "candidate": "logistic_C0.3",
+            "mean_cv_roc_auc": 0.897995,
+            "std_cv_roc_auc": 0.078504
+          },
+          {
+            "candidate": "logistic_C3",
+            "mean_cv_roc_auc": 0.89947,
+            "std_cv_roc_auc": 0.079409
+          },
+          {
+            "candidate": "logistic_C30",
+            "mean_cv_roc_auc": 0.899724,
+            "std_cv_roc_auc": 0.079715
+          },
+          {
+            "candidate": "rbf_svm_C0.1",
+            "mean_cv_roc_auc": 0.84852,
+            "std_cv_roc_auc": 0.057217
+          },
+          {
+            "candidate": "rbf_svm_C1",
+            "mean_cv_roc_auc": 0.847539,
+            "std_cv_roc_auc": 0.057874
+          },
+          {
+            "candidate": "rbf_svm_C10",
+            "mean_cv_roc_auc": 0.823088,
+            "std_cv_roc_auc": 0.054196
+          },
+          {
+            "candidate": "rbf_svm_C100",
+            "mean_cv_roc_auc": 0.750629,
+            "std_cv_roc_auc": 0.061282
+          },
+          {
+            "candidate": "hgb_3_l2_10",
+            "mean_cv_roc_auc": 0.874014,
+            "std_cv_roc_auc": 0.083566
+          },
+          {
+            "candidate": "hgb_5_l2_10",
+            "mean_cv_roc_auc": 0.869294,
+            "std_cv_roc_auc": 0.091608
+          },
+          {
+            "candidate": "hgb_9_l2_1",
+            "mean_cv_roc_auc": 0.864083,
+            "std_cv_roc_auc": 0.084191
+          },
+          {
+            "candidate": "random_forest_leaf5",
+            "mean_cv_roc_auc": 0.86169,
+            "std_cv_roc_auc": 0.106055
+          },
+          {
+            "candidate": "random_forest_leaf15",
+            "mean_cv_roc_auc": 0.884372,
+            "std_cv_roc_auc": 0.092821
+          }
+        ]
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.7914,
+        "average_precision": 0.4482,
+        "brier": 0.0934,
+        "log_loss": 0.3189,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    },
+    "clinical_activity": {
+      "roc_auc": 0.8056,
+      "average_precision": 0.4588,
+      "brier": 0.0952,
+      "log_loss": 0.3145,
+      "accuracy": 0.871,
+      "balanced_accuracy": 0.5,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "precision": 0.0,
+      "f1": 0.0,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.6904,
+          0.9093
+        ],
+        "average_precision": [
+          0.2652,
+          0.7157
+        ],
+        "brier": [
+          0.0574,
+          0.1418
+        ],
+        "log_loss": [
+          0.2057,
+          0.4465
+        ],
+        "accuracy": [
+          0.8065,
+          0.9274
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.5
+        ],
+        "sensitivity": [
+          0.0,
+          0.0
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "logistic_C0.3",
+        "criterion": "Highest mean training-only repeated stratified CV ROC AUC",
+        "folds": 10,
+        "candidates": [
+          {
+            "candidate": "logistic_C0.03",
+            "mean_cv_roc_auc": 0.880885,
+            "std_cv_roc_auc": 0.074016
+          },
+          {
+            "candidate": "logistic_C0.3",
+            "mean_cv_roc_auc": 0.890202,
+            "std_cv_roc_auc": 0.075286
+          },
+          {
+            "candidate": "logistic_C3",
+            "mean_cv_roc_auc": 0.890187,
+            "std_cv_roc_auc": 0.077646
+          },
+          {
+            "candidate": "logistic_C30",
+            "mean_cv_roc_auc": 0.88922,
+            "std_cv_roc_auc": 0.078607
+          },
+          {
+            "candidate": "rbf_svm_C0.1",
+            "mean_cv_roc_auc": 0.848584,
+            "std_cv_roc_auc": 0.07963
+          },
+          {
+            "candidate": "rbf_svm_C1",
+            "mean_cv_roc_auc": 0.848272,
+            "std_cv_roc_auc": 0.079652
+          },
+          {
+            "candidate": "rbf_svm_C10",
+            "mean_cv_roc_auc": 0.786158,
+            "std_cv_roc_auc": 0.074221
+          },
+          {
+            "candidate": "rbf_svm_C100",
+            "mean_cv_roc_auc": 0.726442,
+            "std_cv_roc_auc": 0.05054
+          },
+          {
+            "candidate": "hgb_3_l2_10",
+            "mean_cv_roc_auc": 0.889132,
+            "std_cv_roc_auc": 0.069659
+          },
+          {
+            "candidate": "hgb_5_l2_10",
+            "mean_cv_roc_auc": 0.875783,
+            "std_cv_roc_auc": 0.076837
+          },
+          {
+            "candidate": "hgb_9_l2_1",
+            "mean_cv_roc_auc": 0.849032,
+            "std_cv_roc_auc": 0.080243
+          },
+          {
+            "candidate": "random_forest_leaf5",
+            "mean_cv_roc_auc": 0.860743,
+            "std_cv_roc_auc": 0.099606
+          },
+          {
+            "candidate": "random_forest_leaf15",
+            "mean_cv_roc_auc": 0.882159,
+            "std_cv_roc_auc": 0.088243
+          }
+        ]
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.8067,
+        "average_precision": 0.5052,
+        "brier": 0.092,
+        "log_loss": 0.3135,
+        "accuracy": 0.879,
+        "balanced_accuracy": 0.5312,
+        "sensitivity": 0.0625,
+        "specificity": 1.0,
+        "precision": 1.0,
+        "f1": 0.1176
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  "onset_challenger_status": "not_promoted; did not consistently improve existing probability-quality benchmark",
+  "onset_challenger_original_version": "onset5y-b869668356",
+  "test_tuning": "No candidate grid expansion, test-threshold optimization, test-seed search, invented data or label leakage"
+}

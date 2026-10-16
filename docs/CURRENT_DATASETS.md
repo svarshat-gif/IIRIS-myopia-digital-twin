@@ -1,6 +1,6 @@
 # Current dataset integration
 
-Updated 15 October 2026 after the Kaggle source review. Four datasets now have
+Updated 16 October 2026 after the Kaggle source review. Four datasets now have
 explicit roles in Iiris; only two are used for models, with different endpoints.
 
 | Source | Included data | Current role | License |
@@ -13,8 +13,9 @@ explicit roles in Iiris; only two are used for models, with different endpoints.
 The OLSM license barrier was resolved by acquiring the explicitly licensed CRAN
 upstream, verifying its repository checksum and comparing every numeric/category-
 decoded row against Kaggle. License/source attribution, original R data and full
-package source are bundled. The existing progression model, patient count and
-metrics remain unchanged; the additional subjects are not DIMS visits.
+package source are bundled. The progression patient count is unchanged; the additional subjects are not DIMS
+visits. Training-only selection now improves change forecasts on the existing
+benchmark; see MODEL_IMPROVEMENT.md. The onset challenger was not promoted.
 
 Aier-SERI's [source publication](https://pmc.ncbi.nlm.nih.gov/articles/PMC12510582/)
 confirms the Kaggle release and CC0. Its eye-side codebook ambiguity remains
