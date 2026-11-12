@@ -26,11 +26,12 @@ from sklearn.preprocessing import StandardScaler
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from app.ml import trajectory
-from app.ml.al_accuracy_models import (FEATURES, AnchoredALRegressor,
-                                       HistoryShrinkageRegressor, build_pairs, enrich_row)
-from app.ml.dataset import load_visits
-from app.ml.train import verify_training_source
+from app.ml import trajectory  # noqa: E402
+from app.ml.al_accuracy_models import (  # noqa: E402
+    FEATURES, AnchoredALRegressor, HistoryShrinkageRegressor, build_pairs, enrich_row,
+)
+from app.ml.dataset import load_visits  # noqa: E402
+from app.ml.train import verify_training_source  # noqa: E402
 
 TOLERANCE = .10
 SEED = 2026
