@@ -59,7 +59,7 @@ jobs:
         run: docker compose logs && docker compose down -v
   browser-smoke:
     needs: backend
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       DATABASE_URL: sqlite:///./artifacts/smoke_test.db
       EVIDENCE_OFFLINE: 'true'
