@@ -129,6 +129,17 @@ class QuickSimulationIn(BaseModel):
 
 
 
+class QuickForecastIn(BaseModel):
+    """A read-only selectable-horizon forecast from measured starting values."""
+    age: float = Field(..., ge=3, le=30)
+    spherical_equivalent: float = Field(..., ge=-30, le=15)
+    axial_length: float | None = Field(None, ge=15, le=35)
+    sex: Literal['male', 'female', 'other', 'unknown'] | None = None
+    parental_myopia: int | None = Field(None, ge=0, le=2)
+    treatment: str | None = Field(None, max_length=64)
+    horizon_months: int = Field(..., ge=1, le=120, strict=True)
+
+
 class ProjectionIn(BaseModel):
     """Projection for the signed-in user's own record."""
     years: int = Field(5, ge=1, le=8)

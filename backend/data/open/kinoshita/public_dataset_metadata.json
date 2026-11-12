@@ -1,0 +1,105 @@
+{
+  "id": "y58rh8bfkv",
+  "version": 7,
+  "name": "Dataset for: Efficacy of combined orthokeratology and 0.01% atropine solution for slowing axial elongation in children with myopia: a 2-year randomised trial",
+  "description": "This dataset file contains the pertinent data including age, sex, spherical equivalent refraction, axial length, corneal endothelial cell density, intraocular pressure, uncorrected distant and near visual acuity, and compliance rate of subjects who completed the 2-year study in the orthokeratology and 0.01% atropine combination group and the orthokeratology monotherapy group.",
+  "doi": "10.17632/y58rh8bfkv.7",
+  "publish_date": "2020-08-25T09:53:34.070Z",
+  "last_modification_date": "2020-08-25T09:53:30.243Z",
+  "is_confidential": false,
+  "customer": {
+    "id": "7377952c-6404-4428-bbfc-77242cfc301e",
+    "name": "Mendeley Guests",
+    "chief_id": 810289,
+    "config": {
+      "repository_id": "MENDELEY_DATA",
+      "dataset_size_limit": 10737418240,
+      "doi_prefix": "10.17632"
+    },
+    "is_user_mendeley_admin": false,
+    "customer_roles": [],
+    "is_guest": true,
+    "is_user_customer_moderator": false
+  },
+  "owner": {
+    "id": "d6b6ef48-b261-3f2e-9492-3d306ec24a93",
+    "first_name": "Nozomi",
+    "last_name": "Kinoshita",
+    "display_name": "Nozomi Kinoshita",
+    "$ref": "/profiles/d6b6ef48-b261-3f2e-9492-3d306ec24a93"
+  },
+  "categories": [
+    {
+      "id": "data.elsevier.com/vocabulary/OmniScience/Concept-186201601",
+      "label": "Health Sciences"
+    }
+  ],
+  "licence": {
+    "id": "01d9c749-3c4d-4431-9df3-620b2dcfe144",
+    "short_name": "CC BY 4.0",
+    "full_name": "Creative Commons Attribution 4.0 International",
+    "description": "You can share, copy and modify this dataset so long as you give appropriate credit, provide a link to the CC BY license, and indicate if changes were made, but you may not do so in a way that suggests the rights holder has endorsed you or your use of the dataset. Note that further permission may be required for any content within the dataset that is identified as belonging to a third party.",
+    "url": "http://creativecommons.org/licenses/by/4.0",
+    "category": "Creative",
+    "customer_id": null
+  },
+  "institutions": [
+    {
+      "id": "1c626239-f21e-56b9-b874-c847b00f9513",
+      "name": "Jichi Ika Daigaku Fuzoku Saitama Iryo Center"
+    }
+  ],
+  "organisational_unit_names": [],
+  "contributors": [
+    {
+      "id": "d6b6ef48-b261-3f2e-9492-3d306ec24a93",
+      "first_name": "Nozomi",
+      "last_name": "Kinoshita",
+      "$ref": "/profiles/d6b6ef48-b261-3f2e-9492-3d306ec24a93",
+      "institution": "Saitama Medical Center, Jichi Medical University"
+    },
+    {
+      "first_name": "Yasuhiro",
+      "last_name": "Konno",
+      "institution": "Konno Eye Clinic"
+    },
+    {
+      "first_name": "Naoki",
+      "last_name": "Hamada",
+      "institution": "Omiya Hamada Eye Clinic"
+    },
+    {
+      "id": "db653907-abf5-30ab-b28b-e061ed31495b",
+      "first_name": "Yoshinobu ",
+      "last_name": "Kanda",
+      "$ref": "/profiles/db653907-abf5-30ab-b28b-e061ed31495b",
+      "institution": "Saitama Medical Center, Jichi Medical University"
+    },
+    {
+      "first_name": "Machiko",
+      "last_name": "Shimmura-Tomita",
+      "institution": "Saitama Medical Center, Jichi Medical University"
+    },
+    {
+      "first_name": "Toshikatsu",
+      "last_name": "Kaburaki",
+      "institution": "Saitama Medical Center, Jichi Medical University"
+    },
+    {
+      "id": "49160693-cd90-3869-bd3b-a5963ef90ac7",
+      "first_name": "Akihiro",
+      "last_name": "Kakehashi",
+      "$ref": "/profiles/49160693-cd90-3869-bd3b-a5963ef90ac7",
+      "institution": "Saitama Medical Center, Jichi Medical University"
+    }
+  ],
+  "related_links": [
+    {
+      "relation_type": "related_to",
+      "href": "https://www.nature.com/articles/s41598-020-69710-8",
+      "source_type": "article"
+    }
+  ],
+  "custom_metadata": {},
+  "is_metadata_only": false
+}

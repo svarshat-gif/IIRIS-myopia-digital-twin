@@ -2,8 +2,10 @@
 import numpy as np
 import pytest
 from sklearn.dummy import DummyRegressor
+from sklearn.linear_model import LogisticRegression
 
-from app.ml import selection, onset
+from app.ml import selection, onset, research_models
+from scripts.train_expanded_onset import bootstrap_threshold_ci
 
 
 def test_change_forecast_preserves_observed_patient_level():
@@ -55,3 +57,36 @@ def test_challenger_cannot_overwrite_released_onset_model():
 def test_onset_search_rejects_invented_missing_predictors():
     with pytest.raises(ValueError, match='no imputation'):
         selection.select_onset(np.array([[np.nan]]), np.array([0]))
+
+
+def test_onset_threshold_selection_honors_sensitivity_floor_without_test_labels():
+    y_select = np.array([0, 0, 1, 1, 1])
+    p_select = np.array([.05, .2, .55, .7, .9])
+    threshold = research_models.sensitivity_threshold(y_select, p_select, minimum_sensitivity=.8)
+    assert threshold == .55  # any higher threshold misses too many positive cases
+    assert np.sum((y_select == 1) & (p_select >= threshold)) / np.sum(y_select == 1) == 1.0
+
+
+def test_onset_threshold_selection_rejects_selection_data_without_events():
+    with pytest.raises(ValueError, match='positive outcomes'):
+        research_models.sensitivity_threshold(np.zeros(5, dtype=int), np.linspace(.1, .5, 5),
+                                              minimum_sensitivity=.8)
+
+
+def test_threshold_bootstrap_resamples_positive_and_negative_subjects_separately():
+    y = np.array([0, 0, 1, 1])
+    p = np.array([.1, .2, .8, .9])
+    ci = bootstrap_threshold_ci(y, p, threshold=.5, repeats=50)
+    assert ci == {key: [1.0, 1.0] for key in
+                  ('accuracy', 'balanced_accuracy', 'sensitivity', 'specificity')}
+
+
+def test_probability_calibration_uses_training_oof_scores():
+    x = np.arange(40, dtype=float).reshape(-1, 1)
+    y = np.array([0] * 20 + [1] * 20)
+    model = research_models.SigmoidProbabilityModel(
+        LogisticRegression(solver='liblinear', random_state=42)).fit_oof(x, y)
+    p = model.predict_proba([[10.], [30.]])[:, 1]
+    assert np.isfinite(p).all() and np.all((p >= 0) & (p <= 1))
+    with pytest.raises(ValueError, match='two examples'):
+        research_models.SigmoidProbabilityModel(LogisticRegression()).fit_oof(x[:21], y[:21])

@@ -6,6 +6,8 @@ model:
 	cd backend && OMP_NUM_THREADS=1 $(PYTHON) -m app.ml.train
 	cd backend && $(PYTHON) scripts/build_research_datasets.py
 	cd backend && OMP_NUM_THREADS=1 $(PYTHON) -m app.ml.onset
+	cd backend && OMP_NUM_THREADS=1 $(PYTHON) -m app.ml.expanded --without-catboost --promote
+	cd backend && OMP_NUM_THREADS=1 $(PYTHON) -m app.ml.trajectory
 bootstrap:
 	$(PYTHON) backend/scripts/bootstrap.py
 migrate:

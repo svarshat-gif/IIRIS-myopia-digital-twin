@@ -17,7 +17,7 @@ export default function ResearchData({ catalog, model }) {
     <Card title="Additional research datasets" subtitle="Each source has its own role; these are not additional DIMS follow-up visits.">
       <div className="overflow-x-auto"><table className="table">
         <thead><tr><th scope="col">Dataset</th><th scope="col">Records</th><th scope="col">Role</th><th scope="col">License</th></tr></thead>
-        <tbody>{catalog?.datasets?.map(d => <tr key={d.id}><th scope="row"><a className="underline" href={d.source_url} target="_blank" rel="noreferrer">{d.name}</a></th><td>{d.rows}{d.n_patients ? ' subjects' : ' rows; subjects unverified'}</td><td>{d.role}</td><td>{d.license}</td></tr>)}</tbody>
+        <tbody>{catalog?.datasets?.map(d => <tr key={d.id}><th scope="row"><a className="underline" href={d.source_url} target="_blank" rel="noreferrer">{d.name}</a></th><td>{d.n_patients ? `${d.n_patients} source subject IDs / ${d.rows} rows` : `${d.rows} rows; subjects unverified`}</td><td>{d.role}</td><td>{d.license}</td></tr>)}</tbody>
       </table></div>
       {catalog?.datasets?.map(d => <details key={d.id} className="mt-3 text-sm"><summary className="cursor-pointer">{d.name}: limits</summary><ul className="mt-2 list-disc pl-5 text-ink-muted">{d.limitations.map(x => <li key={x}>{x}</li>)}</ul></details>)}
       <p className="mt-3 text-sm text-ink-muted">{catalog?.note}</p>

@@ -1,21 +1,21 @@
 # Verification and remaining work
 
-Local verification on 16 October 2026. This report distinguishes executed checks
+Local verification updated 17 October 2026. This report distinguishes executed checks
 from prepared infrastructure. The full deployment definition of done remains open.
 
 ## Executed checks
 
 | Check | Result |
 |---|---|
-| Verified workbook -> normalization -> real training | Passed; 20 subjects, 140 visits; no generated fallback |
-| Backend pytest | 99 passed; 10 upstream/deprecated-name warnings |
-| Requested aggregate coverage | 88.89% |
-| Coverage by requested module | core 88.17%, ml 88.15%, simulator 92.11%, twin 89.19% |
+| Verified workbook -> normalization -> real training | Passed; DIMS 20 subjects/140 visits, Kinoshita 73/438, and verified GOAL/RELS; no generated fallback |
+| Backend pytest | 152 passed; 10 upstream/deprecated-name warnings |
+| Requested aggregate coverage | 88.83%; 80% gate passed |
+| Coverage by requested module | core 88.17%, ml 88.36%, simulator 92.11%, twin 89.40% |
 | Ruff | Passed |
 | Installed Python dependency consistency | pip check: no broken requirements |
-| Frontend Vitest/Testing Library | Four tests passed |
-| Frontend production build | Passed; initial JS 214.39 kB / 70.54 kB gzip; charts loaded separately |
-| Playwright/Chrome smoke | Two flows passed on an isolated SQLite test database |
+| Frontend Vitest/Testing Library | 27 tests passed, including selectable horizons and model-card rendering |
+| Frontend production build | Passed after selectable-horizon and mobile chart changes; charts loaded separately |
+| Playwright/Chrome smoke | Two flows passed on isolated artifacts/forecast_horizon/smoke_test.db; default records untouched |
 | Last Lighthouse 12.8.2 accessibility run (before onset UI addition) | Sign-in 100; public simulator 95 |
 | SQLite Alembic upgrade + schema check | Passed on fresh databases; no pending operations |
 | Postgres initial migration SQL generation | Passed in offline mode; not a live Postgres test |
@@ -29,16 +29,29 @@ production guards, upload sniffing/storage mocks, FHIR, immutable versions, pers
 monitor flags, leakage, actual-data training, scenario refusals and numeric narration
 guards. Synthetic measurements in test fixtures never seed the shipped demo/model.
 
-Browser flows cover signup, record entry, a version update, public baseline
-simulation, patient role denial, clinician cohort/detail, adding the actual D1
+The selectable-horizon checks cover 1–120 months, fractional-year conversion,
+missing AL, exact month validation, fresh-process artifact loading, source hashes,
+future-feature leakage, patient splits and read-only requests. Real training
+round trips run on temporary artifacts and verify serving artifacts are unchanged.
+Both selectable targets use only actually measured future visit pairs. See
+[horizon support and model results](FORECAST_HORIZONS.md); passing software checks
+does not establish prediction accuracy.
+
+Browser flows cover signup, record entry, a version update, public SE/AL forecasts
+at 2/10/30/120 months, year conversion, range and extrapolation labels, patient
+role denial, clinician cohort/detail, adding the actual D1
 month-36 observation (v6 -> v7), a recalculated prediction, persisted monitor,
-version diff, unsupported scenario messaging, evidence/tool trace, model card and
-390-pixel mobile overflow. Clinician axe checks cover WCAG A/AA rules except
+version diff, unsupported scenario messaging, evidence/tool trace, the selectable
+model's actual result card and 390-pixel mobile overflow. Missing optional Ridge
+baselines render as unavailable. The chart grid/canvas layout was corrected after
+the browser check exposed overflow. Launched test API/UI processes were stopped.
+Clinician axe checks cover WCAG A/AA rules except
 color-contrast. Lighthouse reports a color-contrast issue on the simulator; the
 existing palette remains frozen, and the score still exceeds the requested 90.
 No claim is made that every screen is fully WCAG conformant.
 
-Latest QA coverage is ignored in .tools/improved-coverage.json; earlier reports are in
+Latest QA coverage is ignored in .tools/forecast-coverage.json; earlier reports are in
+.tools/improved-coverage.json,
 .tools/final-coverage.json,
 .tools/lighthouse-login.json and .tools/lighthouse-simulator.json. Browser
 screenshots/traces are ignored under frontend/test-results. These are local

@@ -124,126 +124,662 @@
       }
     },
     "y_se_12m": {
-      "n": 6,
-      "mae": 0.3204,
-      "rmse": 0.3604,
-      "r2": 0.9399,
+      "n": 915,
+      "mae": 0.4248,
+      "rmse": 0.5892,
+      "r2": 0.8376,
+      "n_patients": 316,
+      "bootstrap_95ci": {
+        "mae": [
+          0.3925,
+          0.4557
+        ],
+        "rmse": [
+          0.5369,
+          0.6407
+        ],
+        "r2": [
+          0.7986,
+          0.8688
+        ]
+      },
+      "within_025D": 0.43278688524590164,
+      "within_050D": 0.7125683060109289,
+      "interval_coverage": 0.9540983606557377,
+      "mean_interval_width": 2.3306110978982635,
+      "interval_patient_coverage": 0.8734177215189873,
+      "baselines": {
+        "carry_forward": {
+          "n": 915,
+          "mae": 0.6298,
+          "rmse": 0.8322,
+          "r2": 0.676
+        }
+      },
+      "future_myopic_status": {
+        "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+        "model": {
+          "accuracy": 0.9049180327868852,
+          "balanced_accuracy": 0.8259462450171318,
+          "sensitivity": 0.677570093457944,
+          "specificity": 0.9743223965763196,
+          "precision": 0.8895705521472392,
+          "f1": 0.7692307692307693,
+          "confusion_matrix": [
+            [
+              683,
+              18
+            ],
+            [
+              69,
+              145
+            ]
+          ],
+          "threshold": 0.0
+        },
+        "carry_forward": {
+          "accuracy": 0.8666666666666667,
+          "balanced_accuracy": 0.724692362046209,
+          "sensitivity": 0.45794392523364486,
+          "specificity": 0.9914407988587732,
+          "precision": 0.9423076923076923,
+          "f1": 0.6163522012578616,
+          "confusion_matrix": [
+            [
+              695,
+              6
+            ],
+            [
+              116,
+              98
+            ]
+          ],
+          "threshold": 0.0
+        }
+      },
+      "fast_progression": {
+        "roc_auc": 0.7072,
+        "average_precision": 0.6986,
+        "brier": 0.2227,
+        "log_loss": 0.6364,
+        "accuracy": 0.6383,
+        "balanced_accuracy": 0.6354,
+        "sensitivity": 0.4324,
+        "specificity": 0.8384,
+        "precision": 0.7222,
+        "f1": 0.5409,
+        "at_calibration_threshold": {
+          "accuracy": 0.6612021857923497,
+          "balanced_accuracy": 0.6608231707317074,
+          "sensitivity": 0.6341463414634146,
+          "specificity": 0.6875,
+          "precision": 0.6635730858468677,
+          "f1": 0.6485260770975056,
+          "confusion_matrix": [
+            [
+              319,
+              145
+            ],
+            [
+              165,
+              286
+            ]
+          ],
+          "threshold": 0.4381466626524062
+        },
+        "prevalence_baseline": {
+          "roc_auc": 0.5,
+          "average_precision": 0.4929,
+          "brier": 0.25,
+          "log_loss": 0.6931,
+          "accuracy": 0.5071,
+          "balanced_accuracy": 0.5,
+          "sensitivity": 0.0,
+          "specificity": 1.0,
+          "precision": 0.0,
+          "f1": 0.0
+        }
+      },
       "model_selection": {
-        "selected": "change_hgb_smooth",
-        "criterion": "Lowest mean training-only patient-grouped CV MAE",
-        "folds": 12,
+        "selected": "change_hgb_7_l2_10",
+        "criterion": "Training-only grouped CV MAE",
+        "folds": 5,
         "candidates": [
           {
             "candidate": "carry_forward",
-            "mean_cv_mae": 0.265417,
-            "std_cv_mae": 0.059216
+            "mean_cv_score": 0.5935898493223666,
+            "std_cv_score": 0.02005450342795355
           },
           {
             "candidate": "mean_change",
-            "mean_cv_mae": 0.213333,
-            "std_cv_mae": 0.044814
+            "mean_cv_score": 0.4434684446228445,
+            "std_cv_score": 0.015139604834377181
           },
           {
-            "candidate": "change_hgb_regularized",
-            "mean_cv_mae": 0.224417,
-            "std_cv_mae": 0.035163
+            "candidate": "linear_history",
+            "mean_cv_score": 0.505466676138387,
+            "std_cv_score": 0.02077314646016916
           },
           {
-            "candidate": "change_hgb_smooth",
-            "mean_cv_mae": 0.202363,
-            "std_cv_mae": 0.034164
+            "candidate": "change_ridge_1.0",
+            "mean_cv_score": 0.4239096753749593,
+            "std_cv_score": 0.017056133114984114
           },
           {
-            "candidate": "change_hgb_flexible",
-            "mean_cv_mae": 0.255398,
-            "std_cv_mae": 0.049339
+            "candidate": "change_ridge_10.0",
+            "mean_cv_score": 0.423816707805599,
+            "std_cv_score": 0.016969897481511877
           },
           {
-            "candidate": "absolute_hgb_previous",
-            "mean_cv_mae": 0.776513,
-            "std_cv_mae": 0.400509
+            "candidate": "change_hgb_3_l2_1",
+            "mean_cv_score": 0.4061285803626844,
+            "std_cv_score": 0.016375681652709122
+          },
+          {
+            "candidate": "change_hgb_3_l2_10",
+            "mean_cv_score": 0.40639057432912057,
+            "std_cv_score": 0.017085185228289092
+          },
+          {
+            "candidate": "change_hgb_7_l2_1",
+            "mean_cv_score": 0.4047302964486332,
+            "std_cv_score": 0.01688414551254755
+          },
+          {
+            "candidate": "change_hgb_7_l2_10",
+            "mean_cv_score": 0.40357808245239435,
+            "std_cv_score": 0.015985621573715775
+          },
+          {
+            "candidate": "change_hgb_15_l2_1",
+            "mean_cv_score": 0.40864195609632226,
+            "std_cv_score": 0.0193977752923795
+          },
+          {
+            "candidate": "change_hgb_15_l2_10",
+            "mean_cv_score": 0.4071015009575053,
+            "std_cv_score": 0.018579200689877427
           }
         ]
       },
-      "endpoint": "Future measured level; changes forecast from an observed baseline when selected",
-      "bootstrap_95ci": {
-        "mae": [
-          0.2077,
-          0.4331
-        ],
-        "rmse": [
-          0.216,
-          0.4616
-        ],
-        "r2": [
-          -11.4215,
-          0.9399
-        ]
-      },
-      "calibration_patients": 10,
-      "development_grouped_cv": {
-        "strategy": "Post-selection development check: same 3 repeated grouped 4-fold runs; not nested unbiased CV",
-        "repeats": [
-          {
-            "n": 24,
-            "mae": 0.2042,
-            "rmse": 0.2463,
-            "r2": 0.9731
-          },
-          {
-            "n": 24,
-            "mae": 0.1937,
-            "rmse": 0.2251,
-            "r2": 0.9776
-          },
-          {
-            "n": 24,
-            "mae": 0.2092,
-            "rmse": 0.2458,
-            "r2": 0.9733
-          }
-        ]
-      },
-      "interval_coverage_raw": 0.5,
-      "interval_coverage": 1.0,
-      "interval_patient_coverage": 1.0,
-      "mean_interval_width": 1.7125,
-      "conformal_delta": 0.5819,
+      "calibration_patients": 324,
       "nominal_coverage": 0.9,
-      "baselines": {
-        "ridge": {
-          "n": 6,
-          "mae": 0.2851,
-          "rmse": 0.3768,
-          "r2": 0.9343
-        },
-        "random_forest": {
-          "n": 6,
-          "mae": 0.2857,
-          "rmse": 0.3172,
-          "r2": 0.9534
-        },
-        "carry_forward": {
-          "n": 6,
-          "mae": 0.335,
-          "rmse": 0.4275,
-          "r2": 0.9155,
+      "conformal_delta": 0.35435566814239206,
+      "evaluation_by_cohort": {
+        "goal_internal": {
+          "n": 909,
+          "mae": 0.4253,
+          "rmse": 0.59,
+          "r2": 0.8296,
+          "n_patients": 314,
           "bootstrap_95ci": {
             "mae": [
-              0.0867,
-              0.5833
+              0.3938,
+              0.4535
             ],
             "rmse": [
-              0.1061,
-              0.5951
+              0.5421,
+              0.6369
             ],
             "r2": [
-              -5.375,
-              0.9155
+              0.7849,
+              0.8642
             ]
+          },
+          "within_025D": 0.43234323432343236,
+          "within_050D": 0.7117711771177118,
+          "interval_coverage": 0.9537953795379538,
+          "mean_interval_width": 2.334008364358647,
+          "interval_patient_coverage": 0.8726114649681529,
+          "baselines": {
+            "carry_forward": {
+              "n": 909,
+              "mae": 0.6317,
+              "rmse": 0.8343,
+              "r2": 0.6593
+            }
+          },
+          "future_myopic_status": {
+            "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+            "model": {
+              "accuracy": 0.9042904290429042,
+              "balanced_accuracy": 0.8212958136727752,
+              "sensitivity": 0.6682692307692307,
+              "specificity": 0.9743223965763196,
+              "precision": 0.8853503184713376,
+              "f1": 0.7616438356164383,
+              "confusion_matrix": [
+                [
+                  683,
+                  18
+                ],
+                [
+                  69,
+                  139
+                ]
+              ],
+              "threshold": 0.0
+            },
+            "carry_forward": {
+              "accuracy": 0.8657865786578658,
+              "balanced_accuracy": 0.7168742455832328,
+              "sensitivity": 0.4423076923076923,
+              "specificity": 0.9914407988587732,
+              "precision": 0.9387755102040817,
+              "f1": 0.6013071895424836,
+              "confusion_matrix": [
+                [
+                  695,
+                  6
+                ],
+                [
+                  116,
+                  92
+                ]
+              ],
+              "threshold": 0.0
+            }
+          },
+          "fast_progression": {
+            "roc_auc": 0.7088,
+            "average_precision": 0.7002,
+            "brier": 0.2225,
+            "log_loss": 0.6361,
+            "accuracy": 0.6381,
+            "balanced_accuracy": 0.6356,
+            "sensitivity": 0.4343,
+            "specificity": 0.837,
+            "precision": 0.7222,
+            "f1": 0.5424,
+            "at_calibration_threshold": {
+              "accuracy": 0.6633663366336634,
+              "balanced_accuracy": 0.6630507407766051,
+              "sensitivity": 0.6369710467706013,
+              "specificity": 0.6891304347826087,
+              "precision": 0.6666666666666666,
+              "f1": 0.6514806378132119,
+              "confusion_matrix": [
+                [
+                  317,
+                  143
+                ],
+                [
+                  163,
+                  286
+                ]
+              ],
+              "threshold": 0.4381466626524062
+            },
+            "prevalence_baseline": {
+              "roc_auc": 0.5,
+              "average_precision": 0.4939,
+              "brier": 0.25,
+              "log_loss": 0.6931,
+              "accuracy": 0.5061,
+              "balanced_accuracy": 0.5,
+              "sensitivity": 0.0,
+              "specificity": 1.0,
+              "precision": 0.0,
+              "f1": 0.0
+            }
+          }
+        },
+        "dims_reused": {
+          "n": 6,
+          "mae": 0.3579,
+          "rmse": 0.4423,
+          "r2": 0.9095,
+          "n_patients": 2,
+          "bootstrap_95ci": {
+            "mae": [
+              0.2877,
+              0.4281
+            ],
+            "rmse": [
+              0.2954,
+              0.5513
+            ],
+            "r2": [
+              -22.2417,
+              0.9095
+            ]
+          },
+          "within_025D": 0.5,
+          "within_050D": 0.8333333333333334,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.815925229150021,
+          "interval_patient_coverage": 1.0,
+          "baselines": {
+            "carry_forward": {
+              "n": 6,
+              "mae": 0.335,
+              "rmse": 0.4275,
+              "r2": 0.9155
+            }
+          },
+          "future_myopic_status": {
+            "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+            "model": {
+              "accuracy": 1.0,
+              "balanced_accuracy": null,
+              "sensitivity": 1.0,
+              "specificity": null,
+              "precision": 1.0,
+              "f1": 1.0,
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  6
+                ]
+              ],
+              "threshold": 0.0
+            },
+            "carry_forward": {
+              "accuracy": 1.0,
+              "balanced_accuracy": null,
+              "sensitivity": 1.0,
+              "specificity": null,
+              "precision": 1.0,
+              "f1": 1.0,
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  6
+                ]
+              ],
+              "threshold": 0.0
+            }
+          },
+          "fast_progression": {
+            "roc_auc": 0.25,
+            "average_precision": 0.325,
+            "brier": 0.2493,
+            "log_loss": 0.6927,
+            "accuracy": 0.6667,
+            "balanced_accuracy": 0.5,
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "precision": 0.0,
+            "f1": 0.0,
+            "at_calibration_threshold": {
+              "accuracy": 0.3333333333333333,
+              "balanced_accuracy": 0.25,
+              "sensitivity": 0.0,
+              "specificity": 0.5,
+              "precision": 0.0,
+              "f1": 0.0,
+              "confusion_matrix": [
+                [
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  0
+                ]
+              ],
+              "threshold": 0.4381466626524062
+            },
+            "prevalence_baseline": {
+              "roc_auc": 0.5,
+              "average_precision": 0.3333,
+              "brier": 0.2491,
+              "log_loss": 0.6914,
+              "accuracy": 0.6667,
+              "balanced_accuracy": 0.5,
+              "sensitivity": 0.0,
+              "specificity": 1.0,
+              "precision": 0.0,
+              "f1": 0.0
+            }
+          }
+        },
+        "rels_common_support": {
+          "n": 5520,
+          "mae": 0.5578,
+          "rmse": 0.7906,
+          "r2": 0.6269,
+          "n_patients": 1900,
+          "bootstrap_95ci": {
+            "mae": [
+              0.5429,
+              0.5749
+            ],
+            "rmse": [
+              0.7429,
+              0.8431
+            ],
+            "r2": [
+              0.5509,
+              0.6967
+            ]
+          },
+          "within_025D": 0.3108695652173913,
+          "within_050D": 0.5695652173913044,
+          "interval_coverage": 0.9358695652173913,
+          "mean_interval_width": 2.457539991021559,
+          "interval_patient_coverage": 0.8352631578947368,
+          "baselines": {
+            "carry_forward": {
+              "n": 5520,
+              "mae": 0.5853,
+              "rmse": 0.8032,
+              "r2": 0.6149
+            }
+          },
+          "future_myopic_status": {
+            "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+            "model": {
+              "accuracy": 0.7579710144927536,
+              "balanced_accuracy": 0.7758832945611662,
+              "sensitivity": 0.8592524227041993,
+              "specificity": 0.692514166418133,
+              "precision": 0.6436225371586588,
+              "f1": 0.7359683794466403,
+              "confusion_matrix": [
+                [
+                  2322,
+                  1031
+                ],
+                [
+                  305,
+                  1862
+                ]
+              ],
+              "threshold": 0.0
+            },
+            "carry_forward": {
+              "accuracy": 0.7885869565217392,
+              "balanced_accuracy": 0.747790963632978,
+              "sensitivity": 0.5579141670512229,
+              "specificity": 0.9376677602147331,
+              "precision": 0.8526093088857546,
+              "f1": 0.6744769874476988,
+              "confusion_matrix": [
+                [
+                  3144,
+                  209
+                ],
+                [
+                  958,
+                  1209
+                ]
+              ],
+              "threshold": 0.0
+            }
+          },
+          "fast_progression": {
+            "roc_auc": 0.4957,
+            "average_precision": 0.5318,
+            "brier": 0.269,
+            "log_loss": 0.7328,
+            "accuracy": 0.4576,
+            "balanced_accuracy": 0.4645,
+            "sensitivity": 0.5912,
+            "specificity": 0.3378,
+            "precision": 0.4447,
+            "f1": 0.5076,
+            "at_calibration_threshold": {
+              "accuracy": 0.4418478260869565,
+              "balanced_accuracy": 0.45643836157522616,
+              "sensitivity": 0.724904214559387,
+              "specificity": 0.1879725085910653,
+              "precision": 0.4446533490011751,
+              "f1": 0.5512017479970867,
+              "confusion_matrix": [
+                [
+                  547,
+                  2363
+                ],
+                [
+                  718,
+                  1892
+                ]
+              ],
+              "threshold": 0.4381466626524062
+            },
+            "prevalence_baseline": {
+              "roc_auc": 0.5,
+              "average_precision": 0.4728,
+              "brier": 0.2499,
+              "log_loss": 0.6929,
+              "accuracy": 0.5272,
+              "balanced_accuracy": 0.5,
+              "sensitivity": 0.0,
+              "specificity": 1.0,
+              "precision": 0.0,
+              "f1": 0.0
+            }
+          }
+        },
+        "rels_later_extrapolation": {
+          "n": 3238,
+          "mae": 0.5181,
+          "rmse": 0.7156,
+          "r2": 0.8384,
+          "n_patients": 1674,
+          "bootstrap_95ci": {
+            "mae": [
+              0.4983,
+              0.5355
+            ],
+            "rmse": [
+              0.6717,
+              0.7526
+            ],
+            "r2": [
+              0.8183,
+              0.8604
+            ]
+          },
+          "within_025D": 0.3193329215565164,
+          "within_050D": 0.5941939468807906,
+          "interval_coverage": 0.9382334774552192,
+          "mean_interval_width": 2.393926629682374,
+          "interval_patient_coverage": 0.8864994026284349,
+          "baselines": {
+            "carry_forward": {
+              "n": 3238,
+              "mae": 0.5917,
+              "rmse": 0.7612,
+              "r2": 0.8171
+            }
+          },
+          "future_myopic_status": {
+            "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+            "model": {
+              "accuracy": 0.8150092649783817,
+              "balanced_accuracy": 0.7423615420870682,
+              "sensitivity": 0.965967365967366,
+              "specificity": 0.5187557182067704,
+              "precision": 0.7975365665896844,
+              "f1": 0.8737086232342399,
+              "confusion_matrix": [
+                [
+                  567,
+                  526
+                ],
+                [
+                  73,
+                  2072
+                ]
+              ],
+              "threshold": 0.0
+            },
+            "carry_forward": {
+              "accuracy": 0.8285978999382335,
+              "balanced_accuracy": 0.8394438437439352,
+              "sensitivity": 0.806060606060606,
+              "specificity": 0.8728270814272644,
+              "precision": 0.9255888650963597,
+              "f1": 0.8616994767007227,
+              "confusion_matrix": [
+                [
+                  954,
+                  139
+                ],
+                [
+                  416,
+                  1729
+                ]
+              ],
+              "threshold": 0.0
+            }
+          },
+          "fast_progression": {
+            "roc_auc": 0.662,
+            "average_precision": 0.6698,
+            "brier": 0.2408,
+            "log_loss": 0.6741,
+            "accuracy": 0.5565,
+            "balanced_accuracy": 0.5483,
+            "sensitivity": 0.8735,
+            "specificity": 0.2231,
+            "precision": 0.5419,
+            "f1": 0.6688,
+            "at_calibration_threshold": {
+              "accuracy": 0.5240889437924645,
+              "balanced_accuracy": 0.5125532548444729,
+              "sensitivity": 0.9680722891566265,
+              "specificity": 0.057034220532319393,
+              "precision": 0.5192245557350565,
+              "f1": 0.6759200841219769,
+              "confusion_matrix": [
+                [
+                  90,
+                  1488
+                ],
+                [
+                  53,
+                  1607
+                ]
+              ],
+              "threshold": 0.4381466626524062
+            },
+            "prevalence_baseline": {
+              "roc_auc": 0.5,
+              "average_precision": 0.5127,
+              "brier": 0.2501,
+              "log_loss": 0.6933,
+              "accuracy": 0.4873,
+              "balanced_accuracy": 0.5,
+              "sensitivity": 0.0,
+              "specificity": 1.0,
+              "precision": 0.0,
+              "f1": 0.0
+            }
           }
         }
-      }
+      },
+      "endpoint": "12-month future measured SE from observed history"
     },
     "y_al_6m": {
       "n": 6,
@@ -491,43 +1027,7 @@
     }
   },
   "risk": {},
-  "ablation": {
-    "clinical": {
-      "n_features": 20,
-      "y_se_6m": {
-        "n": 6,
-        "mae": 0.1258,
-        "rmse": 0.1551,
-        "r2": 0.9877
-      },
-      "y_se_12m": {
-        "n": 6,
-        "mae": 0.3204,
-        "rmse": 0.3604,
-        "r2": 0.9399
-      },
-      "y_al_6m": {
-        "n": 6,
-        "mae": 0.0363,
-        "rmse": 0.0404,
-        "r2": 0.9995
-      },
-      "y_al_12m": {
-        "n": 6,
-        "mae": 0.04,
-        "rmse": 0.0457,
-        "r2": 0.9994
-      }
-    },
-    "clinical_behaviour": {
-      "status": "not_evaluable",
-      "reason": "No measured behaviour/ergonomics in these sources"
-    },
-    "full": {
-      "status": "not_evaluable",
-      "reason": "No measured behaviour/ergonomics in these sources"
-    }
-  },
+  "ablation": {},
   "global_importance": [
     {
       "feature": "se",
@@ -701,8 +1201,658 @@
     "val_patients": 10,
     "test_patients": 2
   },
-  "n_patients": 20,
-  "n_visits": 140,
+  "n_patients": 1630,
+  "n_visits": 6370,
+  "expanded_training": {
+    "model_version": "mdt-expanded-20261016-cc73de06",
+    "trained_at": "2026-10-16T12:01:17.535875+00:00",
+    "data_is_synthetic": false,
+    "catboost_included": false,
+    "regression_selection": {
+      "selected": "change_hgb_7_l2_10",
+      "criterion": "Training-only grouped CV MAE",
+      "folds": 5,
+      "candidates": [
+        {
+          "candidate": "carry_forward",
+          "mean_cv_score": 0.5935898493223666,
+          "std_cv_score": 0.02005450342795355
+        },
+        {
+          "candidate": "mean_change",
+          "mean_cv_score": 0.4434684446228445,
+          "std_cv_score": 0.015139604834377181
+        },
+        {
+          "candidate": "linear_history",
+          "mean_cv_score": 0.505466676138387,
+          "std_cv_score": 0.02077314646016916
+        },
+        {
+          "candidate": "change_ridge_1.0",
+          "mean_cv_score": 0.4239096753749593,
+          "std_cv_score": 0.017056133114984114
+        },
+        {
+          "candidate": "change_ridge_10.0",
+          "mean_cv_score": 0.423816707805599,
+          "std_cv_score": 0.016969897481511877
+        },
+        {
+          "candidate": "change_hgb_3_l2_1",
+          "mean_cv_score": 0.4061285803626844,
+          "std_cv_score": 0.016375681652709122
+        },
+        {
+          "candidate": "change_hgb_3_l2_10",
+          "mean_cv_score": 0.40639057432912057,
+          "std_cv_score": 0.017085185228289092
+        },
+        {
+          "candidate": "change_hgb_7_l2_1",
+          "mean_cv_score": 0.4047302964486332,
+          "std_cv_score": 0.01688414551254755
+        },
+        {
+          "candidate": "change_hgb_7_l2_10",
+          "mean_cv_score": 0.40357808245239435,
+          "std_cv_score": 0.015985621573715775
+        },
+        {
+          "candidate": "change_hgb_15_l2_1",
+          "mean_cv_score": 0.40864195609632226,
+          "std_cv_score": 0.0193977752923795
+        },
+        {
+          "candidate": "change_hgb_15_l2_10",
+          "mean_cv_score": 0.4071015009575053,
+          "std_cv_score": 0.018579200689877427
+        }
+      ]
+    },
+    "risk_selection": {
+      "selected": "hgb_7_l2_10",
+      "criterion": "Training-only CV ROC AUC",
+      "folds": 5,
+      "candidates": [
+        {
+          "candidate": "logistic_C0.03_None",
+          "mean_cv_score": 0.6532586034781236,
+          "std_cv_score": 0.019816879923160478
+        },
+        {
+          "candidate": "logistic_C0.03_balanced",
+          "mean_cv_score": 0.6533024638273377,
+          "std_cv_score": 0.019816162218085447
+        },
+        {
+          "candidate": "logistic_C0.3_None",
+          "mean_cv_score": 0.6560528481443925,
+          "std_cv_score": 0.02113629995236509
+        },
+        {
+          "candidate": "logistic_C0.3_balanced",
+          "mean_cv_score": 0.6560254580932156,
+          "std_cv_score": 0.021128487210028857
+        },
+        {
+          "candidate": "logistic_C3_None",
+          "mean_cv_score": 0.6561001364263286,
+          "std_cv_score": 0.022239903533938107
+        },
+        {
+          "candidate": "logistic_C3_balanced",
+          "mean_cv_score": 0.6560709198975021,
+          "std_cv_score": 0.022213083978466927
+        },
+        {
+          "candidate": "hgb_3_l2_1",
+          "mean_cv_score": 0.6800210853956228,
+          "std_cv_score": 0.02000136895443356
+        },
+        {
+          "candidate": "hgb_3_l2_10",
+          "mean_cv_score": 0.6788041987015054,
+          "std_cv_score": 0.021782221107989136
+        },
+        {
+          "candidate": "hgb_7_l2_1",
+          "mean_cv_score": 0.6803416701358703,
+          "std_cv_score": 0.018197584276330635
+        },
+        {
+          "candidate": "hgb_7_l2_10",
+          "mean_cv_score": 0.6873014355411887,
+          "std_cv_score": 0.018361301916039754
+        },
+        {
+          "candidate": "rf_leaf3",
+          "mean_cv_score": 0.6650993675222858,
+          "std_cv_score": 0.019139250709915998
+        },
+        {
+          "candidate": "rf_leaf10",
+          "mean_cv_score": 0.6676666799676741,
+          "std_cv_score": 0.025173142537058938
+        }
+      ]
+    },
+    "calibration_gate": {
+      "goal": {
+        "previous_mae": 0.4589,
+        "candidate_mae": 0.4097
+      },
+      "dims": {
+        "previous_mae": 0.277,
+        "candidate_mae": 0.2998
+      }
+    },
+    "promotion_accepted": true,
+    "risk_external_gate": {
+      "accepted": false,
+      "rule": "RELS ROC AUC > 0.50 and Brier score below the training-prevalence baseline.",
+      "candidate_auc": 0.4957,
+      "candidate_brier": 0.269,
+      "prevalence_baseline_brier": 0.2499
+    },
+    "calibration_threshold": 0.4381466626524062,
+    "evaluation": {
+      "goal_internal": {
+        "n": 909,
+        "mae": 0.4253,
+        "rmse": 0.59,
+        "r2": 0.8296,
+        "n_patients": 314,
+        "bootstrap_95ci": {
+          "mae": [
+            0.3938,
+            0.4535
+          ],
+          "rmse": [
+            0.5421,
+            0.6369
+          ],
+          "r2": [
+            0.7849,
+            0.8642
+          ]
+        },
+        "within_025D": 0.43234323432343236,
+        "within_050D": 0.7117711771177118,
+        "interval_coverage": 0.9537953795379538,
+        "mean_interval_width": 2.334008364358647,
+        "interval_patient_coverage": 0.8726114649681529,
+        "baselines": {
+          "carry_forward": {
+            "n": 909,
+            "mae": 0.6317,
+            "rmse": 0.8343,
+            "r2": 0.6593
+          }
+        },
+        "future_myopic_status": {
+          "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+          "model": {
+            "accuracy": 0.9042904290429042,
+            "balanced_accuracy": 0.8212958136727752,
+            "sensitivity": 0.6682692307692307,
+            "specificity": 0.9743223965763196,
+            "precision": 0.8853503184713376,
+            "f1": 0.7616438356164383,
+            "confusion_matrix": [
+              [
+                683,
+                18
+              ],
+              [
+                69,
+                139
+              ]
+            ],
+            "threshold": 0.0
+          },
+          "carry_forward": {
+            "accuracy": 0.8657865786578658,
+            "balanced_accuracy": 0.7168742455832328,
+            "sensitivity": 0.4423076923076923,
+            "specificity": 0.9914407988587732,
+            "precision": 0.9387755102040817,
+            "f1": 0.6013071895424836,
+            "confusion_matrix": [
+              [
+                695,
+                6
+              ],
+              [
+                116,
+                92
+              ]
+            ],
+            "threshold": 0.0
+          }
+        },
+        "fast_progression": {
+          "roc_auc": 0.7088,
+          "average_precision": 0.7002,
+          "brier": 0.2225,
+          "log_loss": 0.6361,
+          "accuracy": 0.6381,
+          "balanced_accuracy": 0.6356,
+          "sensitivity": 0.4343,
+          "specificity": 0.837,
+          "precision": 0.7222,
+          "f1": 0.5424,
+          "at_calibration_threshold": {
+            "accuracy": 0.6633663366336634,
+            "balanced_accuracy": 0.6630507407766051,
+            "sensitivity": 0.6369710467706013,
+            "specificity": 0.6891304347826087,
+            "precision": 0.6666666666666666,
+            "f1": 0.6514806378132119,
+            "confusion_matrix": [
+              [
+                317,
+                143
+              ],
+              [
+                163,
+                286
+              ]
+            ],
+            "threshold": 0.4381466626524062
+          },
+          "prevalence_baseline": {
+            "roc_auc": 0.5,
+            "average_precision": 0.4939,
+            "brier": 0.25,
+            "log_loss": 0.6931,
+            "accuracy": 0.5061,
+            "balanced_accuracy": 0.5,
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "precision": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "dims_reused": {
+        "n": 6,
+        "mae": 0.3579,
+        "rmse": 0.4423,
+        "r2": 0.9095,
+        "n_patients": 2,
+        "bootstrap_95ci": {
+          "mae": [
+            0.2877,
+            0.4281
+          ],
+          "rmse": [
+            0.2954,
+            0.5513
+          ],
+          "r2": [
+            -22.2417,
+            0.9095
+          ]
+        },
+        "within_025D": 0.5,
+        "within_050D": 0.8333333333333334,
+        "interval_coverage": 1.0,
+        "mean_interval_width": 1.815925229150021,
+        "interval_patient_coverage": 1.0,
+        "baselines": {
+          "carry_forward": {
+            "n": 6,
+            "mae": 0.335,
+            "rmse": 0.4275,
+            "r2": 0.9155
+          }
+        },
+        "future_myopic_status": {
+          "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+          "model": {
+            "accuracy": 1.0,
+            "balanced_accuracy": null,
+            "sensitivity": 1.0,
+            "specificity": null,
+            "precision": 1.0,
+            "f1": 1.0,
+            "confusion_matrix": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                6
+              ]
+            ],
+            "threshold": 0.0
+          },
+          "carry_forward": {
+            "accuracy": 1.0,
+            "balanced_accuracy": null,
+            "sensitivity": 1.0,
+            "specificity": null,
+            "precision": 1.0,
+            "f1": 1.0,
+            "confusion_matrix": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                6
+              ]
+            ],
+            "threshold": 0.0
+          }
+        },
+        "fast_progression": {
+          "roc_auc": 0.25,
+          "average_precision": 0.325,
+          "brier": 0.2493,
+          "log_loss": 0.6927,
+          "accuracy": 0.6667,
+          "balanced_accuracy": 0.5,
+          "sensitivity": 0.0,
+          "specificity": 1.0,
+          "precision": 0.0,
+          "f1": 0.0,
+          "at_calibration_threshold": {
+            "accuracy": 0.3333333333333333,
+            "balanced_accuracy": 0.25,
+            "sensitivity": 0.0,
+            "specificity": 0.5,
+            "precision": 0.0,
+            "f1": 0.0,
+            "confusion_matrix": [
+              [
+                2,
+                2
+              ],
+              [
+                2,
+                0
+              ]
+            ],
+            "threshold": 0.4381466626524062
+          },
+          "prevalence_baseline": {
+            "roc_auc": 0.5,
+            "average_precision": 0.3333,
+            "brier": 0.2491,
+            "log_loss": 0.6914,
+            "accuracy": 0.6667,
+            "balanced_accuracy": 0.5,
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "precision": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "rels_common_support": {
+        "n": 5520,
+        "mae": 0.5578,
+        "rmse": 0.7906,
+        "r2": 0.6269,
+        "n_patients": 1900,
+        "bootstrap_95ci": {
+          "mae": [
+            0.5429,
+            0.5749
+          ],
+          "rmse": [
+            0.7429,
+            0.8431
+          ],
+          "r2": [
+            0.5509,
+            0.6967
+          ]
+        },
+        "within_025D": 0.3108695652173913,
+        "within_050D": 0.5695652173913044,
+        "interval_coverage": 0.9358695652173913,
+        "mean_interval_width": 2.457539991021559,
+        "interval_patient_coverage": 0.8352631578947368,
+        "baselines": {
+          "carry_forward": {
+            "n": 5520,
+            "mae": 0.5853,
+            "rmse": 0.8032,
+            "r2": 0.6149
+          }
+        },
+        "future_myopic_status": {
+          "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+          "model": {
+            "accuracy": 0.7579710144927536,
+            "balanced_accuracy": 0.7758832945611662,
+            "sensitivity": 0.8592524227041993,
+            "specificity": 0.692514166418133,
+            "precision": 0.6436225371586588,
+            "f1": 0.7359683794466403,
+            "confusion_matrix": [
+              [
+                2322,
+                1031
+              ],
+              [
+                305,
+                1862
+              ]
+            ],
+            "threshold": 0.0
+          },
+          "carry_forward": {
+            "accuracy": 0.7885869565217392,
+            "balanced_accuracy": 0.747790963632978,
+            "sensitivity": 0.5579141670512229,
+            "specificity": 0.9376677602147331,
+            "precision": 0.8526093088857546,
+            "f1": 0.6744769874476988,
+            "confusion_matrix": [
+              [
+                3144,
+                209
+              ],
+              [
+                958,
+                1209
+              ]
+            ],
+            "threshold": 0.0
+          }
+        },
+        "fast_progression": {
+          "roc_auc": 0.4957,
+          "average_precision": 0.5318,
+          "brier": 0.269,
+          "log_loss": 0.7328,
+          "accuracy": 0.4576,
+          "balanced_accuracy": 0.4645,
+          "sensitivity": 0.5912,
+          "specificity": 0.3378,
+          "precision": 0.4447,
+          "f1": 0.5076,
+          "at_calibration_threshold": {
+            "accuracy": 0.4418478260869565,
+            "balanced_accuracy": 0.45643836157522616,
+            "sensitivity": 0.724904214559387,
+            "specificity": 0.1879725085910653,
+            "precision": 0.4446533490011751,
+            "f1": 0.5512017479970867,
+            "confusion_matrix": [
+              [
+                547,
+                2363
+              ],
+              [
+                718,
+                1892
+              ]
+            ],
+            "threshold": 0.4381466626524062
+          },
+          "prevalence_baseline": {
+            "roc_auc": 0.5,
+            "average_precision": 0.4728,
+            "brier": 0.2499,
+            "log_loss": 0.6929,
+            "accuracy": 0.5272,
+            "balanced_accuracy": 0.5,
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "precision": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "rels_later_extrapolation": {
+        "n": 3238,
+        "mae": 0.5181,
+        "rmse": 0.7156,
+        "r2": 0.8384,
+        "n_patients": 1674,
+        "bootstrap_95ci": {
+          "mae": [
+            0.4983,
+            0.5355
+          ],
+          "rmse": [
+            0.6717,
+            0.7526
+          ],
+          "r2": [
+            0.8183,
+            0.8604
+          ]
+        },
+        "within_025D": 0.3193329215565164,
+        "within_050D": 0.5941939468807906,
+        "interval_coverage": 0.9382334774552192,
+        "mean_interval_width": 2.393926629682374,
+        "interval_patient_coverage": 0.8864994026284349,
+        "baselines": {
+          "carry_forward": {
+            "n": 3238,
+            "mae": 0.5917,
+            "rmse": 0.7612,
+            "r2": 0.8171
+          }
+        },
+        "future_myopic_status": {
+          "definition": "Future SE <= -0.50D, including already-myopic subjects; not onset",
+          "model": {
+            "accuracy": 0.8150092649783817,
+            "balanced_accuracy": 0.7423615420870682,
+            "sensitivity": 0.965967365967366,
+            "specificity": 0.5187557182067704,
+            "precision": 0.7975365665896844,
+            "f1": 0.8737086232342399,
+            "confusion_matrix": [
+              [
+                567,
+                526
+              ],
+              [
+                73,
+                2072
+              ]
+            ],
+            "threshold": 0.0
+          },
+          "carry_forward": {
+            "accuracy": 0.8285978999382335,
+            "balanced_accuracy": 0.8394438437439352,
+            "sensitivity": 0.806060606060606,
+            "specificity": 0.8728270814272644,
+            "precision": 0.9255888650963597,
+            "f1": 0.8616994767007227,
+            "confusion_matrix": [
+              [
+                954,
+                139
+              ],
+              [
+                416,
+                1729
+              ]
+            ],
+            "threshold": 0.0
+          }
+        },
+        "fast_progression": {
+          "roc_auc": 0.662,
+          "average_precision": 0.6698,
+          "brier": 0.2408,
+          "log_loss": 0.6741,
+          "accuracy": 0.5565,
+          "balanced_accuracy": 0.5483,
+          "sensitivity": 0.8735,
+          "specificity": 0.2231,
+          "precision": 0.5419,
+          "f1": 0.6688,
+          "at_calibration_threshold": {
+            "accuracy": 0.5240889437924645,
+            "balanced_accuracy": 0.5125532548444729,
+            "sensitivity": 0.9680722891566265,
+            "specificity": 0.057034220532319393,
+            "precision": 0.5192245557350565,
+            "f1": 0.6759200841219769,
+            "confusion_matrix": [
+              [
+                90,
+                1488
+              ],
+              [
+                53,
+                1607
+              ]
+            ],
+            "threshold": 0.4381466626524062
+          },
+          "prevalence_baseline": {
+            "roc_auc": 0.5,
+            "average_precision": 0.5127,
+            "brier": 0.2501,
+            "log_loss": 0.6933,
+            "accuracy": 0.4873,
+            "balanced_accuracy": 0.5,
+            "sensitivity": 0.0,
+            "specificity": 1.0,
+            "precision": 0.0,
+            "f1": 0.0
+          }
+        }
+      }
+    },
+    "split": {
+      "fit": {
+        "patients": 960,
+        "rows": 2783
+      },
+      "calibration": {
+        "patients": 324,
+        "rows": 935
+      },
+      "test": {
+        "patients": 316,
+        "rows": 915
+      }
+    },
+    "limitations": [
+      "Only 12-month SE and SE-change risk gain GOAL data; 6-month SE and all AL endpoints remain DIMS-only.",
+      "RELS is held out as a PLOS study cohort; overlap with the separately sourced DIMS cohort cannot be checked from available files.",
+      "GOAL/DIMS differ in population and treatment; pooled calibration is not group-specific clinical validation.",
+      "Future myopic-status accuracy includes existing cases; it is not incident-myopia sensitivity or overall app accuracy.",
+      "RELS index months above24 are later than fitting support; reported separately as extrapolation.",
+      "No invented dates, age, AL, exposure or treatment allocation; nominal annual timing is retained."
+    ]
+  },
   "provenance": {
     "data_is_synthetic": false,
     "sources": [
@@ -717,7 +1867,7 @@
     "source_names": [
       "Zenodo DIMS 36-month (18166476)"
     ],
-    "n_patients": 20,
+    "n_patients": 1630,
     "n_visits": 140,
     "missingness": {
       "patient_key": 0.0,
@@ -760,9 +1910,55 @@
       "Calendar dates absent: visit_date remains null; scheduled follow-up months are preserved.",
       "Age recorded at baseline only; later ages remain missing. Gender B/G lacks a supplied codebook and is left missing.",
       "No behavioural/ergonomic measurements. No treatment-effect inference from an all-DIMS cohort.",
-      "Peripheral refraction is retained in the raw workbook but excluded from the shared clinical model."
+      "Peripheral refraction is retained in the raw workbook but excluded from the shared clinical model.",
+      "Only 12-month SE and SE-change risk gain GOAL data; 6-month SE and all AL endpoints remain DIMS-only.",
+      "RELS is held out as a PLOS study cohort; overlap with the separately sourced DIMS cohort cannot be checked from available files.",
+      "GOAL/DIMS differ in population and treatment; pooled calibration is not group-specific clinical validation.",
+      "Future myopic-status accuracy includes existing cases; it is not incident-myopia sensitivity or overall app accuracy.",
+      "RELS index months above24 are later than fitting support; reported separately as extrapolation.",
+      "No invented dates, age, AL, exposure or treatment allocation; nominal annual timing is retained."
+    ],
+    "additional_sources": [
+      {
+        "id": "goal",
+        "name": "PLOS GOAL annual refraction cohort",
+        "rows": 6440,
+        "n_patients": 1610,
+        "n_visits": 6230,
+        "role": "12-month SE/progression model development",
+        "license": "CC-BY-4.0",
+        "source_url": "https://journals.plos.org/plosmedicine/article/file?type=supplementary&id=10.1371/journal.pmed.1002674.s002",
+        "data_is_synthetic": false,
+        "table_sha256": "5103d14a97d264310d36a755a0139f6d32d3e22d9e009d0e4ad858ed8a689aca",
+        "limitations": [
+          "Annual cycloplegic right-eye SE only; no AL or exposure/treatment allocation in released workbook.",
+          "Annual labels mapped to nominal scheduled months; exact examination dates and age are unavailable.",
+          "DOB is excluded from normalized model tables and predictors; missing SE stays missing.",
+          "PLOS reports GOAL and RELS as independent cohorts; overlap with the separately sourced DIMS cohort is not verifiable from these files."
+        ]
+      }
+    ],
+    "external_evaluation_sources": [
+      {
+        "id": "rels",
+        "name": "PLOS RELS annual refraction cohort",
+        "rows": 12252,
+        "n_patients": 2042,
+        "n_visits": 10963,
+        "role": "Study-held-out SE/progression evaluation",
+        "license": "CC-BY-4.0",
+        "source_url": "https://journals.plos.org/plosmedicine/article/file?type=supplementary&id=10.1371/journal.pmed.1002674.s002",
+        "data_is_synthetic": false,
+        "table_sha256": "3b7b4f6174bc2526322898a7336ad912a27a0170ab76dad8be46329bd4e498cc",
+        "limitations": [
+          "Annual cycloplegic right-eye SE only; no AL or exposure/treatment allocation in released workbook.",
+          "Annual labels mapped to nominal scheduled months; exact examination dates and age are unavailable.",
+          "DOB is excluded from normalized model tables and predictors; missing SE stays missing.",
+          "PLOS reports GOAL and RELS as independent cohorts; overlap with the separately sourced DIMS cohort is not verifiable from these files."
+        ]
+      }
     ]
   },
-  "trained_at": "2026-10-16T03:13:12.134495+00:00",
-  "model_version": "mdt-20261016-174a69a1"
+  "model_version": "mdt-expanded-20261016-cc73de06",
+  "trained_at": "2026-10-16T12:01:17.535875+00:00"
 }

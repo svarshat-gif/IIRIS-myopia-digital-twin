@@ -5,7 +5,7 @@ import {
   AnimatedNumber, Card, Disclaimer, EmptyState, ErrorNote, SkeletonCard, Stat,
   StatusChip, Tip, toneForBand, toneForCategory,
 } from '../components/ui'
-import TrajectoryChart from '../components/TrajectoryChart'
+import ForecastPanel from '../components/ForecastPanel'
 
 /** Two results a few days apart must not read as "over 0 months". */
 function intervalLabel(change) {
@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [twin, setTwin] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [measure, setMeasure] = useState('se')
+  const loadForecast = useCallback((months, options) => api.prediction(months, options), [])
 
   const load = useCallback(async () => {
     setLoading(true); setError(null)
@@ -94,7 +94,6 @@ export default function Dashboard() {
   /* ---------------------------------------------------------- normal state */
   const { latest, change_since_previous: change, prediction, category,
           derived, next_appointment: next } = summary
-  const h12 = prediction?.horizons?.['12m']
   const risk = prediction?.risk
   const trend = derived?.se_slope_per_year
 
@@ -160,45 +159,14 @@ export default function Dashboard() {
       <Card
         title="Where things are heading"
         subtitle="Your measured results, and what the model expects next."
-        actions={
-          <div className="flex gap-0.5 rounded-full border border-line-strong bg-white p-0.5">
-            {[['se', 'Prescription'], ['al', 'Eye length']].map(([k, l]) => (
-              <button key={k} onClick={() => setMeasure(k)}
-                      className={`rounded-full px-3 py-1.5 text-[12px] font-medium
-                                  transition-colors ${measure === k
-                        ? 'bg-ink text-sand-50' : 'text-ink-muted hover:text-ink'}`}>
-                {l}
-              </button>
-            ))}
-          </div>
-        }
       >
-        {twin && <TrajectoryChart history={twin.history} prediction={prediction}
-                                  measure={measure} height={280} />}
+        {twin && <ForecastPanel history={twin.history} loadPrediction={loadForecast} recordKey={`me:${summary.twin_version}`} />}
 
-        {h12 && (
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <div className="card-quiet px-4 py-3">
-              <div className="eyebrow">In 12 months</div>
-              <div className="stat mt-1 text-xl font-semibold">
-                {fmt.dioptre(h12.se?.value)} D
-              </div>
-              <div className="mt-0.5 text-[12px] text-ink-muted">
-                likely between {fmt.dioptre(h12.se?.upper)} and {fmt.dioptre(h12.se?.lower)}
-              </div>
-            </div>
-            <div className="card-quiet px-4 py-3">
-              <div className="eyebrow">Eye length then</div>
-              <div className="stat mt-1 text-xl font-semibold">
-                {fmt.mm(h12.al?.value)} mm
-              </div>
-              <div className="mt-0.5 text-[12px] text-ink-muted">
-                between {fmt.mm(h12.al?.lower)} and {fmt.mm(h12.al?.upper)}
-              </div>
-            </div>
+        {risk && (
+          <div className="mt-5">
             <div className="card-quiet px-4 py-3">
               <div className="flex items-center gap-1.5">
-                <span className="eyebrow">Chance of a fast year</span>
+                <span className="eyebrow">Chance of a fast year (12 months)</span>
                 <Tip text="The model's estimated probability that your prescription changes by 0.50 D or more over the next 12 months." />
               </div>
               <div className="mt-1 flex items-center gap-2">

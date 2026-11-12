@@ -5,9 +5,10 @@ uncertainty-aware research twin with a clinician portal, audited access, a
 capability-gated simulator, cited deterministic agent tools and a FHIR read facade.
 The original warm-paper theme, fonts, tokens and component system are preserved.
 
-**Current status:** working local research application. 99 backend tests passed
-with 88.89% coverage across twin/simulator/ML/core, four frontend unit tests and two
-browser smoke flows passed. Lighthouse accessibility: sign-in 100, simulator 95.
+**Current status:** working local research application. 152 backend tests passed
+with 88.83% coverage across twin/simulator/ML/core. The latest frontend and browser
+checks are recorded in the verification report. Earlier Lighthouse accessibility:
+sign-in 100, simulator 95.
 Docker/Compose, live Postgres/S3, remote CI and free-host deployment are not yet
 verified on this machine (Docker/WSL/cloud accounts are absent). See
 [verification and remaining work](docs/VERIFICATION.md) and the
@@ -15,17 +16,27 @@ verified on this machine (Docker/WSL/cloud accounts are absent). See
 
 ## Real data and honest results
 
-The progression model is trained on the unmodified, openly licensed
+The app now forecasts SE and axial length at **any whole-month horizon from 1 to
+120 months**, with month/year controls in the simulator, dashboard and clinician
+view (including 2.5 years = 30 months). The selectable model uses DIMS, GOAL SE and
+the newly ingested [73-child Kinoshita AL trial](https://data.mendeley.com/datasets/y58rh8bfkv/7).
+RELS remains an independent SE test cohort. Forecasts are experimental: 1–2
+months and more than 36 months extrapolate beyond observed training intervals.
+The 90% point-accuracy target is unmet. At 12 months, internal MAE is 0.4261 D
+for SE and 0.1097 mm for AL; external SE MAE is 0.5451 D. See
+[selectable forecasts, API and results](docs/FORECAST_HORIZONS.md).
+
+The original fixed 6/12-month progression model was trained on the unmodified, openly licensed
 [Zenodo DIMS 36-month workbook](https://doi.org/10.5281/zenodo.18166476), CC BY 4.0:
 20 independent subjects, 140 visits, repeated SE/AL at baseline and 3/6/9/12/24/36
 months. Calendar dates and exposure data are absent and remain missing. The
 original workbook, metadata and attribution are in backend/data/open; download
 checksums and the normalized table's hash are verified by the pipeline.
 
-Dryad d4mb3pn and Shanghai c2fqz615c metadata were inspected, but their downloads
-returned HTML and failed verification. They are not silently used. The Dryad
-longitudinal adapter needs actual workbook inspection; Shanghai appears to compare
-independent cross-sectional school samples. See [data card](docs/DATA_CARD.md).
+The Dryad d4mb3pn direct download initially failed verification; a verified
+Zenodo mirror is now retained as a 2,024-row reference table. It has no stable
+subject IDs and is excluded from longitudinal training. Shanghai c2fqz615c is
+not ingested. See the [current dataset roles](docs/CURRENT_DATASETS.md).
 
 | Existing benchmark target | Model MAE | Carry-forward MAE | Ridge MAE | Model RMSE | R-squared | Measured interval coverage |
 |---|---|---|---|---|---|---|
@@ -111,9 +122,10 @@ Clinician access is assignment-scoped; patients use /api/v1/me/*.
 
 Observational data support association, not causation. Iiris is not a medical
 device and provides no diagnosis, prescribing or autonomous treatment decisions.
-Behaviour/ergonomics are non-medical-grade and absent from this model. Multi-year
-rollouts feed predictions back into the model; their bands are heuristic beyond
-the first step. No clinical validation or generalization claim is made.
+Behaviour/ergonomics are non-medical-grade and absent from the selectable model.
+Selectable forecasts condition change directly on elapsed months; ranges beyond
+observed follow-up are heuristic. The legacy yearly projection API uses recursive
+rollouts. No clinical validation or generalization claim is made.
 
 A January 2026 [npj Digital Medicine paper](https://www.nature.com/articles/s41746-025-02308-4)
 already reports a large Transformer for personalized myopia progression and

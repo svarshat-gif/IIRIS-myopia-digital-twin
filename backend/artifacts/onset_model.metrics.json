@@ -1,6 +1,6 @@
 {
-  "model_version": "onset5y-e8e0b40d33",
-  "trained_at": "2026-10-16T03:14:02.373756+00:00",
+  "model_version": "onset5y-120d186c10",
+  "trained_at": "2026-10-16T12:02:42.770465+00:00",
   "data_is_synthetic": false,
   "source": {
     "id": "olsm",

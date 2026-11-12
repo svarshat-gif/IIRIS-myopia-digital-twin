@@ -38,5 +38,49 @@
       "Y_train.csv": "428cadcc2a144830fa369b7bf8169d16f658834cdf002dea7310425fde466e1c"
     },
     "data_is_synthetic": false
+  },
+  "goal_rels": {
+    "source_url": "https://journals.plos.org/plosmedicine/article/file?type=supplementary&id=10.1371/journal.pmed.1002674.s002",
+    "license": "CC-BY-4.0",
+    "role": "GOAL longitudinal development; RELS held-out evaluation",
+    "data_is_synthetic": false,
+    "files": {
+      "cohorts.docx": "34f8605291f965087b5a70906b100b2a763c122a0a4ad38ba170bf4fd9efbebb",
+      "goal_rels.xlsx": "0e3ccc62245944ba49e6bf18555daf09e5ff69ad7d673b9a043daad47862ee50",
+      "metadata.json": "3860b1070184172391c32b5fef74859a3ac3de4950e49b44cd0e58628faf0486",
+      "source_article.html": "06dab4e86835b1d4eaaa3569cd21f7d7c17cb3d22246c0589e972e00f5df0d9a"
+    }
+  },
+  "kinoshita": {
+    "source_url": "https://data.mendeley.com/datasets/y58rh8bfkv/7",
+    "source_paper": "https://www.nature.com/articles/s41598-020-69710-8",
+    "doi": "10.17632/y58rh8bfkv.7",
+    "license": "CC-BY-4.0",
+    "role": "selectable_horizon_axial_length_development_and_patient_grouped_evaluation",
+    "data_is_synthetic": false,
+    "allowed_targets": ["al"],
+    "n_patients": 73,
+    "normalized_rows": 438,
+    "normalized_eye": "right",
+    "followup_months": [0, 3, 9, 15, 21, 27],
+    "minimum_training_anchor_month": 3,
+    "files": {
+      "Dataset_Kinoshita_v7.xlsx": "423771baddd91a25356603c750b78dc45b8d6fdb3c0b18788eb21a72d6e011b5",
+      "public_dataset_metadata.json": "2131f29096f95d04eddfeee130289e10edb608879b73ac2cb9f44b82d01c0509",
+      "public_file_metadata.json": "eed6de6b54d84e059727b245822a38bde9a100d6667c8d63338e16f3d7997de0",
+      "CODEBOOK.md": "680cb6f3aaae6704d83abd757fda651de50af1410972e3813b50b78cb955828d",
+      "source_manifest.json": "30e99607922e263912175928e9f13d07d8694d198bd2b9fbdaf261572944b9ed"
+    },
+    "conversion": "Unchanged raw workbook; original Study IDs namespaced by assigned treatment group; right-eye AL at nominal enrollment months 0, 3, 9, 15, 21, 27. Forecast anchors start at month 3 after OK stabilization and atropine initiation. Only original enrollment SE and age are populated; follow-up SE and age remain missing. No future SE targets."
+  },
+  "dryad_3year": {
+    "source_url": "https://zenodo.org/records/4987818",
+    "license": "CC0-1.0",
+    "role": "reference_only_no_subject_ids",
+    "data_is_synthetic": false,
+    "files": {
+      "Data3.xlsx": "1072365a4fd398061fac3ef5221ae10e222e4e95b77029b05b6ddc58b4cfe0df",
+      "zenodo_metadata.json": "55e30a0f5fa3db778a737363e95d26d33ab66121f78b4631af1a07d966736263"
+    }
   }
 }

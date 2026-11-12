@@ -2,6 +2,21 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+async function selectMonthForecast(page, months) {
+  await page.getByLabel('Time unit').selectOption('months')
+  await page.getByLabel('Forecast horizon').fill(String(months))
+  const received = page.waitForResponse(r => r.url().includes('/simulator/forecast') && r.request().method() === 'POST')
+  await page.getByRole('button', { name: 'Calculate forecast', exact: true }).click()
+  const result = await received
+  expect(result.ok()).toBe(true)
+  const forecast = await result.json()
+  expect(forecast.requested_horizon_months).toBe(months)
+  expect(forecast.horizons[`${months}m`].se.value).toEqual(expect.any(Number))
+  expect(forecast.horizons[`${months}m`].al.value).toEqual(expect.any(Number))
+  await expect(page.getByText('Estimated range:', { exact: false }).first()).toBeVisible()
+  return forecast.horizons[`${months}m`]
+}
+
 test('patient auth, record entry, version update, simulator and role gate', async ({ page }) => {
   await page.goto('/signup')
   await page.getByLabel('Your name').fill('Smoke test account')
@@ -20,8 +35,30 @@ test('patient auth, record entry, version update, simulator and role gate', asyn
   await page.goto('/try')
   await page.getByRole('spinbutton', { name: /^Age/ }).fill('10')
   await page.getByRole('spinbutton', { name: /^Prescription/ }).fill('-1.5')
-  await page.getByRole('button', { name: /Show|Project|See/ }).last().click()
-  await expect(page.getByText('Model estimate', { exact: false }).first()).toBeVisible()
+  await page.getByRole('spinbutton', { name: /^Eye length/ }).fill('24')
+  await page.getByRole('button', { name: 'Show me the forecast', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Forecast from entered measurements' })).toBeVisible()
+  await expect(page.getByText('Experimental forecast', { exact: true })).toBeVisible()
+  await expect(page.getByText('Estimated ranges describe uncertainty; they do not mean 90% prediction accuracy.', { exact: true })).toBeVisible()
+  await expect(page.getByText('Estimated range:', { exact: false }).first()).toBeVisible()
+  const short = await selectMonthForecast(page, 2)
+  expect(short.se.support.status).toBe('extrapolated_horizon')
+  await expect(page.getByText('Outside measured follow-up range', { exact: false }).first()).toBeVisible()
+  await selectMonthForecast(page, 10)
+  await page.getByLabel('Time unit').selectOption('years')
+  await page.getByLabel('Forecast horizon').fill('2.5')
+  const yearsResult = page.waitForResponse(r => r.url().includes('/simulator/forecast') && r.request().method() === 'POST')
+  await page.getByRole('button', { name: 'Calculate forecast', exact: true }).click()
+  expect((await (await yearsResult).json()).requested_horizon_months).toBe(30)
+  await expect(page.getByText('Forecast for 30 months', { exact: false })).toBeVisible()
+  const long = await selectMonthForecast(page, 120)
+  expect(long.se.support.status).toBe('extrapolated_horizon')
+  expect(long.al.support.status).toBe('extrapolated_horizon')
+  await expect(page.getByText('Extrapolated forecast', { exact: true }).first()).toBeVisible()
+  await page.screenshot({ path: 'test-results/simulator-months-desktop.png', fullPage: true })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  await page.screenshot({ path: 'test-results/simulator-months-mobile.png', fullPage: true })
 })
 
 test('clinician cohort, patient detail, evidence trace and mobile layout', async ({ page }) => {
@@ -32,6 +69,7 @@ test('clinician cohort, patient detail, evidence trace and mobile layout', async
   await expect(page.getByRole('heading', { name: 'Patient cohort' })).toBeVisible()
   await page.getByRole('link', { name: 'dims:D1', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Current twin' })).toBeVisible()
+  await expect(page.getByText('Experimental forecast', { exact: true })).toBeVisible()
   // The published D1 month-36 visit was withheld from this isolated seed.
   await page.getByRole('spinbutton', { name: /^Source-recorded month/ }).fill('36')
   await page.getByRole('spinbutton', { name: /^Spherical equivalent/ }).fill('-5.13')
@@ -59,6 +97,9 @@ test('clinician cohort, patient detail, evidence trace and mobile layout', async
   expect(result.violations.filter(v => v.id !== 'color-contrast')).toEqual([])
   await page.goto('/app/model')
   await expect(page.getByRole('heading', { name: 'Model card' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Selectable-month forecast results' })).toBeVisible()
+  await expect(page.getByRole('row', { name: /SE · external RELS/ })).toContainText('% within ±0.50 D')
+  await expect(page.getByRole('row', { name: /AL · internal test/ })).toContainText('% within ±0.10 mm')
   await expect(page.getByText('no demonstrated clinical utility', { exact: false }).first()).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Additional research datasets' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Five-year onset research model' })).toBeVisible()

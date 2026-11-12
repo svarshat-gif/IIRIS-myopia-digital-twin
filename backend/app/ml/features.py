@@ -125,7 +125,7 @@ MODIFIABLE_INPUTS: dict[str, dict[str, Any]] = {
                   "label": "Treatment"},
 }
 
-OPTICAL_TREATMENTS = {"ortho_k", "dims", "mist", "defocus", "misight"}
+OPTICAL_TREATMENTS = {"ortho_k", "ortho_k_atropine", "dims", "mist", "defocus", "misight"}
 
 
 @dataclass

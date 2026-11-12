@@ -98,19 +98,27 @@ def compare(patient_id: str, from_version: int, to_version: int,
         raise HTTPException(status.HTTP_404_NOT_FOUND, str(exc)) from exc
 
 
-@router.get("/prediction", summary="Predictions with uncertainty for every horizon")
-def get_prediction(patient_id: str, db: Session = Depends(get_db)) -> dict[str, Any]:
+@router.get("/prediction", summary="SE/AL forecasts at selectable future months")
+def get_prediction(patient_id: str,
+                   horizon_months: int | None = Query(None, ge=1, le=120,
+                       description='Future months from the latest observed visit; omitted returns the stored 6/12-month snapshot.'),
+                   db: Session = Depends(get_db)) -> dict[str, Any]:
     if not registry.is_ready():
         raise HTTPException(
             status.HTTP_503_SERVICE_UNAVAILABLE,
             "No trained model is loaded. Run `python -m app.ml.train` in the backend.")
     state = _state_or_404(db, patient_id)
-    prediction = state.get("prediction") or twin_service.predict_from_state(
-        state["features"])
+    try:
+        prediction = (twin_service.predict_from_state(state['features'], horizon_months)
+                      if horizon_months is not None else state.get('prediction') or
+                      twin_service.predict_from_state(state['features']))
+    except FileNotFoundError as exc:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
     return {
         "patient_id": patient_id,
         "twin_version": state.get("version"),
         "as_of_visit": state["current"]["visit_date"],
+        "as_of_followup_month": state['current'].get('followup_month'),
         **prediction,
     }
 

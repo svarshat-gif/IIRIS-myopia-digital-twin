@@ -1,0 +1,16 @@
+{
+  "doi": "10.1371/journal.pmed.1002674.s002",
+  "source_article": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1002674",
+  "source_url": "https://journals.plos.org/plosmedicine/article/file?type=supplementary&id=10.1371/journal.pmed.1002674.s002",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "creators": "Lin H et al. (2018)",
+  "title": "Prediction of myopia development among Chinese school-aged children using refraction data from electronic medical records: A retrospective, multicentre machine learning study",
+  "workbook_sha256": "0e3ccc62245944ba49e6bf18555daf09e5ff69ad7d673b9a043daad47862ee50",
+  "license_evidence": "Published article copyright paragraph and CC BY 4.0 link in source_article.html; supplementary S1 Data is explicitly public",
+  "codebook": "S1 Text, cohort annual cycloplegic examinations; paper specifies right eye",
+  "cohort_subjects": {
+    "GOAL": 1610,
+    "RELS": 2042
+  }
+}

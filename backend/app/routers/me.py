@@ -239,14 +239,20 @@ def delete_record(observation_id: str, user: User = Depends(get_current_user),
 
 
 @router.get("/prediction", summary="My prediction with uncertainty")
-def my_prediction(user: User = Depends(get_current_user),
+def my_prediction(horizon_months: int | None = Query(None, ge=1, le=120),
+                  user: User = Depends(get_current_user),
                   db: Session = Depends(get_db)) -> dict[str, Any]:
     _require_model()
     state = _state(db, user)
-    prediction = state.get("prediction") or twin_service.predict_from_state(
-        state["features"])
+    try:
+        prediction = (twin_service.predict_from_state(state['features'], horizon_months)
+                      if horizon_months is not None else state.get('prediction') or
+                      twin_service.predict_from_state(state['features']))
+    except FileNotFoundError as exc:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
     return {"twin_version": state.get("version"),
-            "as_of_visit": state["current"]["visit_date"], **prediction}
+            "as_of_visit": state["current"]["visit_date"],
+            "as_of_followup_month": state['current'].get('followup_month'), **prediction}
 
 
 @router.get("/explanation", summary="Why my prediction looks like this")

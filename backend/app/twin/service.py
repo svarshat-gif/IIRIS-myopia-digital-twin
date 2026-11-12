@@ -158,7 +158,10 @@ def build_state(db: Session, patient: Patient,
     return state
 
 
-def predict_from_state(feature_row: dict[str, float]) -> dict[str, Any]:
+def predict_from_state(feature_row: dict[str, float], horizon_months: int | None = None) -> dict[str, Any]:
+    if horizon_months is not None:
+        from app.ml.trajectory import forecast
+        return {**forecast(feature_row, horizon_months), 'disclaimer': settings.disclaimer}
     result = registry.predict_from_row(feature_row)
     return {
         "horizons": result["horizons"],

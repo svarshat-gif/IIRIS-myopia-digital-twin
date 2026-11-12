@@ -11,12 +11,26 @@ from fastapi import APIRouter, HTTPException, status
 
 from app.core.config import settings
 from app.ml import registry
-from app.ml.features import MODIFIABLE_INPUTS
-from app.schemas.auth import QuickSimulationIn
+from app.ml.features import MODIFIABLE_INPUTS, build_feature_row
+from app.ml import trajectory
+from app.schemas.auth import QuickSimulationIn, QuickForecastIn
 from app.simulator import projection
 from app.simulator.constraints import ScenarioRejected, validate_scenario
 
 router = APIRouter(prefix="/simulator", tags=["simulator"])
+
+
+@router.post('/forecast', summary='Forecast SE and AL at any selected future month without saving inputs')
+def quick_forecast(payload: QuickForecastIn) -> dict[str, Any]:
+    values = payload.model_dump(exclude={'horizon_months', 'sex', 'parental_myopia'})
+    row = build_feature_row([{'followup_month': 0., **values}],
+        sex=payload.sex, parental_myopia=payload.parental_myopia)
+    try:
+        result = trajectory.forecast(row, payload.horizon_months)
+    except FileNotFoundError as exc:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
+    result['warnings'].append('Only one measured starting point was supplied; no personal progression trend is available.')
+    return {**result, 'disclaimer': settings.disclaimer, 'inputs_persisted': False}
 
 
 @router.post("/project", summary="Project myopia forward from typed-in values")

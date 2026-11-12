@@ -91,15 +91,20 @@ def onset_candidates():
     return candidates
 
 
-def select_onset(x, y):
+def select_onset(x, y, objective='roc_auc'):
     if not np.isfinite(x).all():
         raise ValueError('Selection expects the reviewed complete OLSM measurements; no imputation is performed')
+    if objective not in {'roc_auc', 'accuracy'}:
+        raise ValueError("objective must be 'roc_auc' or 'accuracy'")
     folds = list(RepeatedStratifiedKFold(n_splits=5, n_repeats=2, random_state=2026).split(x, y))
     candidates, records = onset_candidates(), []
     for name, model in candidates.items():
-        auc = cross_val_score(model, x, y, cv=folds, scoring='roc_auc', n_jobs=1)
-        records.append({'candidate': name, 'mean_cv_roc_auc': round(float(auc.mean()), 6),
-                        'std_cv_roc_auc': round(float(auc.std()), 6)})
-    chosen = max(records, key=lambda r: r['mean_cv_roc_auc'])['candidate']
-    return candidates[chosen], {'selected': chosen, 'criterion': 'Highest mean training-only repeated stratified CV ROC AUC',
-                              'folds': len(folds), 'candidates': records}
+        values = cross_val_score(model, x, y, cv=folds, scoring=objective, n_jobs=1)
+        records.append({f'mean_cv_{objective}': round(float(values.mean()), 6),
+                        f'std_cv_{objective}': round(float(values.std()), 6),
+                        'candidate': name})
+    chosen = max(records, key=lambda r: r[f'mean_cv_{objective}'])['candidate']
+    return candidates[chosen], {'selected': chosen,
+        'criterion': f'Highest mean training-only repeated stratified CV {objective}',
+        'objective': objective, 'threshold': 0.5 if objective == 'accuracy' else None,
+        'folds': len(folds), 'candidates': records}

@@ -1,0 +1,21 @@
+{
+  "id": "kinoshita",
+  "source_url": "https://data.mendeley.com/datasets/y58rh8bfkv/7",
+  "doi": "10.17632/y58rh8bfkv.7",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "data_is_synthetic": false,
+  "allowed_targets": ["al"],
+  "original_filename": "Dataset (Kinoshita).xlsx",
+  "files": {
+    "Dataset_Kinoshita_v7.xlsx": "423771baddd91a25356603c750b78dc45b8d6fdb3c0b18788eb21a72d6e011b5"
+  },
+  "download_url": "https://data.mendeley.com/public-files/datasets/y58rh8bfkv/files/a729b5cd-9ec9-460c-90ac-441bc83956f1/file_downloaded",
+  "n_patients": 73,
+  "normalized_eye": "right",
+  "followup_months": [0, 3, 9, 15, 21, 27],
+  "trial_baseline_enrollment_month": 3,
+  "attribution": "Kinoshita N, Konno Y, Hamada N, Kanda Y, Shimmura-Tomita M, Kaburaki T, Kakehashi A (2020). Mendeley Data V7. doi:10.17632/y58rh8bfkv.7.",
+  "article_url": "https://www.nature.com/articles/s41598-020-69710-8",
+  "changes": "Retained source workbook unchanged. Normalized original right-eye measurements only. Preserved Study IDs within treatment-group namespaces and original enrollment month labels. Follow-up SE and age remain missing."
+}

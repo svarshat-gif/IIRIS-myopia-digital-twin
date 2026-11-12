@@ -13,7 +13,7 @@ from app.core.access import admin
 from app.db.database import get_db
 from app.db.models import Observation, Patient, TwinVersion
 from app.explain import explainer
-from app.ml import registry, onset
+from app.ml import registry, onset, trajectory
 from app.ml.features import MODIFIABLE_INPUTS
 from app.schemas.models import HealthOut
 
@@ -64,6 +64,7 @@ def model_card() -> dict[str, Any]:
         "metrics": bundle["metrics"],
         "research_datasets": onset.catalog(),
         "onset_model": onset.metadata(),
+        "selectable_horizon_model": trajectory.metadata(),
         "global_importance": explainer.global_importance(),
         "limitations": [
             "Trained on observational longitudinal data; associations only, never "

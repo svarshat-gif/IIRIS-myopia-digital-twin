@@ -1,0 +1,1488 @@
+{
+  "model_version": "trajectory-79d72ad57c4c",
+  "trained_at": "2026-10-17T03:27:44.378301+00:00",
+  "data_is_synthetic": false,
+  "status": "experimental",
+  "request_range_months": [
+    1,
+    120
+  ],
+  "nominal_interval_coverage": 0.9,
+  "sources": [
+    {
+      "id": "dims",
+      "provenance": {
+        "data_is_synthetic": false,
+        "sources": [
+          {
+            "doi": "10.5281/zenodo.18166476",
+            "file": "DataSet.xlsx",
+            "license": "cc-by-4.0",
+            "repository_checksum": "md5:57f458e340609a1cc65f5b2083637d18",
+            "sha256": "02039445b4d4e540aea5a5a16f02134e5929d92074ecba0a5e85daf6d6dda701"
+          }
+        ],
+        "source_names": [
+          "Zenodo DIMS 36-month (18166476)"
+        ],
+        "n_patients": 20,
+        "n_visits": 140,
+        "missingness": {
+          "patient_key": 0.0,
+          "visit_date": 1.0,
+          "followup_month": 0.0,
+          "age": 0.8571,
+          "sex": 1.0,
+          "spherical_equivalent": 0.0,
+          "axial_length": 0.0,
+          "treatment": 0.0,
+          "source": 0.0,
+          "parental_myopia": 1.0,
+          "visual_acuity": 1.0,
+          "corneal_curvature": 1.0,
+          "screen_time_hours": 1.0,
+          "near_work_min": 1.0,
+          "outdoor_min": 1.0,
+          "sleep_hours": 1.0,
+          "viewing_distance_cm": 1.0,
+          "posture_score": 1.0,
+          "continuous_session_min": 1.0
+        },
+        "followup_months": [
+          0.0,
+          36.0
+        ],
+        "per_source": {
+          "Zenodo DIMS 36-month (18166476)": {
+            "n_patients": 20,
+            "n_visits": 140
+          }
+        },
+        "table_sha256": "57316025019f82879d7f7df86ecefad5c2ba827a0dc3138eb65cff652eecf691",
+        "decisions": [
+          "Shanghai c2fqz615c excluded: independent 2014/2018 school samples; longitudinal linkage unverified."
+        ],
+        "limitations": [
+          "Only 20 DIMS subjects; very small patient-level holdout; not clinical validation.",
+          "SER is interpreted in diopters and AL in millimeters from field names, study context and value ranges; no separate units/eye-selection codebook was published with this workbook. Values are not converted.",
+          "Calendar dates absent: visit_date remains null; scheduled follow-up months are preserved.",
+          "Age recorded at baseline only; later ages remain missing. Gender B/G lacks a supplied codebook and is left missing.",
+          "No behavioural/ergonomic measurements. No treatment-effect inference from an all-DIMS cohort.",
+          "Peripheral refraction is retained in the raw workbook but excluded from the shared clinical model."
+        ]
+      }
+    },
+    {
+      "id": "goal",
+      "provenance": {
+        "id": "goal",
+        "name": "PLOS GOAL annual refraction cohort",
+        "rows": 6440,
+        "n_patients": 1610,
+        "n_visits": 6230,
+        "role": "12-month SE/progression model development",
+        "license": "CC-BY-4.0",
+        "source_url": "https://journals.plos.org/plosmedicine/article/file?type=supplementary&id=10.1371/journal.pmed.1002674.s002",
+        "data_is_synthetic": false,
+        "table_sha256": "5103d14a97d264310d36a755a0139f6d32d3e22d9e009d0e4ad858ed8a689aca",
+        "limitations": [
+          "Annual cycloplegic right-eye SE only; no AL or exposure/treatment allocation in released workbook.",
+          "Annual labels mapped to nominal scheduled months; exact examination dates and age are unavailable.",
+          "DOB is excluded from normalized model tables and predictors; missing SE stays missing.",
+          "PLOS reports GOAL and RELS as independent cohorts; overlap with the separately sourced DIMS cohort is not verifiable from these files."
+        ]
+      }
+    },
+    {
+      "id": "kinoshita",
+      "provenance": {
+        "id": "kinoshita",
+        "name": "Kinoshita 2020 orthokeratology trial",
+        "source_url": "https://data.mendeley.com/datasets/y58rh8bfkv/7",
+        "download_url": "https://data.mendeley.com/public-files/datasets/y58rh8bfkv/files/a729b5cd-9ec9-460c-90ac-441bc83956f1/file_downloaded",
+        "doi": "10.17632/y58rh8bfkv.7",
+        "license": "CC-BY-4.0",
+        "data_is_synthetic": false,
+        "allowed_targets": [
+          "al"
+        ],
+        "source_sha256": "423771baddd91a25356603c750b78dc45b8d6fdb3c0b18788eb21a72d6e011b5",
+        "table_sha256": "27c776bfc715ef7a2625d977b4d375d0c4afe5b79e89d85614e780bc3a440370",
+        "normalized_sha256": "27c776bfc715ef7a2625d977b4d375d0c4afe5b79e89d85614e780bc3a440370",
+        "table": "kinoshita_visits.csv",
+        "rows": 438,
+        "n_patients": 73,
+        "n_visits": 438,
+        "eye": "right",
+        "followup_months": [
+          0,
+          3,
+          9,
+          15,
+          21,
+          27
+        ],
+        "trial_baseline_enrollment_month": 3,
+        "age_policy": "Only original enrollment age is populated in age. The explicitly named age_at_enrollment_years is a repeated baseline covariate, not follow-up age.",
+        "se_policy": "Only original enrollment SE is populated; no follow-up SE labels.",
+        "limitations": [
+          "Enrollment SE only; follow-up SE is missing and no SE target is permitted.",
+          "Study baseline is enrollment month 3, after three months of OK stabilization.",
+          "Atropine starts at enrollment month 3 in the combination arm; month 0 is pre-atropine.",
+          "Months are nominal workbook labels; exact follow-up examination dates are unavailable.",
+          "Age is recorded only at enrollment; no later age is fabricated.",
+          "Right eye only; Study ID is preserved with treatment-group namespace.",
+          "Completers only: 73 Japanese children aged 8-12 at enrollment.",
+          "Treatments are orthokeratology or orthokeratology plus 0.01% atropine; no untreated control."
+        ],
+        "extractor": "scripts/normalize_kinoshita.py",
+        "attribution": "Kinoshita N et al. (2020), Mendeley Data V7, doi:10.17632/y58rh8bfkv.7; Scientific Reports 10:12750, doi:10.1038/s41598-020-69710-8."
+      }
+    }
+  ],
+  "metrics": {
+    "se": {
+      "model_selection": {
+        "selected": "hgb_rate_7",
+        "criterion": "Training-only patient-grouped CV; equal patient mean MAE",
+        "folds": 3,
+        "candidates": [
+          {
+            "candidate": "carry_forward",
+            "patient_mean_cv_mae": 0.9061890924009791
+          },
+          {
+            "candidate": "mean_rate",
+            "patient_mean_cv_mae": 0.5851491425360239
+          },
+          {
+            "candidate": "ridge_rate_10",
+            "patient_mean_cv_mae": 0.556792830544581
+          },
+          {
+            "candidate": "ridge_rate_100",
+            "patient_mean_cv_mae": 0.5577776148016932
+          },
+          {
+            "candidate": "hgb_rate_3",
+            "patient_mean_cv_mae": 0.5356720178984183
+          },
+          {
+            "candidate": "hgb_rate_7",
+            "patient_mean_cv_mae": 0.5265335219597987
+          }
+        ]
+      },
+      "split_patients": {
+        "fit": 961,
+        "calibration": 324,
+        "test": 317
+      },
+      "observed_horizons_months": [
+        3.0,
+        6.0,
+        9.0,
+        12.0,
+        15.0,
+        18.0,
+        21.0,
+        24.0,
+        27.0,
+        30.0,
+        33.0,
+        36.0
+      ],
+      "test_overall": {
+        "n": 1859,
+        "mae": 0.5666,
+        "rmse": 0.7852,
+        "r2": 0.7582,
+        "n_patients": 317,
+        "interval_coverage": 0.9709521247982786,
+        "mean_interval_width": 3.1777876342485833,
+        "carry_forward_mae": 0.9484427111350188,
+        "tolerance": 0.5,
+        "tolerance_unit": "D",
+        "tolerance_hit_rates": {
+          "0.5": 0.5788058095750404,
+          "0.75": 0.7493275954814417
+        },
+        "patients_all_within_tolerance": 0.1829652996845426,
+        "patient_all_within_95ci": [
+          0.1419640834527313,
+          0.23000615899631682
+        ],
+        "bootstrap_95ci": {
+          "mae": [
+            0.5316281961807774,
+            0.6078426017663654
+          ],
+          "tolerance_hit_rate": [
+            0.5485582985616305,
+            0.6088993289939503
+          ]
+        },
+        "point_estimate_meets_90_percent": false,
+        "supported_90_percent_claim": false
+      },
+      "test_by_horizon": {
+        "3.0": {
+          "n": 8,
+          "mae": 0.1423,
+          "rmse": 0.1826,
+          "r2": 0.9832,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.8214824085527772,
+          "carry_forward_mae": 0.14125,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 1.0,
+            "0.75": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.0693279106671193,
+              0.21521875324047524
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "6.0": {
+          "n": 6,
+          "mae": 0.1492,
+          "rmse": 0.1613,
+          "r2": 0.9867,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.3942439306280392,
+          "carry_forward_mae": 0.16749999999999998,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 1.0,
+            "0.75": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.09633393784307343,
+              0.20201327743284794
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "9.0": {
+          "n": 4,
+          "mae": 0.1441,
+          "rmse": 0.1633,
+          "r2": 0.9871,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.9372353285829131,
+          "carry_forward_mae": 0.25125,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 1.0,
+            "0.75": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.11238753940945845,
+              0.17584017337357527
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "12.0": {
+          "n": 915,
+          "mae": 0.4261,
+          "rmse": 0.5883,
+          "r2": 0.8381,
+          "n_patients": 316,
+          "interval_coverage": 0.9650273224043716,
+          "mean_interval_width": 2.500217370029189,
+          "carry_forward_mae": 0.629792349726776,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.7158469945355191,
+            "0.75": 0.8469945355191257
+          },
+          "patients_all_within_tolerance": 0.46835443037974683,
+          "patient_all_within_95ci": [
+            0.4122779124903319,
+            0.5250296400409156
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.39320368219856205,
+              0.45861232854223477
+            ],
+            "tolerance_hit_rate": [
+              0.6774863151949098,
+              0.7530094905094905
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "15.0": {
+          "n": 2,
+          "mae": 0.5259,
+          "rmse": 0.5287,
+          "r2": 0.8383,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 2.8006668800127277,
+          "carry_forward_mae": 0.18500000000000005,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.5,
+            "0.75": 1.0
+          },
+          "patients_all_within_tolerance": 0.5,
+          "patient_all_within_95ci": [
+            0.01257911709342505,
+            0.9874208829065749
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.47103278270276316,
+              0.5807245159368586
+            ],
+            "tolerance_hit_rate": [
+              0.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "18.0": {
+          "n": 2,
+          "mae": 0.5325,
+          "rmse": 0.5327,
+          "r2": 0.8359,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 3.1818173428768395,
+          "carry_forward_mae": 0.12250000000000005,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.0,
+            "0.75": 1.0
+          },
+          "patients_all_within_tolerance": 0.0,
+          "patient_all_within_95ci": [
+            0.0,
+            0.841886116991581
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.5214306607422001,
+              0.5436447470933592
+            ],
+            "tolerance_hit_rate": [
+              0.0,
+              0.0
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "21.0": {
+          "n": 2,
+          "mae": 0.763,
+          "rmse": 0.7723,
+          "r2": 0.6551,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 3.601329438816971,
+          "carry_forward_mae": 0.12250000000000005,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.0,
+            "0.75": 0.5
+          },
+          "patients_all_within_tolerance": 0.0,
+          "patient_all_within_95ci": [
+            0.0,
+            0.841886116991581
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.6436353722283998,
+              0.8823142163941649
+            ],
+            "tolerance_hit_rate": [
+              0.0,
+              0.0
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "24.0": {
+          "n": 609,
+          "mae": 0.6562,
+          "rmse": 0.873,
+          "r2": 0.6759,
+          "n_patients": 313,
+          "interval_coverage": 0.9720853858784894,
+          "mean_interval_width": 3.5509367507349756,
+          "carry_forward_mae": 1.143070607553366,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.4827586206896552,
+            "0.75": 0.6929392446633826
+          },
+          "patients_all_within_tolerance": 0.2971246006389776,
+          "patient_all_within_95ci": [
+            0.24703337452846105,
+            0.3511038556959002
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.603220151991933,
+              0.7119586759195913
+            ],
+            "tolerance_hit_rate": [
+              0.4402514485008719,
+              0.5264475063651339
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "27.0": {
+          "n": 2,
+          "mae": 0.5821,
+          "rmse": 0.6153,
+          "r2": 0.8454,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 4.07024269956508,
+          "carry_forward_mae": 0.18999999999999995,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.5,
+            "0.75": 0.5
+          },
+          "patients_all_within_tolerance": 0.5,
+          "patient_all_within_95ci": [
+            0.01257911709342505,
+            0.9874208829065749
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.38282069166066623,
+              0.7813755718392947
+            ],
+            "tolerance_hit_rate": [
+              0.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "30.0": {
+          "n": 2,
+          "mae": 0.5931,
+          "rmse": 0.6504,
+          "r2": 0.8273,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 4.473153951624784,
+          "carry_forward_mae": 0.25249999999999995,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.5,
+            "0.75": 0.5
+          },
+          "patients_all_within_tolerance": 0.5,
+          "patient_all_within_95ci": [
+            0.01257911709342505,
+            0.9874208829065749
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.3262917267640226,
+              0.8599818706826214
+            ],
+            "tolerance_hit_rate": [
+              0.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "33.0": {
+          "n": 2,
+          "mae": 0.927,
+          "rmse": 0.9362,
+          "r2": 0.6421,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 4.894823511356585,
+          "carry_forward_mae": 0.12749999999999995,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.0,
+            "0.75": 0.0
+          },
+          "patients_all_within_tolerance": 0.0,
+          "patient_all_within_95ci": [
+            0.0,
+            0.841886116991581
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.7964635356046319,
+              1.0576277944358967
+            ],
+            "tolerance_hit_rate": [
+              0.0,
+              0.0
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "36.0": {
+          "n": 305,
+          "mae": 0.8308,
+          "rmse": 1.0853,
+          "r2": 0.5682,
+          "n_patients": 305,
+          "interval_coverage": 0.9836065573770492,
+          "mean_interval_width": 4.552647558946819,
+          "carry_forward_mae": 1.5922131147540983,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.3475409836065574,
+            "0.75": 0.5606557377049181
+          },
+          "patients_all_within_tolerance": 0.3475409836065574,
+          "patient_all_within_95ci": [
+            0.2941731320866955,
+            0.40390371718949986
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.7601309534547563,
+              0.9112446129954874
+            ],
+            "tolerance_hit_rate": [
+              0.29508196721311475,
+              0.3984426229508196
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        }
+      },
+      "test_by_source": {
+        "dims": {
+          "n": 42,
+          "mae": 0.4176,
+          "rmse": 0.5269,
+          "r2": 0.8669,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 2.550135511924713,
+          "carry_forward_mae": 0.1971428571428571,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.6190476190476191,
+            "0.75": 0.8095238095238095
+          },
+          "patients_all_within_tolerance": 0.0,
+          "patient_all_within_95ci": [
+            0.0,
+            0.841886116991581
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.38910767630061355,
+              0.44612980530224644
+            ],
+            "tolerance_hit_rate": [
+              0.6190476190476191,
+              0.6190476190476191
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "goal": {
+          "n": 1817,
+          "mae": 0.57,
+          "rmse": 0.7902,
+          "r2": 0.7251,
+          "n_patients": 315,
+          "interval_coverage": 0.9702806824435883,
+          "mean_interval_width": 3.192295828600593,
+          "carry_forward_mae": 0.9658090258668134,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.5778756191524491,
+            "0.75": 0.747936158503027
+          },
+          "patients_all_within_tolerance": 0.18412698412698414,
+          "patient_all_within_95ci": [
+            0.14288617263914538,
+            0.2314235309043345
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.5278978803900203,
+              0.6102137651947025
+            ],
+            "tolerance_hit_rate": [
+              0.5481242426915882,
+              0.6097864012919305
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        }
+      },
+      "external_rels": {
+        "overall": {
+          "n": 25977,
+          "mae": 1.0717,
+          "rmse": 1.4569,
+          "r2": 0.2439,
+          "n_patients": 1901,
+          "interval_coverage": 0.9715517573237864,
+          "mean_interval_width": 5.227939751666666,
+          "carry_forward_mae": 1.0631472071447818,
+          "tolerance": 0.5,
+          "tolerance_unit": "D",
+          "tolerance_hit_rates": {
+            "0.5": 0.3418408592216191,
+            "0.75": 0.4787696808715402
+          },
+          "patients_all_within_tolerance": 0.0194634402945818,
+          "patient_all_within_95ci": [
+            0.013740163361190914,
+            0.02672878598569456
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              1.0468444040365166,
+              1.0978643670722417
+            ],
+            "tolerance_hit_rate": [
+              0.3335524062102754,
+              0.35091721762919825
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "by_horizon": {
+          "12.0": {
+            "n": 8758,
+            "mae": 0.5451,
+            "rmse": 0.7654,
+            "r2": 0.7607,
+            "n_patients": 1901,
+            "interval_coverage": 0.9521580269467915,
+            "mean_interval_width": 2.6342018383545067,
+            "carry_forward_mae": 0.5876912537108929,
+            "tolerance": 0.5,
+            "tolerance_unit": "D",
+            "tolerance_hit_rates": {
+              "0.5": 0.5754738524777346,
+              "0.75": 0.7573646951358758
+            },
+            "patients_all_within_tolerance": 0.10362966859547607,
+            "patient_all_within_95ci": [
+              0.09028538362258433,
+              0.11821038268143137
+            ],
+            "bootstrap_95ci": {
+              "mae": [
+                0.5318961793716449,
+                0.5586021881343333
+              ],
+              "tolerance_hit_rate": [
+                0.565467161325742,
+                0.586342144044696
+              ]
+            },
+            "point_estimate_meets_90_percent": false,
+            "supported_90_percent_claim": false
+          },
+          "24.0": {
+            "n": 6988,
+            "mae": 0.9521,
+            "rmse": 1.2066,
+            "r2": 0.4466,
+            "n_patients": 1857,
+            "interval_coverage": 0.9673726388093875,
+            "mean_interval_width": 4.303609685577399,
+            "carry_forward_mae": 0.9351388093875215,
+            "tolerance": 0.5,
+            "tolerance_unit": "D",
+            "tolerance_hit_rates": {
+              "0.5": 0.3042358328563251,
+              "0.75": 0.454779622209502
+            },
+            "patients_all_within_tolerance": 0.03500269251480883,
+            "patient_all_within_95ci": [
+              0.027116145376992362,
+              0.04439826924721638
+            ],
+            "bootstrap_95ci": {
+              "mae": [
+                0.9283578415211123,
+                0.9724733178062795
+              ],
+              "tolerance_hit_rate": [
+                0.2913852861897539,
+                0.31661225693143374
+              ]
+            },
+            "point_estimate_meets_90_percent": false,
+            "supported_90_percent_claim": false
+          },
+          "36.0": {
+            "n": 5168,
+            "mae": 1.3742,
+            "rmse": 1.6806,
+            "r2": 0.011,
+            "n_patients": 1834,
+            "interval_coverage": 0.9854876160990712,
+            "mean_interval_width": 6.169957923479706,
+            "carry_forward_mae": 1.3059452399380804,
+            "tolerance": 0.5,
+            "tolerance_unit": "D",
+            "tolerance_hit_rates": {
+              "0.5": 0.19156346749226005,
+              "0.75": 0.2946981424148607
+            },
+            "patients_all_within_tolerance": 0.025081788440567066,
+            "patient_all_within_95ci": [
+              0.018420194807610885,
+              0.03331505954590762
+            ],
+            "bootstrap_95ci": {
+              "mae": [
+                1.3418536495764715,
+                1.4070465123840998
+              ],
+              "tolerance_hit_rate": [
+                0.17967683426163542,
+                0.20337002299345883
+              ]
+            },
+            "point_estimate_meets_90_percent": false,
+            "supported_90_percent_claim": false
+          },
+          "48.0": {
+            "n": 3369,
+            "mae": 1.7836,
+            "rmse": 2.1484,
+            "r2": -0.4494,
+            "n_patients": 1800,
+            "interval_coverage": 0.99584446423271,
+            "mean_interval_width": 9.082727387687237,
+            "carry_forward_mae": 1.6690412585336896,
+            "tolerance": 0.5,
+            "tolerance_unit": "D",
+            "tolerance_hit_rates": {
+              "0.5": 0.1454437518551499,
+              "0.75": 0.22113386761650342
+            },
+            "patients_all_within_tolerance": 0.056666666666666664,
+            "patient_all_within_95ci": [
+              0.046437960532395746,
+              0.06836833862185072
+            ],
+            "bootstrap_95ci": {
+              "mae": [
+                1.7332064469743773,
+                1.8273257129375438
+              ],
+              "tolerance_hit_rate": [
+                0.13324406178265497,
+                0.1576556477038838
+              ]
+            },
+            "point_estimate_meets_90_percent": false,
+            "supported_90_percent_claim": false
+          },
+          "60.0": {
+            "n": 1694,
+            "mae": 1.949,
+            "rmse": 2.3914,
+            "r2": -0.6365,
+            "n_patients": 1694,
+            "interval_coverage": 0.9982290436835891,
+            "mean_interval_width": 11.910375223293926,
+            "carry_forward_mae": 2.103600944510035,
+            "tolerance": 0.5,
+            "tolerance_unit": "D",
+            "tolerance_hit_rates": {
+              "0.5": 0.1381345926800472,
+              "0.75": 0.21133412042502953
+            },
+            "patients_all_within_tolerance": 0.1381345926800472,
+            "patient_all_within_95ci": [
+              0.12204614028116263,
+              0.15548768073768596
+            ],
+            "bootstrap_95ci": {
+              "mae": [
+                1.8829424009193496,
+                2.003269002925097
+              ],
+              "tolerance_hit_rate": [
+                0.12337662337662338,
+                0.15705430932703657
+              ]
+            },
+            "point_estimate_meets_90_percent": false,
+            "supported_90_percent_claim": false
+          }
+        },
+        "provenance": {
+          "id": "rels",
+          "name": "PLOS RELS annual refraction cohort",
+          "rows": 12252,
+          "n_patients": 2042,
+          "n_visits": 10963,
+          "role": "Study-held-out SE/progression evaluation",
+          "license": "CC-BY-4.0",
+          "source_url": "https://journals.plos.org/plosmedicine/article/file?type=supplementary&id=10.1371/journal.pmed.1002674.s002",
+          "data_is_synthetic": false,
+          "table_sha256": "3b7b4f6174bc2526322898a7336ad912a27a0170ab76dad8be46329bd4e498cc",
+          "limitations": [
+            "Annual cycloplegic right-eye SE only; no AL or exposure/treatment allocation in released workbook.",
+            "Annual labels mapped to nominal scheduled months; exact examination dates and age are unavailable.",
+            "DOB is excluded from normalized model tables and predictors; missing SE stays missing.",
+            "PLOS reports GOAL and RELS as independent cohorts; overlap with the separately sourced DIMS cohort is not verifiable from these files."
+          ]
+        }
+      }
+    },
+    "al": {
+      "model_selection": {
+        "selected": "hgb_rate_3",
+        "criterion": "Training-only patient-grouped CV; equal patient mean MAE",
+        "folds": 3,
+        "candidates": [
+          {
+            "candidate": "carry_forward",
+            "patient_mean_cv_mae": 0.16627712418300652
+          },
+          {
+            "candidate": "mean_rate",
+            "patient_mean_cv_mae": 0.09204019799442875
+          },
+          {
+            "candidate": "ridge_rate_10",
+            "patient_mean_cv_mae": 0.08682360556863272
+          },
+          {
+            "candidate": "ridge_rate_100",
+            "patient_mean_cv_mae": 0.08719332271855322
+          },
+          {
+            "candidate": "hgb_rate_3",
+            "patient_mean_cv_mae": 0.08117100449128106
+          },
+          {
+            "candidate": "hgb_rate_7",
+            "patient_mean_cv_mae": 0.08300486262465735
+          }
+        ]
+      },
+      "split_patients": {
+        "fit": 51,
+        "calibration": 25,
+        "test": 17
+      },
+      "observed_horizons_months": [
+        3.0,
+        6.0,
+        9.0,
+        12.0,
+        15.0,
+        18.0,
+        21.0,
+        24.0,
+        27.0,
+        30.0,
+        33.0,
+        36.0
+      ],
+      "test_overall": {
+        "n": 192,
+        "mae": 0.1057,
+        "rmse": 0.1444,
+        "r2": 0.9825,
+        "n_patients": 17,
+        "interval_coverage": 1.0,
+        "mean_interval_width": 0.8734192602227075,
+        "carry_forward_mae": 0.2206250000000003,
+        "tolerance": 0.1,
+        "tolerance_unit": "mm",
+        "tolerance_hit_rates": {
+          "0.1": 0.6145833333333334,
+          "0.2": 0.859375
+        },
+        "patients_all_within_tolerance": 0.058823529411764705,
+        "patient_all_within_95ci": [
+          0.0014881743912666344,
+          0.2868893966672207
+        ],
+        "bootstrap_95ci": {
+          "mae": [
+            0.07879670653829884,
+            0.13308612835038747
+          ],
+          "tolerance_hit_rate": [
+            0.4823529411764706,
+            0.74096875
+          ]
+        },
+        "point_estimate_meets_90_percent": false,
+        "supported_90_percent_claim": false
+      },
+      "test_by_horizon": {
+        "3.0": {
+          "n": 8,
+          "mae": 0.0306,
+          "rmse": 0.0376,
+          "r2": 0.9996,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.3852785341206517,
+          "carry_forward_mae": 0.042500000000000426,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 1.0,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.01892760852615183,
+              0.042205611095197604
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "6.0": {
+          "n": 66,
+          "mae": 0.0764,
+          "rmse": 0.0993,
+          "r2": 0.988,
+          "n_patients": 17,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.5879693167740522,
+          "carry_forward_mae": 0.12030303030303043,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 0.7272727272727273,
+            "0.2": 0.9393939393939394
+          },
+          "patients_all_within_tolerance": 0.23529411764705882,
+          "patient_all_within_95ci": [
+            0.06810774043735666,
+            0.4989932732045801
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.06180825441127271,
+              0.0895540183755274
+            ],
+            "tolerance_hit_rate": [
+              0.6567164179104478,
+              0.8234019886363634
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "9.0": {
+          "n": 4,
+          "mae": 0.0244,
+          "rmse": 0.0254,
+          "r2": 0.9998,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.7339271535520462,
+          "carry_forward_mae": 0.09500000000000064,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 1.0,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.02159291262203311,
+              0.027118382110078443
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "12.0": {
+          "n": 51,
+          "mae": 0.1097,
+          "rmse": 0.1401,
+          "r2": 0.9784,
+          "n_patients": 17,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.8897137494771846,
+          "carry_forward_mae": 0.22176470588235325,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 0.5490196078431373,
+            "0.2": 0.8431372549019608
+          },
+          "patients_all_within_tolerance": 0.11764705882352941,
+          "patient_all_within_95ci": [
+            0.014579316840302493,
+            0.36440916210125024
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.08459077674736017,
+              0.13223070500974998
+            ],
+            "tolerance_hit_rate": [
+              0.43137254901960786,
+              0.6769607843137251
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "15.0": {
+          "n": 2,
+          "mae": 0.0471,
+          "rmse": 0.0604,
+          "r2": 0.9989,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.9565428917076275,
+          "carry_forward_mae": 0.1850000000000005,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 1.0,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.009290413313316037,
+              0.08494270095247813
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "18.0": {
+          "n": 32,
+          "mae": 0.1511,
+          "rmse": 0.1897,
+          "r2": 0.9535,
+          "n_patients": 17,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.1144126300089585,
+          "carry_forward_mae": 0.33468750000000047,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 0.40625,
+            "0.2": 0.78125
+          },
+          "patients_all_within_tolerance": 0.17647058823529413,
+          "patient_all_within_95ci": [
+            0.037985068070626,
+            0.43431787284428397
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.11262314643608387,
+              0.19374946496202924
+            ],
+            "tolerance_hit_rate": [
+              0.2727272727272727,
+              0.5483870967741935
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "21.0": {
+          "n": 2,
+          "mae": 0.0243,
+          "rmse": 0.0244,
+          "r2": 0.9998,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.2129557197943441,
+          "carry_forward_mae": 0.2350000000000012,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 1.0,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.023120641531953368,
+              0.025543563407183
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "24.0": {
+          "n": 19,
+          "mae": 0.1959,
+          "rmse": 0.2434,
+          "r2": 0.9508,
+          "n_patients": 17,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.3165851516492404,
+          "carry_forward_mae": 0.41894736842105285,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 0.3157894736842105,
+            "0.2": 0.5789473684210527
+          },
+          "patients_all_within_tolerance": 0.23529411764705882,
+          "patient_all_within_95ci": [
+            0.06810774043735666,
+            0.4989932732045801
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.12451412849307245,
+              0.28112803991654084
+            ],
+            "tolerance_hit_rate": [
+              0.1111111111111111,
+              0.5612499999999995
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        },
+        "27.0": {
+          "n": 2,
+          "mae": 0.0501,
+          "rmse": 0.0517,
+          "r2": 0.9992,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.402089528359566,
+          "carry_forward_mae": 0.3149999999999995,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 1.0,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.03727725603603105,
+              0.06289686171446007
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "30.0": {
+          "n": 2,
+          "mae": 0.0762,
+          "rmse": 0.0764,
+          "r2": 0.9983,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.4720073357470458,
+          "carry_forward_mae": 0.3600000000000012,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 1.0,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.07088316116908899,
+              0.08160091647421908
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "33.0": {
+          "n": 2,
+          "mae": 0.084,
+          "rmse": 0.0842,
+          "r2": 0.9979,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.630709019103918,
+          "carry_forward_mae": 0.3650000000000002,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 1.0,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 1.0,
+          "patient_all_within_95ci": [
+            0.15811388300841897,
+            1.0
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.07776100812164088,
+              0.09013988535414441
+            ],
+            "tolerance_hit_rate": [
+              1.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "36.0": {
+          "n": 2,
+          "mae": 0.0972,
+          "rmse": 0.1036,
+          "r2": 0.9968,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 1.7361269570576692,
+          "carry_forward_mae": 0.40000000000000036,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 0.5,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 0.5,
+          "patient_all_within_95ci": [
+            0.01257911709342505,
+            0.9874208829065749
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.061177798792812155,
+              0.13315809103972853
+            ],
+            "tolerance_hit_rate": [
+              0.0,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        }
+      },
+      "test_by_source": {
+        "dims": {
+          "n": 42,
+          "mae": 0.0464,
+          "rmse": 0.0572,
+          "r2": 0.999,
+          "n_patients": 2,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.9278208628359934,
+          "carry_forward_mae": 0.1700000000000005,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 0.9285714285714286,
+            "0.2": 1.0
+          },
+          "patients_all_within_tolerance": 0.5,
+          "patient_all_within_95ci": [
+            0.01257911709342505,
+            0.9874208829065749
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.030361769879879846,
+              0.06239439295764897
+            ],
+            "tolerance_hit_rate": [
+              0.8571428571428571,
+              1.0
+            ]
+          },
+          "point_estimate_meets_90_percent": true,
+          "supported_90_percent_claim": false
+        },
+        "kinoshita": {
+          "n": 150,
+          "mae": 0.1223,
+          "rmse": 0.1605,
+          "r2": 0.9562,
+          "n_patients": 15,
+          "interval_coverage": 1.0,
+          "mean_interval_width": 0.8581868114909874,
+          "carry_forward_mae": 0.23480000000000023,
+          "tolerance": 0.1,
+          "tolerance_unit": "mm",
+          "tolerance_hit_rates": {
+            "0.1": 0.5266666666666666,
+            "0.2": 0.82
+          },
+          "patients_all_within_tolerance": 0.0,
+          "patient_all_within_95ci": [
+            0.0,
+            0.21801936091053403
+          ],
+          "bootstrap_95ci": {
+            "mae": [
+              0.10197274050601197,
+              0.14760510548123043
+            ],
+            "tolerance_hit_rate": [
+              0.44,
+              0.6101666666666665
+            ]
+          },
+          "point_estimate_meets_90_percent": false,
+          "supported_90_percent_claim": false
+        }
+      }
+    }
+  },
+  "tolerance_policy": {
+    "se_D": [
+      0.5,
+      0.75
+    ],
+    "al_mm": [
+      0.1,
+      0.2
+    ],
+    "note": "Fixed development error tolerances; not a clinical acceptance standard. First tolerance is primary. No test-based tolerance changes."
+  },
+  "limitations": [
+    "Only observed visit pairs are labels; unmeasured months are interpolation.",
+    "Beyond observed follow-up, terminal learned annualized change is extrapolated and ranges widened heuristically.",
+    "A nominal 90% prediction range is not 90% point accuracy; coverage is unverified at unmeasured horizons.",
+    "Repeated pairs remain correlated within patients; all splits, CV and confidence intervals use patient groups.",
+    "No externally evaluated axial-length cohort is available; source-specific internal test results are reported.",
+    "Most AL training participants received orthokeratology with or without atropine; follow-up age was not published in that source.",
+    "Pooled SE performance does not establish performance in treated children; the small DIMS source test trails carry-forward.",
+    "Current treatment is an observational covariate; treatment changes and causal effects are not modeled."
+  ]
+}

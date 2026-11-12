@@ -1,10 +1,10 @@
-import React, { lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api, fmt } from '../lib/api'
-import { Card, Disclaimer, EmptyState, ErrorNote, Field, NumberField, SkeletonCard, Spinner, StatusChip, toneForBand } from '../components/ui'
+import { Card, Disclaimer, EmptyState, ErrorNote, Field, NumberField, SkeletonCard, StatusChip, toneForBand } from '../components/ui'
 import { checkForm, hasErrors } from '../lib/validate'
 
-const TrajectoryChart = lazy(() => import('../components/TrajectoryChart'))
+import ForecastPanel from '../components/ForecastPanel'
 
 export function Cohort() {
   const [patients, setPatients] = useState(null)
@@ -31,6 +31,8 @@ export function Cohort() {
 export function PatientDetail() {
   const { patientId } = useParams()
   const [twin, setTwin] = useState(null)
+  const [loadedFor, setLoadedFor] = useState(null)
+  const loadSequence = useRef(0)
   const [versions, setVersions] = useState([])
   const [explanation, setExplanation] = useState(null)
   const [error, setError] = useState(null)
@@ -41,13 +43,20 @@ export function PatientDetail() {
   const [scenario, setScenario] = useState(null)
   const [form, setForm] = useState({ spherical_equivalent: null, axial_length: null, visit_date: '', followup_month: null })
   const [validation, setValidation] = useState({})
+  const loadForecast = useCallback((months, options) => api.patientPrediction(patientId, months, options), [patientId])
   const load = useCallback(async () => {
+    const sequence = ++loadSequence.current
     try {
       const [t, v, e] = await Promise.all([api.patientTwin(patientId), api.patientVersions(patientId), api.patientExplanation(patientId)])
-      setTwin(t); setVersions(v.versions); setExplanation(e); setError(null)
-    } catch (e) { setError(e) }
+      if (sequence !== loadSequence.current) return
+      setTwin(t); setLoadedFor(patientId); setVersions(v.versions); setExplanation(e); setError(null)
+    } catch (e) { if (sequence === loadSequence.current) setError(e) }
   }, [patientId])
-  useEffect(() => { load() }, [load])
+  useEffect(() => {
+    setError(null); setAnswer(null); setDiff(null); setScenario(null)
+    load()
+    return () => { loadSequence.current += 1 }
+  }, [load])
   async function submitVisit(e) {
     e.preventDefault()
     const errors = checkForm(form, ['spherical_equivalent', 'axial_length'])
@@ -76,7 +85,7 @@ export function PatientDetail() {
     setBusy(true); setError(null)
     try { setScenario(await api.patientScenarios(patientId, [{ label: 'Outdoor exposure', changes: { outdoor_min: 120 } }, { label: 'Viewing distance', changes: { viewing_distance_cm: 40 } }])) } catch (err) { setError(err) } finally { setBusy(false) }
   }
-  if (!twin) return <><ErrorNote error={error} onRetry={load} />{!error && <SkeletonCard lines={8} />}</>
+  if (!twin || loadedFor !== patientId) return <><ErrorNote error={error} onRetry={load} />{!error && <SkeletonCard lines={8} />}</>
   return <div className="space-y-5">
     <Link className="text-sm underline underline-offset-2" to="/app/cohort">Back to cohort</Link>
     <div><p className="script text-2xl text-ink-muted">the evolving record</p><h1 className="break-all text-3xl font-semibold">{twin.patient.external_key || 'Patient detail'}</h1>
@@ -86,10 +95,8 @@ export function PatientDetail() {
       <p className="note-watch mt-4" role="status">Monitor: {twin.monitor?.materially_changed ? twin.monitor.flags.join('; ') : twin.monitor?.note || 'No material change flagged'}</p>
       <details className="mt-4 text-sm"><summary className="cursor-pointer">Full state and measured history</summary><div className="mt-3 overflow-x-auto"><table className="table"><thead><tr><th scope="col">Visit time</th><th scope="col">SE (D)</th><th scope="col">AL (mm)</th><th scope="col">Recorded age</th><th scope="col">Treatment</th></tr></thead><tbody>{twin.history.map((v, i) => <tr key={i}><th scope="row">{v.visit_date || `Month ${v.followup_month}`}</th><td>{v.spherical_equivalent}</td><td>{v.axial_length}</td><td>{v.age ?? 'Missing'}</td><td>{v.treatment ?? 'Missing'}</td></tr>)}</tbody></table><p className="mt-3">Recent SE trend: {fmt.num(twin.derived.se_slope_per_year, 3)} D/year. Recent AL trend: {fmt.num(twin.derived.al_slope_per_year, 3)} mm/year. Model: {twin.model_version}.</p></div></details>
     </Card>
-    <Card title="Trajectory and uncertainty"><Suspense fallback={<Spinner />}><TrajectoryChart history={twin.history} prediction={twin.prediction} /></Suspense>
-      <div className="mt-4 overflow-x-auto"><table className="table"><thead><tr><th scope="col">Horizon</th><th scope="col">SE estimate and 90% interval (D)</th><th scope="col">AL estimate and 90% interval (mm)</th></tr></thead><tbody>{Object.entries(twin.prediction?.horizons || {}).map(([h, p]) => <tr key={h}><th scope="row">{h}</th><td>{p.se ? `${p.se.value} [${p.se.lower}, ${p.se.upper}]` : 'Unavailable'}</td><td>{p.al ? `${p.al.value} [${p.al.lower}, ${p.al.upper}]` : 'Unavailable'}</td></tr>)}</tbody></table></div>
+    <Card title="Trajectory and uncertainty"><ForecastPanel history={twin.history} loadPrediction={loadForecast} recordKey={`${patientId}:${twin.version}`} />
       <Disclaimer text={twin.disclaimer} />
-      <ul className="mt-3 list-disc pl-5 text-xs text-ink-muted">{twin.prediction?.warnings?.map(w => <li key={w}>{w}</li>)}</ul>
     </Card>
     <Card title="Prediction attribution" subtitle={explanation?.method === 'shap' ? 'SHAP feature attribution' : 'Feature ablation attribution; this is not an exact Shapley value'}><div className="overflow-x-auto"><table className="table"><thead><tr><th scope="col">Factor</th><th scope="col">Contribution</th></tr></thead><tbody>{explanation?.contributions?.map(c => <tr key={c.feature}><th scope="row">{c.label}</th><td>{fmt.num(c.contribution, 3)}</td></tr>)}</tbody></table></div><Disclaimer text={explanation?.attribution_disclaimer} /></Card>
     <Card title="Version history" actions={<button className="btn btn-secondary btn-sm" disabled={busy || versions.length < 2} onClick={compare}>Compare latest versions</button>}>

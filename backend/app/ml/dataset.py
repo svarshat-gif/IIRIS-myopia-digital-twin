@@ -67,7 +67,8 @@ def load_visits(csv_path: str | Path) -> pd.DataFrame:
             raise ValueError(f"{col} outside [{low}, {high}]")
     if df.duplicated(["patient_key", "visit_date", "followup_month"]).any():
         raise ValueError("Duplicate patient visit")
-    df = df.dropna(subset=["spherical_equivalent", "axial_length"])
+    # A refraction-only cohort is usable for SE targets; it supplies no AL labels.
+    df = df.dropna(subset=["spherical_equivalent", "axial_length"], how="all")
     df = df.sort_values(["patient_key", "visit_date", "followup_month"]).reset_index(drop=True)
     return df
 
@@ -124,7 +125,7 @@ def build_supervised_table(df: pd.DataFrame) -> pd.DataFrame:
 
             se12 = record.get("y_se_12m")
             record["y_fast_progression"] = (
-                np.nan if pd.isna(se12)
+                np.nan if pd.isna(se12) or pd.isna(current['spherical_equivalent'])
                 else float((se12 - current["spherical_equivalent"]) <= FAST_PROGRESSION_THRESHOLD_D)
             )
             records.append(record)

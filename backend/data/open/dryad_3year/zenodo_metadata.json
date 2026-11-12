@@ -1,0 +1,118 @@
+{
+  "created": "2021-06-18T20:06:21.369408+00:00",
+  "modified": "2022-06-01T22:24:06.846327+00:00",
+  "id": 4987818,
+  "conceptrecid": "4987817",
+  "doi": "10.5061/dryad.d4mb3pn",
+  "doi_url": "https://doi.org/10.5061/dryad.d4mb3pn",
+  "metadata": {
+    "title": "Data from: Axial length elongation and myopia incidence increase in primary school-age children: 3-year follow-up study",
+    "doi": "10.5061/dryad.d4mb3pn",
+    "publication_date": "2019-10-07",
+    "description": "<p>Objective: To investigate the axial length (AL) elongation in primary school-age children during 3-year follow-up period, and evaluate the associations of AL elongation with spherical equivalent (SE), AL at baseline, body height and weight.</p>\n\n<p>Design: A 3-year observational cohort study from 2014 to 2017.</p>\n\n<p>Setting: Jinshan Hospital of Fudan University in Shanghai.</p>\n\n<p>Methods: A total of 452 children successfully completed their measurements in the 3-year follow-up period. Among those children, the mean age was 6.9 \u00b1 0.7 years, ranging from 6 years to 8 years, and 217 (42.7%) were boys. AL was measured with an ocular biometry system. Refractive error was measured using an auto-refractor without cycloplegia.</p>\n\n<p>Results: The mean changes of ALs were 0.27 \u00b1 0.28 mm, 0.52 \u00b1 0.40 mm, and 0.89 \u00b1 0.51mm over 1 year, over 2 years and over 3 years, respectively. The mean changes of Spherical equivalents (SEs) were -0.27 \u00b1 0.80 D, -0.56 \u00b1 1.00 D, and -0.95 \u00b1 1.41 D over 1 year, over 2 years and over 3 years, respectively. Multivariate linear regression analysis revealed that mean change of AL was associated with mean change of SE at all points (all P &lt; 0.001). In addition, linear regression analysis revealed that AL elongation in the 3-year follow-up period was associated with AL at baseline (R2 = 0.009, P = 0.045).</p>\n\n<p>Conclusions: AL elongation is relatively high in the primary school-age children in Jinshan District, Shanghai. Effect strategies are needed to control AL elongation.</p>\n\n<p>\u00a0</p>",
+    "access_right": "open",
+    "creators": [
+      {
+        "name": "Li, Tao",
+        "affiliation": "Fudan University"
+      },
+      {
+        "name": "Jiang, Bo",
+        "affiliation": "Fudan University"
+      },
+      {
+        "name": "Zhou, Xiaodong",
+        "affiliation": "Fudan University"
+      }
+    ],
+    "resource_type": {
+      "title": "Dataset",
+      "type": "dataset"
+    },
+    "license": {
+      "id": "cc-zero"
+    },
+    "communities": [
+      {
+        "id": "dryad"
+      }
+    ],
+    "relations": {
+      "version": [
+        {
+          "index": 0,
+          "is_last": true,
+          "parent": {
+            "pid_type": "recid",
+            "pid_value": "4987817"
+          }
+        }
+      ]
+    },
+    "notes": "<div class=\"o-metadata__file-usage-entry\">\nAxial length elongation and myopia incidence increase in primary school-age children ('data3.xlsx')\n\n<p>Height: the height of child, units of measure is \"cm\", allowable values is more than 0 cm.<br>\nWeight: the weight of child, units of measure is \"kg\", allowable values is more than 0 kg.<br>\nSpherical refraction of right eye: the spherical refraction of right eye of child, units of measure is \"D\", allowable values is usually +10 D ~ -20 D.<br>\nSpherical refraction of left eye: the spherical refraction of left eye of child, units of measure is \"D\", allowable values is usually +10 D ~ -20 D.<br>\nCylinder refraction of right eye: the cylinder refraction of right eye of child, units of measure is \"D\", allowable values is less than 0 D.<br>\nCylinder refraction of left eye: the cylinder refraction of left eye of child, units of measure is \"D\", allowable values is less than 0 D.<br>\nAxis of right eye: the axis of right eye of child, units of measure is \"\u00b0\", allowable values is 1\u00b0~ 180\u00b0.<br>\nAxis of left eye: the axis of left eye of child, units of measure is \"\u00b0\", allowable values is 1\u00b0~ 180\u00b0.<br>\nAL of right eye: the AL of right eye of child, units of measure is \"mm\", allowable values is more than 0.<br>\nAL of left eye: the AL of left eye of child, units of measure is \"mm\", allowable values is more than 0.</p>\n</div>"
+  },
+  "title": "Data from: Axial length elongation and myopia incidence increase in primary school-age children: 3-year follow-up study",
+  "links": {
+    "self": "https://zenodo.org/api/records/4987818",
+    "self_html": "https://zenodo.org/records/4987818",
+    "preview_html": "https://zenodo.org/records/4987818?preview=1",
+    "doi": "https://doi.org/10.5061/dryad.d4mb3pn",
+    "self_doi": "https://doi.org/10.5061/dryad.d4mb3pn",
+    "self_doi_html": "https://zenodo.org/doi/10.5061/dryad.d4mb3pn",
+    "reserve_doi": "https://zenodo.org/api/records/4987818/draft/pids/doi",
+    "parent": "https://zenodo.org/api/records/4987817",
+    "parent_html": "https://zenodo.org/records/4987817",
+    "self_iiif_manifest": "https://zenodo.org/api/iiif/record:4987818/manifest",
+    "self_iiif_sequence": "https://zenodo.org/api/iiif/record:4987818/sequence/default",
+    "files": "https://zenodo.org/api/records/4987818/files",
+    "media_files": "https://zenodo.org/api/records/4987818/media-files",
+    "latest": "https://zenodo.org/api/records/4987818/versions/latest",
+    "latest_html": "https://zenodo.org/records/4987818/latest",
+    "versions": "https://zenodo.org/api/records/4987818/versions",
+    "draft": "https://zenodo.org/api/records/4987818/draft",
+    "access_links": "https://zenodo.org/api/records/4987818/access/links",
+    "access_grants": "https://zenodo.org/api/records/4987818/access/grants",
+    "access_users": "https://zenodo.org/api/records/4987818/access/users",
+    "access_request": "https://zenodo.org/api/records/4987818/access/request",
+    "access": "https://zenodo.org/api/records/4987818/access",
+    "communities": "https://zenodo.org/api/records/4987818/communities",
+    "communities-suggestions": "https://zenodo.org/api/records/4987818/communities-suggestions",
+    "request_deletion": "https://zenodo.org/api/records/4987818/request-deletion",
+    "file_modification": "https://zenodo.org/api/records/4987818/file-modification",
+    "quota_increase": "https://zenodo.org/api/records/4987818/quota-increase",
+    "requests": "https://zenodo.org/api/records/4987818/requests"
+  },
+  "updated": "2022-06-01T22:24:06.846327+00:00",
+  "recid": "4987818",
+  "revision": 3,
+  "files": [
+    {
+      "id": "f71876a2-f68f-4574-8794-656f72e3b485",
+      "key": "Data3.xlsx",
+      "size": 155656,
+      "checksum": "md5:fc5d0b7a284c4d70e119f73244267ab6",
+      "links": {
+        "self": "https://zenodo.org/api/records/4987818/files/Data3.xlsx/content"
+      }
+    }
+  ],
+  "swh": {},
+  "owners": [
+    {
+      "id": "90070"
+    }
+  ],
+  "status": "published",
+  "stats": {
+    "downloads": 82,
+    "unique_downloads": 77,
+    "views": 250,
+    "unique_views": 236,
+    "version_downloads": 82,
+    "version_unique_downloads": 77,
+    "version_unique_views": 234,
+    "version_views": 248
+  },
+  "state": "done",
+  "submitted": true
+}

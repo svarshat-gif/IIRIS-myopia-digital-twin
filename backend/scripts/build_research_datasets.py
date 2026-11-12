@@ -1,16 +1,22 @@
 """Verify licensed research inputs and build tables with explicit, separate endpoints."""
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.normalize_longitudinal import normalize
+from scripts.normalize_kinoshita import build as build_kinoshita
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def build(source=ROOT / 'data/open', out=ROOT / 'data/research'):
     sources = json.loads((source / 'research_sources.json').read_text(encoding='utf-8'))
-    expected = {'olsm': 'GPL-3', 'aier_seri': 'CC0-1.0', 'miopia': 'CC-BY-NC-4.0'}
+    expected = {'olsm': 'GPL-3', 'aier_seri': 'CC0-1.0', 'miopia': 'CC-BY-NC-4.0',
+                'goal_rels': 'CC-BY-4.0', 'dryad_3year': 'CC0-1.0', 'kinoshita': 'CC-BY-4.0'}
     for name, license_id in expected.items():
         record = sources[name]
         if record['license'] != license_id or record['data_is_synthetic'] is not False:
@@ -71,11 +77,36 @@ def build(source=ROOT / 'data/open', out=ROOT / 'data/research'):
                         'source_url': sources[name]['source_url'], 'data_is_synthetic': False,
                         'table_sha256': hashlib.sha256(table.read_bytes()).hexdigest(),
                         'limitations': limitations})
+    for sheet in ('GOAL', 'RELS'):
+        visits = normalize(source / 'goal_rels/goal_rels.xlsx', sheet)
+        table = out / f'{sheet.lower()}_visits.csv'
+        visits.to_csv(table, index=False, lineterminator='\n')
+        catalog.append({'id': sheet.lower(), 'name': f'PLOS {sheet} annual refraction cohort',
+            'rows': len(visits), 'n_patients': visits.patient_key.nunique(), 'n_visits': int(visits.spherical_equivalent.notna().sum()),
+            'role': '12-month SE/progression model development' if sheet == 'GOAL' else 'Study-held-out SE/progression evaluation',
+            'license': sources['goal_rels']['license'], 'source_url': sources['goal_rels']['source_url'],
+            'data_is_synthetic': False, 'table_sha256': hashlib.sha256(table.read_bytes()).hexdigest(),
+            'limitations': ['Annual cycloplegic right-eye SE only; no AL or exposure/treatment allocation in released workbook.',
+                'Annual labels mapped to nominal scheduled months; exact examination dates and age are unavailable.',
+                'DOB is excluded from normalized model tables and predictors; missing SE stays missing.',
+                'PLOS reports GOAL and RELS as independent cohorts; overlap with the separately sourced DIMS cohort is not verifiable from these files.']})
+    catalog.append({'id': 'dryad_3year', 'name': 'Dryad / Zenodo Jinshan three-year reference',
+        'rows': 2024, 'n_patients': None, 'role': 'Unlinked research measurements; excluded from longitudinal training',
+        'license': 'CC0-1.0', 'source_url': 'https://zenodo.org/records/4987818', 'data_is_synthetic': False,
+        'limitations': ['Original workbook matches Dryad SHA256 and Zenodo MD5; no subject IDs are published.',
+            'Birth/examination fields are years; gender/birth-year combinations cannot establish identity.',
+            'Slash/negative placeholders and non-cycloplegic measurements require careful handling; no row-order linkage.']})
+    kinoshita = build_kinoshita(source / 'kinoshita/Dataset_Kinoshita_v7.xlsx',
+                              out / 'kinoshita_visits.csv')
+    catalog.append({**kinoshita,
+        'role': 'Selectable-horizon axial-length development; right-eye patient-grouped evaluation',
+        'limitations': kinoshita['limitations'] + [
+            'Forecast pairs start at enrollment month 3 or later, after OK stabilization and atropine initiation.']})
     report = {'datasets': catalog, 'excluded': [
         {'id': 'human_lifestyle', 'reason': 'Explicitly synthetic and no ocular outcomes'},
         {'id': 'data3_kaggle', 'reason': 'Unknown license/origin and no verified patient linkage'},
         {'id': 'axial_prediction', 'reason': 'Unresolved license; static KH/KV/AL only'},
-        {'id': 'dryad', 'reason': 'Original workbook downloads remain unverified'}],
+        {'id': 'shandong_habits', 'reason': 'Public 126375-row cross-sectional supplement inspected; no longitudinal outcome/subject linkage and CC BY-NC-ND terms; no forecasting training'}],
         'note': 'These datasets have separate roles. No cross-cohort patient joins or invented follow-up visits.'}
     (out / 'catalog.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     return report

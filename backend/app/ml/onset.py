@@ -48,7 +48,7 @@ def scores(y, p):
             'f1': round(float(f1_score(y, predicted, zero_division=0)), 4)}
 
 
-def train(data=ROOT / 'data/research/olsm_onset.csv', out=None, search=False):
+def train(data=ROOT / 'data/research/olsm_onset.csv', out=None, search=False, objective='roc_auc'):
     data = Path(data)
     if search and out is None:
         raise ValueError('Candidate search requires a separate output path; it cannot overwrite the released model')
@@ -74,7 +74,7 @@ def train(data=ROOT / 'data/research/olsm_onset.csv', out=None, search=False):
     for name, columns in [('clinical', CLINICAL), ('clinical_activity', CLINICAL + ACTIVITY)]:
         x = df[columns].to_numpy(dtype=float)
         if search:
-            base, selection = select_onset(x[fit], y[fit])
+            base, selection = select_onset(x[fit], y[fit], objective=objective)
         else:
             base = HistGradientBoostingClassifier(max_iter=100, max_leaf_nodes=5,
                 min_samples_leaf=15, l2_regularization=10, learning_rate=.05,
@@ -110,7 +110,7 @@ def train(data=ROOT / 'data/research/olsm_onset.csv', out=None, search=False):
         metrics[name] = result
     stamp = datetime.now(timezone.utc).isoformat()
     protocol = Path(__file__).read_text(encoding='utf-8') + Path(__file__).with_name('selection.py').read_text(encoding='utf-8')
-    version = 'onset5y-' + hashlib.sha256(data.read_bytes() + protocol.encode() + str(search).encode()).hexdigest()[:10]
+    version = 'onset5y-' + hashlib.sha256(data.read_bytes() + protocol.encode() + f'{search}:{objective}'.encode()).hexdigest()[:10]
     report = {'model_version': version, 'trained_at': stamp, 'data_is_synthetic': False,
         'source': source, 'endpoint': 'Myopia onset within five years of baseline',
         'n_patients': len(df), 'n_positive': int(df.myopic.sum()),
@@ -118,7 +118,7 @@ def train(data=ROOT / 'data/research/olsm_onset.csv', out=None, search=False):
         'split_positive': {k: int(y[s].sum()) for k, s in [('train', fit), ('calibration', cal), ('test', test)]},
         'split_strategy': 'Fixed stratified subject split; each subject has one row; no test tuning',
         'calibration': 'Sigmoid calibration on separate held-out subjects', 'metrics': metrics,
-        'selection': ('13 fixed candidate configurations; ten training-only CV folds per feature set; ROC AUC objective'
+        'selection': (f"13 fixed candidate configurations; ten training-only CV folds per feature set; {objective} objective"
                       if search else 'Original fixed HGB retained; candidate search is an opt-in, separately saved experiment'),
         'release_status': 'challenger_only' if search else 'retained_incumbent',
         'test_status': 'Same locked benchmark as previous report; previously reported results, not new external validation',
@@ -187,5 +187,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--search', action='store_true', help='Save a challenger; requires --out distinct from the released model')
     parser.add_argument('--out', type=Path)
+    parser.add_argument('--objective', choices=['roc_auc', 'accuracy'], default='roc_auc')
     args = parser.parse_args()
-    print(json.dumps(train(out=args.out, search=args.search), indent=2))
+    print(json.dumps(train(out=args.out, search=args.search, objective=args.objective), indent=2))

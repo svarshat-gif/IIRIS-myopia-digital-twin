@@ -10,10 +10,11 @@ COPY alembic.ini ./
 COPY data ./data
 FROM base AS model
 RUN python scripts/fetch_datasets.py --sources dims --offline && python scripts/build_training_table.py && python -m app.ml.train
-RUN python scripts/build_research_datasets.py && python -m app.ml.onset
+RUN python scripts/build_research_datasets.py && python -m app.ml.onset && python -m app.ml.expanded --without-catboost --promote && python -m app.ml.trajectory
 FROM base AS runtime
 COPY --from=model /app/artifacts/progression_model.joblib /app/artifacts/progression_model.metrics.json ./artifacts/
 COPY --from=model /app/artifacts/onset_model.joblib /app/artifacts/onset_model.metrics.json ./artifacts/
+COPY --from=model /app/artifacts/trajectory_model.joblib /app/artifacts/trajectory_model.metrics.json ./artifacts/
 COPY --from=model /app/data/research ./data/research/
 COPY --from=model /app/data/training_visits.csv /app/data/training_visits.provenance.json ./data/
 RUN chown -R iiris:iiris /app

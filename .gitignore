@@ -19,6 +19,7 @@ npm-debug.log*
 # Generated artifacts
 backend/artifacts/uploads/
 backend/artifacts/*.db
+backend/artifacts/forecast_horizon/
 backend/artifacts/*.joblib
 backend/artifacts/*.json
 
@@ -34,6 +35,7 @@ coverage.xml
 .ruff_cache/
 !backend/artifacts/progression_model.metrics.json
 !backend/artifacts/onset_model.metrics.json
+!backend/artifacts/trajectory_model.metrics.json
 !backend/data/corpus/
 
 # OS / editor
@@ -45,3 +47,7 @@ backend/data/*.provenance.json
 frontend/test-results/
 frontend/playwright-report/
 docs/guide-extracted.txt
+
+# Personal resume artifacts are not part of this project.
+output/pdf/Kundana_Svarsha_Resume_*.pdf
+tmp/pdfs/resume/

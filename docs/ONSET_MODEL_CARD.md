@@ -1,6 +1,6 @@
 # Five-year onset research model
 
-Version: `onset5y-e8e0b40d33`. Trained at `2026-10-16T03:14:02.373756+00:00`.
+Version: `onset5y-120d186c10`. Trained at `2026-10-16T12:02:42.770465+00:00`.
 
 This is a separate incident-myopia endpoint for initially nonmyopic children aged
 5-9. It does not replace Iiris's 6/12-month SE/AL progression models or their risk
@@ -61,7 +61,7 @@ There is no external validation or validated individual probability interval.
 | clinical_activity | 87.90% | 53.12% | 6.25% | 100.00% | [[108, 0], [15, 1]] |
 
 The majority/prevalence baseline is **87.10% accuracy, 50% balanced accuracy,
-0% sensitivity**. Overall accuracy above 95% has not been achieved. The .5
+0% sensitivity**. No evaluated onset model exceeded 90% accuracy. The .5
 threshold is fixed and is not optimized on test labels. This endpoint returns a
 research probability, not a clinical screening decision.
 
@@ -73,6 +73,21 @@ activity .0952 vs .0920). They were **not promoted**. The retained model and its
 predictions are unchanged apart from version/expanded reporting. The deployment
 decision considered this reused benchmark; independent validation remains needed.
 See [MODEL_IMPROVEMENT.md](MODEL_IMPROVEMENT.md) and its full candidate scores.
+
+A later biometry challenger added anterior chamber depth, lens thickness and
+vitreous chamber depth. Its best activity-only configuration reached 88.71%
+accuracy on the same holdout, but ROC AUC/Brier score did not improve consistently
+and sensitivity was 43.75%; it remains unpromoted. See the cross-cohort and
+challenger results in [MODEL_IMPROVEMENT.md](MODEL_IMPROVEMENT.md).
+
+A follow-up threshold-policy experiment fit probability calibration from
+training-only out-of-fold scores, selected thresholds on a separate partition
+for at least 80% sensitivity, then evaluated them on the same 124-person test
+set. Test sensitivity was 50.00-56.25% and accuracy was
+75.81-83.06% across four feature sets; none reached 90%. The threshold-selection set had
+only 16 onset cases. This experiment did not change the serving model or its
+probability output. Full confusion matrices and subject-bootstrap intervals are
+in [MODEL_IMPROVEMENT.json](MODEL_IMPROVEMENT.json).
 
 To reproduce the experiment without overwriting the release:
 

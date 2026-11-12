@@ -25,14 +25,21 @@ def measured_subject():
 
 def test_real_sources_are_separate_and_missing_stays_missing():
     c = onset.catalog()
-    assert [x['rows'] for x in c['datasets']] == [618, 431, 156]
+    assert {x['id'] for x in c['datasets']} == {
+        'olsm', 'aier_seri', 'miopia', 'goal', 'rels', 'dryad_3year', 'kinoshita'}
+    assert {x['id']: x['rows'] for x in c['datasets']} == {
+        'olsm': 618, 'aier_seri': 431, 'miopia': 156,
+        'goal': 6440, 'rels': 12252, 'dryad_3year': 2024, 'kinoshita': 438}
     assert all(x['data_is_synthetic'] is False for x in c['datasets'])
-    assert c['datasets'][2]['n_patients'] is None
+    assert next(x for x in c['datasets'] if x['id'] == 'miopia')['n_patients'] is None
     aier = pd.read_csv(ROOT / 'data/research/aier_baseline.csv')
     assert aier.age.isna().sum() == 2
     assert len(aier) == aier.patient_key.nunique()
-    # Research cohorts never extend the DIMS progression training or scenario support.
-    assert registry.load_bundle()['provenance']['n_patients'] == 20
+    # GOAL expands only 12-month SE training; DIMS remains the AL/6-month cohort.
+    provenance = registry.load_bundle()['provenance']
+    assert provenance['n_patients'] == 1630  # DIMS 20 + GOAL 1,610
+    assert provenance['per_source']['Zenodo DIMS 36-month (18166476)']['n_patients'] == 20
+    assert [x['id'] for x in provenance['additional_sources']] == ['goal']
     assert registry.load_bundle()['supported_scenario_inputs'] == []
 
 
@@ -82,9 +89,10 @@ def test_research_api_auth_domain_and_catalog(client, admin_headers):
     for invalid in ({'age': 18}, {'spheq': -4}, {'sporthr': -1}, {'patient_id': 'arbitrary'}):
         assert client.post(route, json={**row, **invalid}, headers=admin_headers).status_code == 422
     card = client.get('/api/v1/meta/model').json()
-    assert card['metrics']['n_patients'] == 20
+    assert card['metrics']['n_patients'] == 1630
+    assert card['provenance']['per_source']['Zenodo DIMS 36-month (18166476)']['n_patients'] == 20
     assert card['onset_model']['n_patients'] == 618
-    assert len(client.get('/api/v1/meta/datasets').json()['datasets']) == 3
+    assert len(client.get('/api/v1/meta/datasets').json()['datasets']) == 7
 
 
 def test_onset_training_refuses_changed_table(tmp_path):

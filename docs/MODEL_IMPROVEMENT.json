@@ -1,10 +1,773 @@
 {
   "date": "2026-10-16",
   "target_above_95_percent_achieved": false,
-  "evaluation_status": "Previously reported benchmarks reused; not independent external validation",
-  "progression_version": "mdt-20261016-174a69a1",
-  "onset_version": "onset5y-e8e0b40d33",
-  "progression": {
+  "evaluation_status": "DIMS/OLSM fixed holdouts reused; separate GOAL-to-RELS / RELS-to-GOAL cohort tests; no prospective clinical validation",
+  "progression_version": "mdt-expanded-20261016-cc73de06",
+  "onset_version": "onset5y-120d186c10",
+  "onset_incumbent": {
+    "clinical": {
+      "roc_auc": 0.7914,
+      "average_precision": 0.4482,
+      "brier": 0.0934,
+      "log_loss": 0.3189,
+      "accuracy": 0.871,
+      "balanced_accuracy": 0.5,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "precision": 0.0,
+      "f1": 0.0,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.6813,
+          0.8993
+        ],
+        "average_precision": [
+          0.2539,
+          0.7098
+        ],
+        "brier": [
+          0.0581,
+          0.1397
+        ],
+        "log_loss": [
+          0.2175,
+          0.4505
+        ],
+        "accuracy": [
+          0.8065,
+          0.9274
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.5
+        ],
+        "sensitivity": [
+          0.0,
+          0.0
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "fixed_hgb_incumbent",
+        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.7914,
+        "average_precision": 0.4482,
+        "brier": 0.0934,
+        "log_loss": 0.3189,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    },
+    "clinical_activity": {
+      "roc_auc": 0.8067,
+      "average_precision": 0.5052,
+      "brier": 0.092,
+      "log_loss": 0.3135,
+      "accuracy": 0.879,
+      "balanced_accuracy": 0.5312,
+      "sensitivity": 0.0625,
+      "specificity": 1.0,
+      "precision": 1.0,
+      "f1": 0.1176,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.7013,
+          0.9031
+        ],
+        "average_precision": [
+          0.2874,
+          0.7318
+        ],
+        "brier": [
+          0.056,
+          0.1361
+        ],
+        "log_loss": [
+          0.2047,
+          0.4449
+        ],
+        "accuracy": [
+          0.8145,
+          0.9355
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.6145
+        ],
+        "sensitivity": [
+          0.0,
+          0.2291
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          1.0
+        ],
+        "f1": [
+          0.0,
+          0.3728
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          15,
+          1
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "fixed_hgb_incumbent",
+        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.8067,
+        "average_precision": 0.5052,
+        "brier": 0.092,
+        "log_loss": 0.3135,
+        "accuracy": 0.879,
+        "balanced_accuracy": 0.5312,
+        "sensitivity": 0.0625,
+        "specificity": 1.0,
+        "precision": 1.0,
+        "f1": 0.1176
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  "onset_challenger": {
+    "clinical": {
+      "roc_auc": 0.8032,
+      "average_precision": 0.4407,
+      "brier": 0.0967,
+      "log_loss": 0.3169,
+      "accuracy": 0.871,
+      "balanced_accuracy": 0.5,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "precision": 0.0,
+      "f1": 0.0,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.6787,
+          0.9032
+        ],
+        "average_precision": [
+          0.2545,
+          0.697
+        ],
+        "brier": [
+          0.0589,
+          0.1436
+        ],
+        "log_loss": [
+          0.2126,
+          0.444
+        ],
+        "accuracy": [
+          0.8065,
+          0.9274
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.5
+        ],
+        "sensitivity": [
+          0.0,
+          0.0
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "logistic_C30",
+        "criterion": "Highest mean training-only repeated stratified CV ROC AUC",
+        "folds": 10,
+        "candidates": [
+          {
+            "candidate": "logistic_C0.03",
+            "mean_cv_roc_auc": 0.887527,
+            "std_cv_roc_auc": 0.083558
+          },
+          {
+            "candidate": "logistic_C0.3",
+            "mean_cv_roc_auc": 0.897995,
+            "std_cv_roc_auc": 0.078504
+          },
+          {
+            "candidate": "logistic_C3",
+            "mean_cv_roc_auc": 0.89947,
+            "std_cv_roc_auc": 0.079409
+          },
+          {
+            "candidate": "logistic_C30",
+            "mean_cv_roc_auc": 0.899724,
+            "std_cv_roc_auc": 0.079715
+          },
+          {
+            "candidate": "rbf_svm_C0.1",
+            "mean_cv_roc_auc": 0.84852,
+            "std_cv_roc_auc": 0.057217
+          },
+          {
+            "candidate": "rbf_svm_C1",
+            "mean_cv_roc_auc": 0.847539,
+            "std_cv_roc_auc": 0.057874
+          },
+          {
+            "candidate": "rbf_svm_C10",
+            "mean_cv_roc_auc": 0.823088,
+            "std_cv_roc_auc": 0.054196
+          },
+          {
+            "candidate": "rbf_svm_C100",
+            "mean_cv_roc_auc": 0.750629,
+            "std_cv_roc_auc": 0.061282
+          },
+          {
+            "candidate": "hgb_3_l2_10",
+            "mean_cv_roc_auc": 0.874014,
+            "std_cv_roc_auc": 0.083566
+          },
+          {
+            "candidate": "hgb_5_l2_10",
+            "mean_cv_roc_auc": 0.869294,
+            "std_cv_roc_auc": 0.091608
+          },
+          {
+            "candidate": "hgb_9_l2_1",
+            "mean_cv_roc_auc": 0.864083,
+            "std_cv_roc_auc": 0.084191
+          },
+          {
+            "candidate": "random_forest_leaf5",
+            "mean_cv_roc_auc": 0.86169,
+            "std_cv_roc_auc": 0.106055
+          },
+          {
+            "candidate": "random_forest_leaf15",
+            "mean_cv_roc_auc": 0.884372,
+            "std_cv_roc_auc": 0.092821
+          }
+        ]
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.7914,
+        "average_precision": 0.4482,
+        "brier": 0.0934,
+        "log_loss": 0.3189,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    },
+    "clinical_activity": {
+      "roc_auc": 0.8056,
+      "average_precision": 0.4588,
+      "brier": 0.0952,
+      "log_loss": 0.3145,
+      "accuracy": 0.871,
+      "balanced_accuracy": 0.5,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "precision": 0.0,
+      "f1": 0.0,
+      "bootstrap_95ci": {
+        "roc_auc": [
+          0.6904,
+          0.9093
+        ],
+        "average_precision": [
+          0.2652,
+          0.7157
+        ],
+        "brier": [
+          0.0574,
+          0.1418
+        ],
+        "log_loss": [
+          0.2057,
+          0.4465
+        ],
+        "accuracy": [
+          0.8065,
+          0.9274
+        ],
+        "balanced_accuracy": [
+          0.5,
+          0.5
+        ],
+        "sensitivity": [
+          0.0,
+          0.0
+        ],
+        "specificity": [
+          1.0,
+          1.0
+        ],
+        "precision": [
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0
+        ]
+      },
+      "confusion_matrix": [
+        [
+          108,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "decision_threshold": 0.5,
+      "model_selection": {
+        "selected": "logistic_C0.3",
+        "criterion": "Highest mean training-only repeated stratified CV ROC AUC",
+        "folds": 10,
+        "candidates": [
+          {
+            "candidate": "logistic_C0.03",
+            "mean_cv_roc_auc": 0.880885,
+            "std_cv_roc_auc": 0.074016
+          },
+          {
+            "candidate": "logistic_C0.3",
+            "mean_cv_roc_auc": 0.890202,
+            "std_cv_roc_auc": 0.075286
+          },
+          {
+            "candidate": "logistic_C3",
+            "mean_cv_roc_auc": 0.890187,
+            "std_cv_roc_auc": 0.077646
+          },
+          {
+            "candidate": "logistic_C30",
+            "mean_cv_roc_auc": 0.88922,
+            "std_cv_roc_auc": 0.078607
+          },
+          {
+            "candidate": "rbf_svm_C0.1",
+            "mean_cv_roc_auc": 0.848584,
+            "std_cv_roc_auc": 0.07963
+          },
+          {
+            "candidate": "rbf_svm_C1",
+            "mean_cv_roc_auc": 0.848272,
+            "std_cv_roc_auc": 0.079652
+          },
+          {
+            "candidate": "rbf_svm_C10",
+            "mean_cv_roc_auc": 0.786158,
+            "std_cv_roc_auc": 0.074221
+          },
+          {
+            "candidate": "rbf_svm_C100",
+            "mean_cv_roc_auc": 0.726442,
+            "std_cv_roc_auc": 0.05054
+          },
+          {
+            "candidate": "hgb_3_l2_10",
+            "mean_cv_roc_auc": 0.889132,
+            "std_cv_roc_auc": 0.069659
+          },
+          {
+            "candidate": "hgb_5_l2_10",
+            "mean_cv_roc_auc": 0.875783,
+            "std_cv_roc_auc": 0.076837
+          },
+          {
+            "candidate": "hgb_9_l2_1",
+            "mean_cv_roc_auc": 0.849032,
+            "std_cv_roc_auc": 0.080243
+          },
+          {
+            "candidate": "random_forest_leaf5",
+            "mean_cv_roc_auc": 0.860743,
+            "std_cv_roc_auc": 0.099606
+          },
+          {
+            "candidate": "random_forest_leaf15",
+            "mean_cv_roc_auc": 0.882159,
+            "std_cv_roc_auc": 0.088243
+          }
+        ]
+      },
+      "native_missing_fallback": {
+        "roc_auc": 0.8067,
+        "average_precision": 0.5052,
+        "brier": 0.092,
+        "log_loss": 0.3135,
+        "accuracy": 0.879,
+        "balanced_accuracy": 0.5312,
+        "sensitivity": 0.0625,
+        "specificity": 1.0,
+        "precision": 1.0,
+        "f1": 0.1176
+      },
+      "prevalence_baseline": {
+        "roc_auc": 0.5,
+        "average_precision": 0.129,
+        "brier": 0.1124,
+        "log_loss": 0.3846,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.5,
+        "sensitivity": 0.0,
+        "specificity": 1.0,
+        "precision": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  "onset_challenger_status": "not_promoted; did not consistently improve existing probability-quality benchmark",
+  "onset_challenger_original_version": "onset5y-b869668356",
+  "test_tuning": "No candidate grid expansion, test-threshold optimization, test-seed search, invented data or label leakage",
+  "target_above_90_percent_achieved": false,
+  "research_expansion": {
+    "source": "PLOS GOAL training cohort with separate RELS study-held-out evaluation; CC BY 4.0",
+    "released_model": {
+      "version": "mdt-expanded-20261016-cc73de06",
+      "selected_point_model": "change_hgb_7_l2_10",
+      "endpoint": "12-month spherical-equivalent refraction only",
+      "additional_fit": "DIMS and GOAL training partitions; 6-month SE and all AL models remain DIMS-only"
+    },
+    "calibration_promotion_gate": {
+      "goal_mae_d_previous": 0.4589,
+      "goal_mae_d_candidate": 0.4097,
+      "dims_mae_d_previous": 0.277,
+      "dims_mae_d_candidate": 0.2998,
+      "accepted": true,
+      "rule": "GOAL calibration MAE must improve; DIMS calibration MAE may increase by at most 0.05 D"
+    },
+    "rels_common_support_external_evaluation": {
+      "patients": 1900,
+      "transitions": 5520,
+      "mae_d": 0.5578,
+      "mae_patient_bootstrap_95ci_d": [
+        0.5429,
+        0.5749
+      ],
+      "rmse_d": 0.7906,
+      "r2": 0.6269,
+      "within_0_50d_pct": 56.96,
+      "interval_coverage_pct": 93.59,
+      "patient_interval_coverage_pct": 83.53,
+      "mean_interval_width_d": 2.46,
+      "carry_forward_mae_d": 0.5853
+    },
+    "future_myopic_status_on_rels": {
+      "definition": "SE <= -0.50 D at the next annual measurement, including prevalent myopia; not incident onset",
+      "accuracy": 0.75797,
+      "balanced_accuracy": 0.77588,
+      "sensitivity": 0.85925,
+      "specificity": 0.69251,
+      "carry_forward_accuracy": 0.78859,
+      "carry_forward_balanced_accuracy": 0.74779
+    },
+    "independent_cohort_benchmark_selected_ridge": {
+      "selection": "patient-grouped 3-fold CV within training cohort; current and prior SE only; fixed four candidates",
+      "rels_to_goal": {
+        "patients": 1580,
+        "transitions": 4573,
+        "mae_d": 0.4439,
+        "rmse_d": 0.6155,
+        "within_0_75d_pct": 82.02,
+        "within_0_75d_patient_bootstrap_95ci_pct": [
+          80.74,
+          83.09
+        ],
+        "carry_forward_mae_d": 0.5953,
+        "carry_forward_within_0_75d_pct": 73.89
+      },
+      "goal_to_rels": {
+        "patients": 1901,
+        "transitions": 8758,
+        "mae_d": 0.5229,
+        "rmse_d": 0.7384,
+        "within_0_75d_pct": 77.45,
+        "within_0_75d_patient_bootstrap_95ci_pct": [
+          76.46,
+          78.37
+        ],
+        "carry_forward_mae_d": 0.5877,
+        "carry_forward_within_0_75d_pct": 74.95
+      }
+    },
+    "future_myopic_status_on_goal_internal_test": {
+      "definition": "SE <= -0.50 D at the next annual measurement, including prevalent myopia; not incident onset",
+      "accuracy": 0.90429,
+      "balanced_accuracy": 0.8213,
+      "sensitivity": 0.66827,
+      "specificity": 0.97432,
+      "note": "Patient-held-out GOAL rows; internal result, not external validation."
+    },
+    "risk_classifier": {
+      "label": "12-month SE change <= -0.50 D",
+      "selected": "hgb_7_l2_10",
+      "training_only_grouped_cv_roc_auc": 0.6873,
+      "rels_common_support_external": {
+        "roc_auc": 0.4957,
+        "brier": 0.269,
+        "accuracy_at_calibration_threshold": 0.44185,
+        "balanced_accuracy_at_calibration_threshold": 0.45644,
+        "sensitivity_at_calibration_threshold": 0.7249,
+        "specificity_at_calibration_threshold": 0.18797,
+        "training_prevalence_brier_baseline": 0.2499,
+        "threshold": 0.438147
+      },
+      "promoted": false,
+      "reason": "RELS AUC was at chance and Brier score was worse than the prevalence baseline."
+    }
+  },
+  "onset_biometry_challenger": {
+    "release_status": "not_promoted; same 124-subject OLSM holdout reused",
+    "data": "618 OLSM subjects, 81 onset outcomes; candidate adds ACD, lens thickness and vitreous chamber depth",
+    "clinical_activity": {
+      "selected": "hgb_3_l2_10",
+      "threshold_calibration_selected": 0.293975,
+      "accuracy": 0.8871,
+      "balanced_accuracy": 0.6956,
+      "sensitivity": 0.4375,
+      "specificity": 0.9537,
+      "roc_auc": 0.7986,
+      "average_precision": 0.4914,
+      "brier": 0.0929,
+      "confusion_matrix": [
+        [
+          103,
+          5
+        ],
+        [
+          9,
+          7
+        ]
+      ]
+    },
+    "clinical_activity_biometry": {
+      "selected": "logistic_C0.3_None",
+      "threshold_calibration_selected": 0.343437,
+      "accuracy": 0.8871,
+      "balanced_accuracy": 0.6157,
+      "sensitivity": 0.25,
+      "specificity": 0.9815,
+      "roc_auc": 0.8148,
+      "average_precision": 0.481,
+      "brier": 0.096,
+      "confusion_matrix": [
+        [
+          106,
+          2
+        ],
+        [
+          12,
+          4
+        ]
+      ]
+    },
+    "reason_not_promoted": "No feature set reaches 90% test accuracy or consistently improves ranking/probability quality over the released activity model; the reused test contains only 16 positives.",
+    "feature_sets": {
+      "clinical": {
+        "selected": "logistic_C3_None",
+        "threshold": 0.288586,
+        "accuracy": 0.879,
+        "balanced_accuracy": 0.6111,
+        "sensitivity": 0.25,
+        "specificity": 0.9722,
+        "roc_auc": 0.8038,
+        "average_precision": 0.4383,
+        "brier": 0.096,
+        "confusion_matrix": [
+          [
+            105,
+            3
+          ],
+          [
+            12,
+            4
+          ]
+        ]
+      },
+      "clinical_activity": {
+        "selected": "hgb_3_l2_10",
+        "threshold_calibration_selected": 0.293975,
+        "accuracy": 0.8871,
+        "balanced_accuracy": 0.6956,
+        "sensitivity": 0.4375,
+        "specificity": 0.9537,
+        "roc_auc": 0.7986,
+        "average_precision": 0.4914,
+        "brier": 0.0929,
+        "confusion_matrix": [
+          [
+            103,
+            5
+          ],
+          [
+            9,
+            7
+          ]
+        ]
+      },
+      "clinical_biometry": {
+        "selected": "logistic_C3_None",
+        "threshold": 0.279855,
+        "accuracy": 0.871,
+        "balanced_accuracy": 0.6065,
+        "sensitivity": 0.25,
+        "specificity": 0.963,
+        "roc_auc": 0.8113,
+        "average_precision": 0.3937,
+        "brier": 0.0979,
+        "confusion_matrix": [
+          [
+            104,
+            4
+          ],
+          [
+            12,
+            4
+          ]
+        ]
+      },
+      "clinical_activity_biometry": {
+        "selected": "logistic_C0.3_None",
+        "threshold_calibration_selected": 0.343437,
+        "accuracy": 0.8871,
+        "balanced_accuracy": 0.6157,
+        "sensitivity": 0.25,
+        "specificity": 0.9815,
+        "roc_auc": 0.8148,
+        "average_precision": 0.481,
+        "brier": 0.096,
+        "confusion_matrix": [
+          [
+            106,
+            2
+          ],
+          [
+            12,
+            4
+          ]
+        ]
+      }
+    }
+  },
+  "datasets": {
+    "progression_and_external_se": [
+      "https://zenodo.org/records/18166476",
+      "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1002674"
+    ],
+    "five_year_onset": [
+      "https://cran.r-project.org/src/contrib/aplore3_0.9.tar.gz",
+      "https://www.kaggle.com/datasets/mscgeorges/myopia-study"
+    ],
+    "reference_only": [
+      "https://www.kaggle.com/datasets/panwei052117/ivi-questionnaire-responses-aier-seri",
+      "https://www.kaggle.com/datasets/manueldepradogarcia/miopia",
+      "https://datadryad.org/dataset/doi:10.5061/dryad.d4mb3pn"
+    ],
+    "excluded_synthetic": [
+      "https://www.kaggle.com/datasets/neevvv/human-lifestyle-and-daily-habits-dataset"
+    ]
+  },
+  "dims_only_baseline_pre_goal": {
     "y_se_6m": {
       "previous": {
         "mae": 0.1421,
@@ -522,519 +1285,200 @@
       }
     }
   },
-  "onset_incumbent": {
-    "clinical": {
-      "roc_auc": 0.7914,
-      "average_precision": 0.4482,
-      "brier": 0.0934,
-      "log_loss": 0.3189,
-      "accuracy": 0.871,
-      "balanced_accuracy": 0.5,
-      "sensitivity": 0.0,
-      "specificity": 1.0,
-      "precision": 0.0,
-      "f1": 0.0,
-      "bootstrap_95ci": {
-        "roc_auc": [
-          0.6813,
-          0.8993
-        ],
-        "average_precision": [
-          0.2539,
-          0.7098
-        ],
-        "brier": [
-          0.0581,
-          0.1397
-        ],
-        "log_loss": [
-          0.2175,
-          0.4505
-        ],
-        "accuracy": [
-          0.8065,
-          0.9274
-        ],
-        "balanced_accuracy": [
-          0.5,
-          0.5
-        ],
-        "sensitivity": [
-          0.0,
-          0.0
-        ],
-        "specificity": [
-          1.0,
-          1.0
-        ],
-        "precision": [
-          0.0,
-          0.0
-        ],
-        "f1": [
-          0.0,
-          0.0
-        ]
+  "dims_only_baseline_version": "mdt-20261016-174a69a1",
+  "onset_sensitivity_constrained_experiment": {
+    "release_status": "not_promoted",
+    "endpoint": "Five-year myopia onset in initially nonmyopic children aged 5-9",
+    "data": "618 independent OLSM subjects; fixed 370 fit / 124 threshold-selection / 124 test split",
+    "calibration_method": "Sigmoid calibration fitted from five-fold out-of-fold predictions within the fit partition; operating threshold selected on a separate threshold-selection partition",
+    "threshold_selection_positive_cases": 16,
+    "test_positive_cases": 16,
+    "minimum_threshold_selection_sensitivity": 0.8,
+    "test_status": "Same fixed holdout as previous challenger experiments; not external validation",
+    "threshold_policy": "Within each feature set, choose the highest threshold meeting the pre-specified sensitivity floor; evaluate once on fixed test",
+    "confidence_intervals": "500 stratified subject-bootstrap resamples, preserving positive and negative sample counts; conditional on observed class counts",
+    "feature_sets": {
+      "clinical": {
+        "selected_model": "logistic_C3_None",
+        "threshold": 0.12426615154436793,
+        "threshold_selection_sensitivity": 0.8125,
+        "test_at_threshold_selection": {
+          "roc_auc": 0.8038,
+          "average_precision": 0.4383,
+          "brier": 0.0952,
+          "log_loss": 0.3152,
+          "accuracy": 0.7580645161290323,
+          "balanced_accuracy": 0.6481481481481481,
+          "sensitivity": 0.5,
+          "specificity": 0.7962962962962963,
+          "precision": 0.26666666666666666,
+          "f1": 0.34782608695652173,
+          "confusion_matrix": [
+            [
+              86,
+              22
+            ],
+            [
+              8,
+              8
+            ]
+          ],
+          "bootstrap_95ci": {
+            "accuracy": [
+              0.6774,
+              0.8306
+            ],
+            "balanced_accuracy": [
+              0.5248,
+              0.7709
+            ],
+            "sensitivity": [
+              0.25,
+              0.75
+            ],
+            "specificity": [
+              0.713,
+              0.8704
+            ]
+          }
+        }
       },
-      "confusion_matrix": [
-        [
-          108,
-          0
-        ],
-        [
-          16,
-          0
-        ]
-      ],
-      "decision_threshold": 0.5,
-      "model_selection": {
-        "selected": "fixed_hgb_incumbent",
-        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
+      "clinical_activity": {
+        "selected_model": "hgb_3_l2_10",
+        "threshold": 0.13043253704456176,
+        "threshold_selection_sensitivity": 0.8125,
+        "test_at_threshold_selection": {
+          "roc_auc": 0.7986,
+          "average_precision": 0.4914,
+          "brier": 0.0917,
+          "log_loss": 0.3143,
+          "accuracy": 0.7983870967741935,
+          "balanced_accuracy": 0.6979166666666667,
+          "sensitivity": 0.5625,
+          "specificity": 0.8333333333333334,
+          "precision": 0.3333333333333333,
+          "f1": 0.4186046511627907,
+          "confusion_matrix": [
+            [
+              90,
+              18
+            ],
+            [
+              7,
+              9
+            ]
+          ],
+          "bootstrap_95ci": {
+            "accuracy": [
+              0.7258,
+              0.871
+            ],
+            "balanced_accuracy": [
+              0.5764,
+              0.8229
+            ],
+            "sensitivity": [
+              0.3125,
+              0.8125
+            ],
+            "specificity": [
+              0.7593,
+              0.8981
+            ]
+          }
+        }
       },
-      "native_missing_fallback": {
-        "roc_auc": 0.7914,
-        "average_precision": 0.4482,
-        "brier": 0.0934,
-        "log_loss": 0.3189,
-        "accuracy": 0.871,
-        "balanced_accuracy": 0.5,
-        "sensitivity": 0.0,
-        "specificity": 1.0,
-        "precision": 0.0,
-        "f1": 0.0
+      "clinical_biometry": {
+        "selected_model": "logistic_C3_None",
+        "threshold": 0.14483537224014506,
+        "threshold_selection_sensitivity": 0.8125,
+        "test_at_threshold_selection": {
+          "roc_auc": 0.8113,
+          "average_precision": 0.3937,
+          "brier": 0.0976,
+          "log_loss": 0.3183,
+          "accuracy": 0.7903225806451613,
+          "balanced_accuracy": 0.6666666666666667,
+          "sensitivity": 0.5,
+          "specificity": 0.8333333333333334,
+          "precision": 0.3076923076923077,
+          "f1": 0.38095238095238093,
+          "confusion_matrix": [
+            [
+              90,
+              18
+            ],
+            [
+              8,
+              8
+            ]
+          ],
+          "bootstrap_95ci": {
+            "accuracy": [
+              0.7177,
+              0.8548
+            ],
+            "balanced_accuracy": [
+              0.5498,
+              0.7895
+            ],
+            "sensitivity": [
+              0.25,
+              0.75
+            ],
+            "specificity": [
+              0.75,
+              0.8981
+            ]
+          }
+        }
       },
-      "prevalence_baseline": {
-        "roc_auc": 0.5,
-        "average_precision": 0.129,
-        "brier": 0.1124,
-        "log_loss": 0.3846,
-        "accuracy": 0.871,
-        "balanced_accuracy": 0.5,
-        "sensitivity": 0.0,
-        "specificity": 1.0,
-        "precision": 0.0,
-        "f1": 0.0
+      "clinical_activity_biometry": {
+        "selected_model": "logistic_C0.3_None",
+        "threshold": 0.16422154056723368,
+        "threshold_selection_sensitivity": 0.8125,
+        "test_at_threshold_selection": {
+          "roc_auc": 0.8148,
+          "average_precision": 0.481,
+          "brier": 0.0951,
+          "log_loss": 0.3165,
+          "accuracy": 0.8306451612903226,
+          "balanced_accuracy": 0.6898148148148149,
+          "sensitivity": 0.5,
+          "specificity": 0.8796296296296297,
+          "precision": 0.38095238095238093,
+          "f1": 0.43243243243243246,
+          "confusion_matrix": [
+            [
+              95,
+              13
+            ],
+            [
+              8,
+              8
+            ]
+          ],
+          "bootstrap_95ci": {
+            "accuracy": [
+              0.7661,
+              0.8952
+            ],
+            "balanced_accuracy": [
+              0.5654,
+              0.8154
+            ],
+            "sensitivity": [
+              0.25,
+              0.75
+            ],
+            "specificity": [
+              0.8056,
+              0.9352
+            ]
+          }
+        }
       }
     },
-    "clinical_activity": {
-      "roc_auc": 0.8067,
-      "average_precision": 0.5052,
-      "brier": 0.092,
-      "log_loss": 0.3135,
-      "accuracy": 0.879,
-      "balanced_accuracy": 0.5312,
-      "sensitivity": 0.0625,
-      "specificity": 1.0,
-      "precision": 1.0,
-      "f1": 0.1176,
-      "bootstrap_95ci": {
-        "roc_auc": [
-          0.7013,
-          0.9031
-        ],
-        "average_precision": [
-          0.2874,
-          0.7318
-        ],
-        "brier": [
-          0.056,
-          0.1361
-        ],
-        "log_loss": [
-          0.2047,
-          0.4449
-        ],
-        "accuracy": [
-          0.8145,
-          0.9355
-        ],
-        "balanced_accuracy": [
-          0.5,
-          0.6145
-        ],
-        "sensitivity": [
-          0.0,
-          0.2291
-        ],
-        "specificity": [
-          1.0,
-          1.0
-        ],
-        "precision": [
-          0.0,
-          1.0
-        ],
-        "f1": [
-          0.0,
-          0.3728
-        ]
-      },
-      "confusion_matrix": [
-        [
-          108,
-          0
-        ],
-        [
-          15,
-          1
-        ]
-      ],
-      "decision_threshold": 0.5,
-      "model_selection": {
-        "selected": "fixed_hgb_incumbent",
-        "criterion": "Retained incumbent; challenger did not consistently improve the existing benchmark"
-      },
-      "native_missing_fallback": {
-        "roc_auc": 0.8067,
-        "average_precision": 0.5052,
-        "brier": 0.092,
-        "log_loss": 0.3135,
-        "accuracy": 0.879,
-        "balanced_accuracy": 0.5312,
-        "sensitivity": 0.0625,
-        "specificity": 1.0,
-        "precision": 1.0,
-        "f1": 0.1176
-      },
-      "prevalence_baseline": {
-        "roc_auc": 0.5,
-        "average_precision": 0.129,
-        "brier": 0.1124,
-        "log_loss": 0.3846,
-        "accuracy": 0.871,
-        "balanced_accuracy": 0.5,
-        "sensitivity": 0.0,
-        "specificity": 1.0,
-        "precision": 0.0,
-        "f1": 0.0
-      }
-    }
-  },
-  "onset_challenger": {
-    "clinical": {
-      "roc_auc": 0.8032,
-      "average_precision": 0.4407,
-      "brier": 0.0967,
-      "log_loss": 0.3169,
-      "accuracy": 0.871,
-      "balanced_accuracy": 0.5,
-      "sensitivity": 0.0,
-      "specificity": 1.0,
-      "precision": 0.0,
-      "f1": 0.0,
-      "bootstrap_95ci": {
-        "roc_auc": [
-          0.6787,
-          0.9032
-        ],
-        "average_precision": [
-          0.2545,
-          0.697
-        ],
-        "brier": [
-          0.0589,
-          0.1436
-        ],
-        "log_loss": [
-          0.2126,
-          0.444
-        ],
-        "accuracy": [
-          0.8065,
-          0.9274
-        ],
-        "balanced_accuracy": [
-          0.5,
-          0.5
-        ],
-        "sensitivity": [
-          0.0,
-          0.0
-        ],
-        "specificity": [
-          1.0,
-          1.0
-        ],
-        "precision": [
-          0.0,
-          0.0
-        ],
-        "f1": [
-          0.0,
-          0.0
-        ]
-      },
-      "confusion_matrix": [
-        [
-          108,
-          0
-        ],
-        [
-          16,
-          0
-        ]
-      ],
-      "decision_threshold": 0.5,
-      "model_selection": {
-        "selected": "logistic_C30",
-        "criterion": "Highest mean training-only repeated stratified CV ROC AUC",
-        "folds": 10,
-        "candidates": [
-          {
-            "candidate": "logistic_C0.03",
-            "mean_cv_roc_auc": 0.887527,
-            "std_cv_roc_auc": 0.083558
-          },
-          {
-            "candidate": "logistic_C0.3",
-            "mean_cv_roc_auc": 0.897995,
-            "std_cv_roc_auc": 0.078504
-          },
-          {
-            "candidate": "logistic_C3",
-            "mean_cv_roc_auc": 0.89947,
-            "std_cv_roc_auc": 0.079409
-          },
-          {
-            "candidate": "logistic_C30",
-            "mean_cv_roc_auc": 0.899724,
-            "std_cv_roc_auc": 0.079715
-          },
-          {
-            "candidate": "rbf_svm_C0.1",
-            "mean_cv_roc_auc": 0.84852,
-            "std_cv_roc_auc": 0.057217
-          },
-          {
-            "candidate": "rbf_svm_C1",
-            "mean_cv_roc_auc": 0.847539,
-            "std_cv_roc_auc": 0.057874
-          },
-          {
-            "candidate": "rbf_svm_C10",
-            "mean_cv_roc_auc": 0.823088,
-            "std_cv_roc_auc": 0.054196
-          },
-          {
-            "candidate": "rbf_svm_C100",
-            "mean_cv_roc_auc": 0.750629,
-            "std_cv_roc_auc": 0.061282
-          },
-          {
-            "candidate": "hgb_3_l2_10",
-            "mean_cv_roc_auc": 0.874014,
-            "std_cv_roc_auc": 0.083566
-          },
-          {
-            "candidate": "hgb_5_l2_10",
-            "mean_cv_roc_auc": 0.869294,
-            "std_cv_roc_auc": 0.091608
-          },
-          {
-            "candidate": "hgb_9_l2_1",
-            "mean_cv_roc_auc": 0.864083,
-            "std_cv_roc_auc": 0.084191
-          },
-          {
-            "candidate": "random_forest_leaf5",
-            "mean_cv_roc_auc": 0.86169,
-            "std_cv_roc_auc": 0.106055
-          },
-          {
-            "candidate": "random_forest_leaf15",
-            "mean_cv_roc_auc": 0.884372,
-            "std_cv_roc_auc": 0.092821
-          }
-        ]
-      },
-      "native_missing_fallback": {
-        "roc_auc": 0.7914,
-        "average_precision": 0.4482,
-        "brier": 0.0934,
-        "log_loss": 0.3189,
-        "accuracy": 0.871,
-        "balanced_accuracy": 0.5,
-        "sensitivity": 0.0,
-        "specificity": 1.0,
-        "precision": 0.0,
-        "f1": 0.0
-      },
-      "prevalence_baseline": {
-        "roc_auc": 0.5,
-        "average_precision": 0.129,
-        "brier": 0.1124,
-        "log_loss": 0.3846,
-        "accuracy": 0.871,
-        "balanced_accuracy": 0.5,
-        "sensitivity": 0.0,
-        "specificity": 1.0,
-        "precision": 0.0,
-        "f1": 0.0
-      }
-    },
-    "clinical_activity": {
-      "roc_auc": 0.8056,
-      "average_precision": 0.4588,
-      "brier": 0.0952,
-      "log_loss": 0.3145,
-      "accuracy": 0.871,
-      "balanced_accuracy": 0.5,
-      "sensitivity": 0.0,
-      "specificity": 1.0,
-      "precision": 0.0,
-      "f1": 0.0,
-      "bootstrap_95ci": {
-        "roc_auc": [
-          0.6904,
-          0.9093
-        ],
-        "average_precision": [
-          0.2652,
-          0.7157
-        ],
-        "brier": [
-          0.0574,
-          0.1418
-        ],
-        "log_loss": [
-          0.2057,
-          0.4465
-        ],
-        "accuracy": [
-          0.8065,
-          0.9274
-        ],
-        "balanced_accuracy": [
-          0.5,
-          0.5
-        ],
-        "sensitivity": [
-          0.0,
-          0.0
-        ],
-        "specificity": [
-          1.0,
-          1.0
-        ],
-        "precision": [
-          0.0,
-          0.0
-        ],
-        "f1": [
-          0.0,
-          0.0
-        ]
-      },
-      "confusion_matrix": [
-        [
-          108,
-          0
-        ],
-        [
-          16,
-          0
-        ]
-      ],
-      "decision_threshold": 0.5,
-      "model_selection": {
-        "selected": "logistic_C0.3",
-        "criterion": "Highest mean training-only repeated stratified CV ROC AUC",
-        "folds": 10,
-        "candidates": [
-          {
-            "candidate": "logistic_C0.03",
-            "mean_cv_roc_auc": 0.880885,
-            "std_cv_roc_auc": 0.074016
-          },
-          {
-            "candidate": "logistic_C0.3",
-            "mean_cv_roc_auc": 0.890202,
-            "std_cv_roc_auc": 0.075286
-          },
-          {
-            "candidate": "logistic_C3",
-            "mean_cv_roc_auc": 0.890187,
-            "std_cv_roc_auc": 0.077646
-          },
-          {
-            "candidate": "logistic_C30",
-            "mean_cv_roc_auc": 0.88922,
-            "std_cv_roc_auc": 0.078607
-          },
-          {
-            "candidate": "rbf_svm_C0.1",
-            "mean_cv_roc_auc": 0.848584,
-            "std_cv_roc_auc": 0.07963
-          },
-          {
-            "candidate": "rbf_svm_C1",
-            "mean_cv_roc_auc": 0.848272,
-            "std_cv_roc_auc": 0.079652
-          },
-          {
-            "candidate": "rbf_svm_C10",
-            "mean_cv_roc_auc": 0.786158,
-            "std_cv_roc_auc": 0.074221
-          },
-          {
-            "candidate": "rbf_svm_C100",
-            "mean_cv_roc_auc": 0.726442,
-            "std_cv_roc_auc": 0.05054
-          },
-          {
-            "candidate": "hgb_3_l2_10",
-            "mean_cv_roc_auc": 0.889132,
-            "std_cv_roc_auc": 0.069659
-          },
-          {
-            "candidate": "hgb_5_l2_10",
-            "mean_cv_roc_auc": 0.875783,
-            "std_cv_roc_auc": 0.076837
-          },
-          {
-            "candidate": "hgb_9_l2_1",
-            "mean_cv_roc_auc": 0.849032,
-            "std_cv_roc_auc": 0.080243
-          },
-          {
-            "candidate": "random_forest_leaf5",
-            "mean_cv_roc_auc": 0.860743,
-            "std_cv_roc_auc": 0.099606
-          },
-          {
-            "candidate": "random_forest_leaf15",
-            "mean_cv_roc_auc": 0.882159,
-            "std_cv_roc_auc": 0.088243
-          }
-        ]
-      },
-      "native_missing_fallback": {
-        "roc_auc": 0.8067,
-        "average_precision": 0.5052,
-        "brier": 0.092,
-        "log_loss": 0.3135,
-        "accuracy": 0.879,
-        "balanced_accuracy": 0.5312,
-        "sensitivity": 0.0625,
-        "specificity": 1.0,
-        "precision": 1.0,
-        "f1": 0.1176
-      },
-      "prevalence_baseline": {
-        "roc_auc": 0.5,
-        "average_precision": 0.129,
-        "brier": 0.1124,
-        "log_loss": 0.3846,
-        "accuracy": 0.871,
-        "balanced_accuracy": 0.5,
-        "sensitivity": 0.0,
-        "specificity": 1.0,
-        "precision": 0.0,
-        "f1": 0.0
-      }
-    }
-  },
-  "onset_challenger_status": "not_promoted; did not consistently improve existing probability-quality benchmark",
-  "onset_challenger_original_version": "onset5y-b869668356",
-  "test_tuning": "No candidate grid expansion, test-threshold optimization, test-seed search, invented data or label leakage"
+    "conclusion": "No tested feature set met 90% test accuracy; test sensitivity was 50-56.25%. Threshold transfer was unstable and the released model is unchanged."
+  }
 }
