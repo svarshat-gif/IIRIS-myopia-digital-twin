@@ -2,3 +2,6 @@
 backend/data/open/olsm/** -text whitespace=-blank-at-eol,-blank-at-eof
 backend/data/open/aier_seri/** -text whitespace=-blank-at-eol,-blank-at-eof
 backend/data/open/miopia/** -text whitespace=-blank-at-eol,-blank-at-eof
+backend/data/open/goal_rels/** -text whitespace=-blank-at-eol,-blank-at-eof
+backend/data/open/dryad_3year/** -text whitespace=-blank-at-eol,-blank-at-eof
+backend/data/open/kinoshita/** -text whitespace=-blank-at-eol,-blank-at-eof
