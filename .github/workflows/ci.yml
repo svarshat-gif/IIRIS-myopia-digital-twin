@@ -12,7 +12,7 @@ jobs:
       - run: pip install -r backend/requirements-dev.txt
       - run: make model
       - run: python -m ruff check backend
-      - run: cd backend && pytest tests -q --cov=app.twin --cov=app.simulator --cov=app.ml --cov=app.core --cov-fail-under=80 --cov-report=xml
+      - run: cd backend && pytest tests -q --cov=app.twin --cov=app.simulator --cov=app.ml --cov=app.core --cov-fail-under=80 --cov-report=term-missing:skip-covered --cov-report=xml
       - run: cd backend && DATABASE_URL=sqlite:///./artifacts/migration_ci.db python -m alembic upgrade head && DATABASE_URL=sqlite:///./artifacts/migration_ci.db python -m alembic check
       - uses: actions/upload-artifact@v4
         with:
